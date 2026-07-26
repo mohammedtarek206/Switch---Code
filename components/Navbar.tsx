@@ -53,7 +53,7 @@ export default function Navbar() {
             <img
               src="/Copilot_20250808_194655.png"
               alt="Switch Code Logo"
-              className="h-12 w-auto object-contain group-hover:scale-105 transition-transform"
+              className="h-[65px] md:h-[85px] w-auto object-contain group-hover:scale-105 transition-transform drop-shadow-lg"
             />
             <div className="flex flex-col">
               <span className="text-xl font-black text-white tracking-tight group-hover:text-gold transition-colors">Switch Code</span>
