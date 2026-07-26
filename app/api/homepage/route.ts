@@ -13,7 +13,8 @@ import Track from '@/models/Track';
 import ExamResult from '@/models/ExamResult';
 import PublicTeamMember from '@/models/PublicTeamMember';
 
-export const dynamic = 'force-dynamic';
+// Cache the homepage data for 60 seconds to prevent slow DB queries on every load
+export const revalidate = 60;
 
 export async function GET() {
     try {
