@@ -4,23 +4,28 @@ import jwt from 'jsonwebtoken';
 import connectDB from '@/lib/mongodb';
 import User from '@/models/User';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: NextRequest) {
   try {
-    const { identifier, password } = await request.json();
+    const body = await request.json();
+    const identifier = body.identifier || body.email || body.username;
+    const password = body.password;
 
     if (!identifier || !password) {
       return NextResponse.json({ error: 'Username/Email and Password are required' }, { status: 400 });
     }
 
-    const cleanIdentifier = identifier.trim();
-    const cleanPassword = password.trim();
+    const cleanIdentifier = String(identifier).trim();
+    const cleanPassword = String(password).trim();
 
     await connectDB();
 
-    // Find active user by username (case-sensitive or exact), email, or phone
+    // Find active user by username, email (case-insensitive), or phone
     const user = await User.findOne({
       $or: [
         { username: cleanIdentifier },
+        { username: cleanIdentifier.toLowerCase() },
         { email: cleanIdentifier.toLowerCase() },
         { phone: cleanIdentifier }
       ],
