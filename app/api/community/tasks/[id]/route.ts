@@ -5,7 +5,7 @@ import { authenticateRequest } from '@/lib/auth';
 import { hasPermission, PERMISSIONS } from '@/lib/permissions';
 import { logActivity } from '@/lib/activityLog';
 
-export async function GET(_req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
     try {
         const user = await authenticateRequest(req);
         if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
