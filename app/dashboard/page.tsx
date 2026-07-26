@@ -14,6 +14,7 @@ interface UserData {
     name: string;
     email: string;
     role: string;
+    position?: string;
     permissions: string[];
     performanceScore?: number;
     committeeId?: { _id: string; name: string };
@@ -168,7 +169,7 @@ export default function SmartDashboardPage() {
     } else if (role === 'pr') {
         links.push({ label: `PR ${posName} Dashboard`, href: '/dashboard/pr', icon: FiBell, color: '#8B5CF6', description: 'Manage socials & announcements' });
     } else if (role === 'marketing') {
-        links.push({ label: `Marketing ${posName} Dashboard`, href: '/dashboard/marketing', icon: FiTrendingUp, color: '#F97316', description: 'Campaigns & sponsors' });
+        links.push({ label: `Marketing ${posName} Dashboard`, href: '/dashboard/marketing', icon: FiTrendingUp, color: '#F97316', description: 'Campaigns & reach' });
     } else if (role === 'media') {
         links.push({ label: `Media ${posName} Dashboard`, href: '/dashboard/media', icon: FiImage, color: '#EC4899', description: 'Media library & covers' });
     } else if (['committee_leader', 'vice_committee_leader', 'member', 'technical'].includes(role)) {
