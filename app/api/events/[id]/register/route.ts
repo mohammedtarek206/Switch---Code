@@ -43,7 +43,10 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
         // Check duplicate
         const existing = await EventRegistration.findOne({ eventId: params.id, email: email.toLowerCase() });
         if (existing) {
-            return NextResponse.json({ error: 'You have already registered for this event with this email' }, { status: 400 });
+            return NextResponse.json({
+                message: 'You are already registered! Here is your barcode again.',
+                registration: existing
+            }, { status: 200 }); // Status 200 so UI treats it as success and shows barcode
         }
 
         const registration = await EventRegistration.create({

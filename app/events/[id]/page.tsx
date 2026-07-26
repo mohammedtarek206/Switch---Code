@@ -18,6 +18,7 @@ export default function EventPublicPage() {
     const [regForm, setRegForm] = useState({ name: '', email: '', phone: '', university: '', faculty: '' });
     const [regSubmitting, setRegSubmitting] = useState(false);
     const [regMessage, setRegMessage] = useState<any>(null);
+    const [registrationData, setRegistrationData] = useState<any>(null);
 
     useEffect(() => {
         if (eventId) fetchEvent();
@@ -53,6 +54,7 @@ export default function EventPublicPage() {
 
             if (res.ok) {
                 setRegMessage({ type: 'success', text: resData.message });
+                setRegistrationData(resData.registration);
                 setRegForm({ name: '', email: '', phone: '', university: '', faculty: '' });
                 fetchEvent(); // refresh seats
             } else {
@@ -135,6 +137,8 @@ export default function EventPublicPage() {
                         <div className="bg-red-500/10 text-red-400 border border-red-500/30 p-6 rounded-2xl text-center font-bold">
                             Registration for this event is currently closed or fully booked.
                         </div>
+                    ) : regMessage?.type === 'success' ? (
+                        <p className="text-center text-slate-300">Your registration is confirmed. Please see your barcode below.</p>
                     ) : (
                         <form onSubmit={handleRegisterSubmit} className="space-y-5">
                             <div className="grid md:grid-cols-2 gap-5">
@@ -173,6 +177,24 @@ export default function EventPublicPage() {
                                 </button>
                             </div>
                         </form>
+                    )}
+
+                    {registrationData && (
+                        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="mt-8 p-8 bg-slate-900 border border-blue-500/30 rounded-[2rem] flex flex-col items-center text-center space-y-4">
+                            <h3 className="text-xl font-black text-gold">Entrance Barcode</h3>
+                            <p className="text-sm text-slate-300">Please save this QR Code to scan for event check-in.</p>
+                            <div className="bg-white p-4 rounded-2xl w-48 h-48 flex justify-center items-center">
+                                { /* we encode the registration _id into the QR Code */}
+                                <img
+                                    src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${registrationData._id}`}
+                                    alt="Registration Check-in Barcode"
+                                    className="w-full h-full object-contain"
+                                />
+                            </div>
+                            <div className="text-xs font-bold text-slate-400 mt-2 tracking-wider uppercase">
+                                ID: {registrationData._id}
+                            </div>
+                        </motion.div>
                     )}
                 </motion.div>
             </div>

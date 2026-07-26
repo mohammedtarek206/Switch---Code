@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic';
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
     try {
         await connectDB();
-        const event = await Event.findById(params.id).lean();
+        const event = await Event.findById(params.id).lean() as any;
 
         if (!event) {
             return NextResponse.json({ error: 'Event not found' }, { status: 404 });
