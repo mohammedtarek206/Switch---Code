@@ -5,8 +5,6 @@ import { useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { FiCalendar, FiMapPin, FiClock, FiUser, FiCheckCircle, FiXCircle } from 'react-icons/fi';
 import Link from 'next/link';
-import Navbar from '@/app/components/Navbar'; // Adjust this import based on the actual components path if it exists
-
 export default function EventPublicPage() {
     const params = useParams();
     const eventId = params?.id as string;
