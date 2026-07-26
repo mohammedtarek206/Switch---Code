@@ -131,31 +131,31 @@ export default function LeaderboardAndAwardsPage() {
                 </div>
                 <button
                     onClick={() => setShowAwardModal(true)}
-                    className="flex items-center bg-accent hover:bg-accent-dark text-black px-5 py-3 rounded-xl font-bold transition-all"
+                    className="flex items-center btn-primary-blue px-5 py-3 rounded-xl font-bold transition-all"
                 >
                     <FiPlus className="mr-2" /> Certify Monthly Award
                 </button>
             </div>
 
             {/* Tabs list */}
-            <div className="flex space-x-2 bg-white/5 p-1 rounded-xl w-fit">
+            <div className="flex space-x-2 bg-slate-900 border border-blue-500/20 p-1 rounded-xl w-fit">
                 <button
                     onClick={() => setActiveTab('members')}
-                    className={`px-5 py-2.5 rounded-lg text-xs font-bold transition-all ${activeTab === 'members' ? 'bg-primary text-white shadow-lg' : 'text-gray-400 hover:text-white'
+                    className={`px-5 py-2.5 rounded-lg text-xs font-bold transition-all ${activeTab === 'members' ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-400 hover:text-white'
                         }`}
                 >
                     Members Score Board
                 </button>
                 <button
                     onClick={() => setActiveTab('committees')}
-                    className={`px-5 py-2.5 rounded-lg text-xs font-bold transition-all ${activeTab === 'committees' ? 'bg-primary text-white shadow-lg' : 'text-gray-400 hover:text-white'
+                    className={`px-5 py-2.5 rounded-lg text-xs font-bold transition-all ${activeTab === 'committees' ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-400 hover:text-white'
                         }`}
                 >
                     Committee Standing
                 </button>
                 <button
                     onClick={() => setActiveTab('awards')}
-                    className={`px-5 py-2.5 rounded-lg text-xs font-bold transition-all ${activeTab === 'awards' ? 'bg-primary text-white shadow-lg' : 'text-gray-400 hover:text-white'
+                    className={`px-5 py-2.5 rounded-lg text-xs font-bold transition-all ${activeTab === 'awards' ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-400 hover:text-white'
                         }`}
                 >
                     Monthly Awards Log
@@ -164,18 +164,18 @@ export default function LeaderboardAndAwardsPage() {
 
             {loading ? (
                 <div className="flex items-center justify-center min-h-[30vh]">
-                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-accent"></div>
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gold"></div>
                 </div>
             ) : activeTab === 'members' ? (
-                <div className="glass rounded-3xl overflow-hidden p-6">
+                <div className="glass-panel rounded-3xl overflow-hidden p-6">
                     <h3 className="text-xl font-bold text-white mb-6 flex items-center">
-                        <FiTrendingUp className="mr-2 text-accent" /> Leaderboard Rankings
+                        <FiTrendingUp className="mr-2 text-gold" /> Leaderboard Rankings
                     </h3>
 
                     <div className="overflow-x-auto">
                         <table className="w-full border-collapse text-left">
                             <thead>
-                                <tr className="border-b border-white/5 text-gray-400 text-xs font-bold uppercase">
+                                <tr className="border-b border-blue-500/20 text-gray-400 text-xs font-bold uppercase">
                                     <th className="py-4 pl-4">Rank</th>
                                     <th className="py-4">Member</th>
                                     <th className="py-4">Committee</th>
@@ -185,12 +185,12 @@ export default function LeaderboardAndAwardsPage() {
                             </thead>
                             <tbody className="divide-y divide-white/5 text-gray-300 text-sm">
                                 {leaderboard.map((m, idx) => (
-                                    <tr key={m._id} className="hover:bg-white/5 transition-colors">
+                                    <tr key={m._id} className="hover:bg-slate-900 border border-blue-500/20 transition-colors">
                                         <td className="py-4 pl-4 font-bold text-white">
                                             {idx + 1 === 1 ? '🥇 1st' : idx + 1 === 2 ? '🥈 2nd' : idx + 1 === 3 ? '🥉 3rd' : `# ${idx + 1}`}
                                         </td>
                                         <td className="py-4 flex items-center space-x-3">
-                                            <div className="w-9 h-9 bg-white/5 rounded-full flex items-center justify-center font-bold text-xs text-accent">
+                                            <div className="w-9 h-9 bg-slate-900 border border-blue-500/20 rounded-full flex items-center justify-center font-bold text-xs text-gold">
                                                 {m.avatar ? (
                                                     <img src={m.avatar} alt="Avatar" className="w-full h-full rounded-full object-cover" />
                                                 ) : (
@@ -208,7 +208,7 @@ export default function LeaderboardAndAwardsPage() {
                                             </span>
                                         </td>
                                         <td className="py-4 capitalize text-xs text-gray-400 font-semibold">{m.role.replace('_', ' ')}</td>
-                                        <td className="py-4 text-right pr-4 font-extrabold text-accent">{m.performanceScore} pts</td>
+                                        <td className="py-4 text-right pr-4 font-extrabold text-gold">{m.performanceScore} pts</td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -223,13 +223,13 @@ export default function LeaderboardAndAwardsPage() {
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ delay: idx * 0.05 }}
-                            className="glass p-6 rounded-2xl border border-white/5 relative overflow-hidden flex flex-col justify-between"
+                            className="glass-panel p-6 rounded-2xl border border-blue-500/20 relative overflow-hidden flex flex-col justify-between"
                             style={{ borderLeft: `4px solid ${c.color || '#0066FF'}` }}
                         >
                             <div>
                                 <div className="flex justify-between items-center mb-4">
                                     <span className="text-xs uppercase font-extrabold text-gray-500 tracking-wider">Standing: #{idx + 1}</span>
-                                    <span className="bg-accent/15 text-accent text-xs px-3 py-1 rounded-full font-bold">
+                                    <span className="bg-gold/20 text-gold text-xs px-3 py-1 rounded-full font-bold">
                                         Rank Points: {c.rankingScore}
                                     </span>
                                 </div>
@@ -241,21 +241,21 @@ export default function LeaderboardAndAwardsPage() {
                                         <span>Task Completion Efficiency</span>
                                         <span className="text-white font-bold">{c.taskCompletionRate}%</span>
                                     </div>
-                                    <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
-                                        <div className="h-full bg-accent" style={{ width: `${c.taskCompletionRate}%` }}></div>
+                                    <div className="w-full h-1.5 bg-slate-900 border border-blue-500/20 rounded-full overflow-hidden">
+                                        <div className="h-full bg-blue-600 hover:bg-blue-500 text-white transition-colors" style={{ width: `${c.taskCompletionRate}%` }}></div>
                                     </div>
 
                                     <div className="flex justify-between pt-1">
                                         <span>Average User Score</span>
                                         <span className="text-white font-bold">{c.avgPerformance} pts</span>
                                     </div>
-                                    <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
-                                        <div className="h-full bg-primary" style={{ width: `${c.avgPerformance}%` }}></div>
+                                    <div className="w-full h-1.5 bg-slate-900 border border-blue-500/20 rounded-full overflow-hidden">
+                                        <div className="h-full bg-blue-600" style={{ width: `${c.avgPerformance}%` }}></div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-4 text-center mt-6 border-t border-white/5 pt-4 text-xs">
+                            <div className="grid grid-cols-2 gap-4 text-center mt-6 border-t border-blue-500/20 pt-4 text-xs">
                                 <div>
                                     <span className="text-gray-500 block mb-1">Members Count</span>
                                     <span className="font-extrabold text-white">{c.membersCount}</span>
@@ -270,13 +270,13 @@ export default function LeaderboardAndAwardsPage() {
                 </div>
             ) : (
                 <div className="space-y-6">
-                    <div className="glass p-6 rounded-3xl flex items-center justify-between">
+                    <div className="glass-panel p-6 rounded-3xl flex items-center justify-between">
                         <h3 className="font-bold text-white text-md">Awards of the Selected Period</h3>
                         <div className="flex gap-2">
                             <select
                                 value={awardMonth}
                                 onChange={(e) => setAwardMonth(Number(e.target.value))}
-                                className="bg-dark p-2 rounded-lg border border-white/5 text-xs text-white outline-none"
+                                className="bg-[#07111F] p-2 rounded-lg border border-blue-500/20 text-xs text-white outline-none"
                             >
                                 {Array.from({ length: 12 }, (_, i) => (
                                     <option key={i + 1} value={i + 1}>Month {i + 1}</option>
@@ -285,7 +285,7 @@ export default function LeaderboardAndAwardsPage() {
                             <select
                                 value={awardYear}
                                 onChange={(e) => setAwardYear(Number(e.target.value))}
-                                className="bg-dark p-2 rounded-lg border border-white/5 text-xs text-white outline-none"
+                                className="bg-[#07111F] p-2 rounded-lg border border-blue-500/20 text-xs text-white outline-none"
                             >
                                 <option value="2026">2026</option>
                                 <option value="2027">2027</option>
@@ -298,7 +298,7 @@ export default function LeaderboardAndAwardsPage() {
                             <p className="text-gray-500 text-sm text-center py-12 col-span-2">No certificates granted for this month cycle.</p>
                         ) : (
                             awards.map((a) => (
-                                <div key={a._id} className="glass p-6 rounded-2xl relative border-l-4 border-yellow-500 flex flex-col justify-between">
+                                <div key={a._id} className="glass-panel p-6 rounded-2xl relative border-l-4 border-yellow-500 flex flex-col justify-between">
                                     <div>
                                         <div className="flex justify-between items-center mb-4">
                                             <span className="bg-yellow-500/10 text-yellow-500 px-3 py-1 rounded-full text-xs font-bold uppercase">
@@ -311,8 +311,8 @@ export default function LeaderboardAndAwardsPage() {
                                     </div>
 
                                     {a.winnerId && (
-                                        <div className="flex items-center space-x-3 mt-6 pt-4 border-t border-white/5">
-                                            <div className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center font-bold text-xs text-accent">
+                                        <div className="flex items-center space-x-3 mt-6 pt-4 border-t border-blue-500/20">
+                                            <div className="w-10 h-10 bg-slate-900 border border-blue-500/20 rounded-full flex items-center justify-center font-bold text-xs text-gold">
                                                 {a.winnerId.avatar ? (
                                                     <img src={a.winnerId.avatar} alt="Winner" className="w-full h-full rounded-full object-cover" />
                                                 ) : (
@@ -338,7 +338,7 @@ export default function LeaderboardAndAwardsPage() {
                     <motion.div
                         initial={{ scale: 0.95, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
-                        className="glass w-full max-w-md rounded-3xl p-8 space-y-6"
+                        className="glass-panel w-full max-w-md rounded-3xl p-8 space-y-6"
                     >
                         <h2 className="text-2xl font-bold text-white mb-2">Publish Monthly Award</h2>
 
@@ -348,7 +348,7 @@ export default function LeaderboardAndAwardsPage() {
                                 <select
                                     value={awardType}
                                     onChange={(e) => setAwardType(e.target.value)}
-                                    className="w-full p-4 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent text-sm"
+                                    className="w-full p-4 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold text-sm"
                                 >
                                     <option value="member_of_the_month">Member of the Month</option>
                                     <option value="committee_of_the_month">Committee of the Month</option>
@@ -365,7 +365,7 @@ export default function LeaderboardAndAwardsPage() {
                                     value={awardLabel}
                                     onChange={(e) => setAwardLabel(e.target.value)}
                                     placeholder="e.g. Shield of Excellence"
-                                    className="w-full p-4 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent"
+                                    className="w-full p-4 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold"
                                 />
                             </div>
 
@@ -375,7 +375,7 @@ export default function LeaderboardAndAwardsPage() {
                                     <select
                                         value={awardMonth}
                                         onChange={(e) => setAwardMonth(Number(e.target.value))}
-                                        className="w-full p-4 bg-dark-light border border-white/10 rounded-xl text-white outline-none text-sm"
+                                        className="w-full p-4 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none text-sm"
                                     >
                                         {Array.from({ length: 12 }, (_, i) => (
                                             <option key={i + 1} value={i + 1}>Month {i + 1}</option>
@@ -387,7 +387,7 @@ export default function LeaderboardAndAwardsPage() {
                                     <select
                                         value={awardYear}
                                         onChange={(e) => setAwardYear(Number(e.target.value))}
-                                        className="w-full p-4 bg-dark-light border border-white/10 rounded-xl text-white outline-none text-sm"
+                                        className="w-full p-4 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none text-sm"
                                     >
                                         <option value="2026">2026</option>
                                         <option value="2027">2027</option>
@@ -400,7 +400,7 @@ export default function LeaderboardAndAwardsPage() {
                                 <select
                                     value={awardWinnerId}
                                     onChange={(e) => setAwardWinnerId(e.target.value)}
-                                    className="w-full p-4 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent text-sm"
+                                    className="w-full p-4 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold text-sm"
                                 >
                                     <option value="">Choose User...</option>
                                     {users.map(u => (
@@ -413,13 +413,13 @@ export default function LeaderboardAndAwardsPage() {
                                 <button
                                     type="button"
                                     onClick={() => setShowAwardModal(false)}
-                                    className="px-6 py-3 bg-white/5 text-white rounded-xl hover:bg-white/10 transition-all font-semibold"
+                                    className="px-6 py-3 bg-slate-900 border border-blue-500/20 text-white rounded-xl hover:bg-slate-800 transition-all font-semibold"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-6 py-3 bg-accent hover:bg-accent-dark text-black rounded-xl transition-all font-bold"
+                                    className="px-6 py-3 btn-primary-blue rounded-xl transition-all font-bold"
                                 >
                                     Certify Scholar
                                 </button>

@@ -43,10 +43,10 @@ export default function AdminStudents() {
                 <p className="text-gray-400">View and manage all registered students and admins.</p>
             </div>
 
-            <div className="glass rounded-2xl overflow-hidden border border-white/5">
+            <div className="glass-panel rounded-2xl overflow-hidden border border-blue-500/20">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left">
-                        <thead className="bg-white/5">
+                        <thead className="bg-slate-900 border border-blue-500/20">
                             <tr>
                                 <th className="px-6 py-4 text-gray-400 font-medium">Name</th>
                                 <th className="px-6 py-4 text-gray-400 font-medium">Role</th>
@@ -56,10 +56,10 @@ export default function AdminStudents() {
                         </thead>
                         <tbody className="divide-y divide-white/5">
                             {students.map((student) => (
-                                <tr key={student._id} className="hover:bg-white/5 transition-colors">
+                                <tr key={student._id} className="hover:bg-slate-900 border border-blue-500/20 transition-colors">
                                     <td className="px-6 py-4">
                                         <div className="flex items-center">
-                                            <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary mr-3">
+                                            <div className="w-10 h-10 rounded-full bg-blue-600/20 flex items-center justify-center text-blue-500 mr-3">
                                                 {student.name.charAt(0).toUpperCase()}
                                             </div>
                                             <span className="text-white font-medium">{student.name}</span>

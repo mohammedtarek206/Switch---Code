@@ -83,7 +83,7 @@ export default function HallOfFamePage() {
     const cur = t[lang];
 
     return (
-        <div className={`min-h-screen transition-colors duration-300 py-16 px-4 md:px-8 ${theme === 'dark' ? 'bg-dark text-white' : 'bg-white text-dark-light'
+        <div className={`min-h-screen transition-colors duration-300 py-16 px-4 md:px-8 ${theme === 'dark' ? 'bg-[#07111F] text-white' : 'bg-white text-dark-light'
             }`} dir={lang === 'ar' ? 'rtl' : 'ltr'}>
 
             {/* Nav toggles */}
@@ -92,10 +92,10 @@ export default function HallOfFamePage() {
                     &larr; {lang === 'ar' ? 'رجوع للإحصائيات العامة' : 'Back to Statistics'}
                 </Link>
                 <div className="flex gap-2 text-xs">
-                    <button onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="px-3.5 py-1.5 bg-white/5 border border-white/10 rounded-xl font-bold">
+                    <button onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="px-3.5 py-1.5 bg-slate-900 border border-blue-500/20 border border-blue-500/30 rounded-xl font-bold">
                         {theme === 'dark' ? 'Light Theme ☀️' : 'Dark Theme 🌙'}
                     </button>
-                    <button onClick={() => setLang(lang === 'ar' ? 'en' : 'ar')} className="px-3.5 py-1.5 bg-white/5 border border-white/10 rounded-xl font-bold font-mono">
+                    <button onClick={() => setLang(lang === 'ar' ? 'en' : 'ar')} className="px-3.5 py-1.5 bg-slate-900 border border-blue-500/20 border border-blue-500/30 rounded-xl font-bold font-mono">
                         {lang === 'ar' ? 'English' : 'العربية'}
                     </button>
                 </div>
@@ -118,13 +118,13 @@ export default function HallOfFamePage() {
                 </div>
 
                 {/* Date Selector Timeline */}
-                <div className="glass p-6 rounded-3xl grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+                <div className="glass-panel p-6 rounded-3xl grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
                     <span className="font-bold text-sm text-gray-400">{cur.dateSelector}</span>
                     <div className="flex space-x-2 gap-2 justify-end">
                         <select
                             value={month}
                             onChange={(e) => setMonth(Number(e.target.value))}
-                            className="bg-black/30 text-white text-xs p-3 rounded-xl border border-white/5 outline-none"
+                            className="bg-black/30 text-white text-xs p-3 rounded-xl border border-blue-500/20 outline-none"
                         >
                             {Array.from({ length: 12 }, (_, i) => (
                                 <option key={i + 1} value={i + 1}>{cur.monthName(i + 1)}</option>
@@ -134,7 +134,7 @@ export default function HallOfFamePage() {
                         <select
                             value={year}
                             onChange={(e) => setYear(Number(e.target.value))}
-                            className="bg-black/30 text-white text-xs p-3 rounded-xl border border-white/5 outline-none"
+                            className="bg-black/30 text-white text-xs p-3 rounded-xl border border-blue-500/20 outline-none"
                         >
                             <option value="2026">2026</option>
                             <option value="2027">2027</option>
@@ -144,10 +144,10 @@ export default function HallOfFamePage() {
 
                 {loading ? (
                     <div className="flex justify-center items-center py-20">
-                        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-accent"></div>
+                        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-gold"></div>
                     </div>
                 ) : awards.length === 0 ? (
-                    <div className="glass p-12 rounded-3xl text-center text-gray-500 text-sm">
+                    <div className="glass-panel p-12 rounded-3xl text-center text-gray-500 text-sm">
                         <FiSliders className="w-12 h-12 mx-auto text-gray-600 mb-4" />
                         <p>{cur.noAwards}</p>
                     </div>
@@ -159,7 +159,7 @@ export default function HallOfFamePage() {
                                 initial={{ opacity: 0, y: 15 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: idx * 0.05 }}
-                                className="glass p-6 rounded-3xl border border-white/5 flex flex-col justify-between"
+                                className="glass-panel p-6 rounded-3xl border border-blue-500/20 flex flex-col justify-between"
                                 style={{ borderTop: '3px solid #EAB308' }}
                             >
                                 <div>
@@ -173,8 +173,8 @@ export default function HallOfFamePage() {
                                 </div>
 
                                 {a.winnerId ? (
-                                    <div className="flex items-center space-x-3 gap-3 border-t border-white/5 pt-4 mt-4">
-                                        <div className="w-9 h-9 bg-white/5 rounded-full flex items-center justify-center font-bold text-xs text-accent">
+                                    <div className="flex items-center space-x-3 gap-3 border-t border-blue-500/20 pt-4 mt-4">
+                                        <div className="w-9 h-9 bg-slate-900 border border-blue-500/20 rounded-full flex items-center justify-center font-bold text-xs text-gold">
                                             {a.winnerId.avatar ? (
                                                 <img src={a.winnerId.avatar} alt="Winner" className="w-full h-full object-cover rounded-full" />
                                             ) : (

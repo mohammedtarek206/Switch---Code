@@ -44,8 +44,8 @@ export default function AdminLoginPage() {
         <div className="relative min-h-screen bg-[#050505] flex items-center justify-center p-4 overflow-hidden">
             {/* Background Animations */}
             <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-                <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/20 rounded-full blur-[120px] animate-pulse"></div>
-                <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-accent/10 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '1s' }}></div>
+                <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-600/20 rounded-full blur-[120px] animate-pulse"></div>
+                <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-gold/10 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '1s' }}></div>
             </div>
 
             <motion.div
@@ -66,7 +66,7 @@ export default function AdminLoginPage() {
                     <p className="text-gray-500 font-medium">Enter your credentials to manage Switch Code</p>
                 </div>
 
-                <div className="glass p-10 rounded-[2.5rem] border border-white/10 shadow-2xl relative">
+                <div className="glass-panel p-10 rounded-[2.5rem] border border-blue-500/30 shadow-2xl relative">
                     {/* Decorative line */}
                     <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-transparent via-primary to-transparent rounded-full"></div>
 
@@ -86,13 +86,13 @@ export default function AdminLoginPage() {
                             <label className="text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Email Address</label>
                             <div className="relative group">
                                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                    <FiMail className="text-gray-500 group-focus-within:text-primary transition-colors" />
+                                    <FiMail className="text-gray-500 group-focus-within:text-blue-500 transition-colors" />
                                 </div>
                                 <input
                                     type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    className="block w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all outline-none"
+                                    className="block w-full bg-slate-900 border border-blue-500/20 border border-blue-500/30 rounded-2xl py-4 pl-12 pr-4 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all outline-none"
                                     placeholder="admin@switchcode.tech"
                                     required
                                 />
@@ -103,13 +103,13 @@ export default function AdminLoginPage() {
                             <label className="text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Secure Password</label>
                             <div className="relative group">
                                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                    <FiLock className="text-gray-500 group-focus-within:text-primary transition-colors" />
+                                    <FiLock className="text-gray-500 group-focus-within:text-blue-500 transition-colors" />
                                 </div>
                                 <input
                                     type="password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className="block w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all outline-none"
+                                    className="block w-full bg-slate-900 border border-blue-500/20 border border-blue-500/30 rounded-2xl py-4 pl-12 pr-4 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all outline-none"
                                     placeholder="••••••••••••"
                                     required
                                 />
@@ -119,7 +119,7 @@ export default function AdminLoginPage() {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="group relative w-full bg-white text-black py-4 rounded-2xl font-black text-sm uppercase tracking-widest flex items-center justify-center hover:bg-primary hover:text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden shadow-xl"
+                            className="group relative w-full bg-white text-black py-4 rounded-2xl font-black text-sm uppercase tracking-widest flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden shadow-xl"
                         >
                             {loading ? (
                                 <div className="w-6 h-6 border-2 border-black border-t-transparent rounded-full animate-spin"></div>

@@ -43,7 +43,7 @@ export default function AdminResults() {
                 <p className="text-gray-400">Monitor academic performance across all tracks.</p>
             </div>
 
-            <div className="glass rounded-[2.5rem] overflow-hidden border border-white/5">
+            <div className="glass-panel rounded-[2.5rem] overflow-hidden border border-blue-500/20">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left">
                         <thead className="bg-white/[0.03]">
@@ -60,7 +60,7 @@ export default function AdminResults() {
                                 <tr key={res._id} className="hover:bg-white/[0.02] transition-colors group">
                                     <td className="px-8 py-6">
                                         <div className="flex items-center">
-                                            <div className="w-10 h-10 bg-primary/20 rounded-xl flex items-center justify-center mr-4 text-primary font-black">
+                                            <div className="w-10 h-10 bg-blue-600/20 rounded-xl flex items-center justify-center mr-4 text-blue-500 font-black">
                                                 {res.studentId?.name?.charAt(0)}
                                             </div>
                                             <div>

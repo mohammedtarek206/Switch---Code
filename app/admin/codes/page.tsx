@@ -72,7 +72,7 @@ export default function AdminCodes() {
                 <p className="text-gray-400 text-right">قم بتوليد أكواد للطلاب للوصول إلى المنصة.</p>
             </div>
 
-            <div className="glass p-8 rounded-2xl flex flex-col md:flex-row items-end gap-6 border-accent/20 border-t-2">
+            <div className="glass-panel p-8 rounded-2xl flex flex-col md:flex-row items-end gap-6 border-gold/20 border-t-2">
                 <div className="flex-1 w-full space-y-2">
                     <label className="text-gray-400 text-sm block text-right">عدد الأكواد المطلوب توليدها</label>
                     <input
@@ -81,22 +81,22 @@ export default function AdminCodes() {
                         max="100"
                         value={count}
                         onChange={(e) => setCount(parseInt(e.target.value))}
-                        className="w-full bg-dark/50 border border-white/10 rounded-xl p-3 text-white focus:border-accent outline-none text-right"
+                        className="w-full bg-[#07111F]/50 border border-blue-500/30 rounded-xl p-3 text-white focus:border-gold outline-none text-right"
                     />
                 </div>
                 <button
                     onClick={handleGenerate}
                     disabled={loading}
-                    className="bg-accent hover:bg-accent/80 text-dark font-black px-8 py-3.5 rounded-xl flex items-center transition-all disabled:opacity-50"
+                    className="bg-blue-600 hover:bg-blue-500 text-white transition-colors hover:bg-accent/80 text-dark font-black px-8 py-3.5 rounded-xl flex items-center transition-all disabled:opacity-50"
                 >
                     {loading ? 'توليد...' : 'توليد الأكواد'} <FiKey className="ml-2" />
                 </button>
             </div>
 
-            <div className="glass rounded-2xl overflow-hidden border border-white/5">
+            <div className="glass-panel rounded-2xl overflow-hidden border border-blue-500/20">
                 <div className="overflow-x-auto">
                     <table className="w-full text-right" dir="rtl">
-                        <thead className="bg-white/5">
+                        <thead className="bg-slate-900 border border-blue-500/20">
                             <tr>
                                 <th className="px-6 py-4 text-gray-400 font-medium">الكود</th>
                                 <th className="px-6 py-4 text-gray-400 font-medium">الحالة</th>
@@ -107,7 +107,7 @@ export default function AdminCodes() {
                         </thead>
                         <tbody className="divide-y divide-white/5">
                             {codes.map((code) => (
-                                <tr key={code._id} className="hover:bg-white/5 transition-colors">
+                                <tr key={code._id} className="hover:bg-slate-900 border border-blue-500/20 transition-colors">
                                     <td className="px-6 py-4">
                                         <span className="font-mono text-white text-lg font-bold">{code.code}</span>
                                     </td>
@@ -125,7 +125,7 @@ export default function AdminCodes() {
                                     <td className="px-6 py-4">
                                         {code.studentId ? (
                                             <div className="flex items-center text-gray-300">
-                                                <FiUser className="ml-2 text-accent" /> {code.studentId.name}
+                                                <FiUser className="ml-2 text-gold" /> {code.studentId.name}
                                             </div>
                                         ) : '-'}
                                     </td>
@@ -135,7 +135,7 @@ export default function AdminCodes() {
                                     <td className="px-6 py-4">
                                         <button
                                             onClick={() => copyToClipboard(code.code, code._id)}
-                                            className="p-2 hover:bg-white/10 rounded-lg text-gray-400 transition-all hover:text-white"
+                                            className="p-2 hover:bg-slate-800 rounded-lg text-gray-400 transition-all hover:text-white"
                                             title="نسخ الكود"
                                         >
                                             {copiedId === code._id ? <FiCheck className="text-green-500" /> : <FiCopy />}

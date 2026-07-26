@@ -87,24 +87,27 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     ];
 
     return (
-        <div className="min-h-screen bg-dark flex">
+        <div className="min-h-screen bg-[#07111F] text-white flex">
             {/* Sidebar */}
             <aside className={`
-        fixed md:relative z-40 h-screen transition-all duration-300
-        ${sidebarOpen ? 'w-64' : 'w-0 md:w-20'}
-        bg-dark-light border-r border-white/5 flex flex-col
-      `}>
+                fixed md:relative z-40 h-screen transition-all duration-300
+                ${sidebarOpen ? 'w-72' : 'w-0 md:w-20'}
+                bg-[#0B1220]/80 backdrop-blur-xl border-r border-blue-500/20 flex flex-col shadow-xl shadow-blue-900/10
+            `}>
                 <div className="p-6 flex items-center justify-between overflow-hidden whitespace-nowrap">
-                    <h2 className={`font-bold text-xl text-primary ${!sidebarOpen && 'md:hidden'}`}>
-                        Witch Code <span className="text-white">Admin</span>
+                    <h2 className={`font-black tracking-tight text-2xl text-blue-500 flex items-center gap-2 ${!sidebarOpen && 'md:hidden'}`}>
+                        <div className="w-8 h-8 rounded-lg bg-blue-600/20 border border-blue-500/30 text-gold flex items-center justify-center shadow-lg shadow-blue-600/20">
+                            <span className="text-sm font-black">SC</span>
+                        </div>
+                        Witch Code
                     </h2>
-                    <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-2 hover:bg-white/5 rounded-lg text-gray-400">
+                    <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-2 hover:bg-slate-800/80 rounded-xl text-slate-400 hover:text-gold transition-colors">
                         {sidebarOpen ? <FiX className="md:hidden" /> : <FiMenu />}
                     </button>
                 </div>
 
-                <nav className="flex-1 px-4 space-y-2 mt-4 overflow-y-auto custom-scrollbar-thin">
-                    <div className="space-y-1">
+                <nav className="flex-1 px-4 space-y-2 mt-4 overflow-y-auto custom-scrollbar-thin pb-6">
+                    <div className="space-y-1.5">
                         {menuItems.map((item) => {
                             const isActive = pathname === item.href;
                             return (
@@ -112,14 +115,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                                     key={item.href}
                                     href={item.href}
                                     className={`
-                      flex items-center p-3 rounded-xl transition-all
-                      ${isActive
-                                            ? 'bg-primary/20 text-primary shadow-[0_0_15px_rgba(0,163,255,0.2)]'
-                                            : 'text-gray-400 hover:bg-white/5 hover:text-white'}
-                    `}
+                                        flex items-center p-3.5 rounded-2xl transition-all font-bold text-sm
+                                        ${isActive
+                                            ? 'bg-blue-600/10 text-blue-500 shadow-glow-blue border border-blue-500/30'
+                                            : 'text-slate-400 hover:bg-slate-800 hover:text-white border border-transparent'}
+                                    `}
                                 >
-                                    <item.icon className="w-5 h-5 min-w-[20px]" />
-                                    <span className={`ml-4 font-medium ${!sidebarOpen && 'md:hidden'}`}>
+                                    <item.icon className={`w-5 h-5 min-w-[20px] ${isActive ? 'text-blue-500' : 'text-slate-500'}`} />
+                                    <span className={`ml-4 ${!sidebarOpen && 'md:hidden'}`}>
                                         {item.title}
                                     </span>
                                 </Link>
@@ -127,10 +130,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                         })}
                     </div>
 
-                    <div className="pt-4 border-t border-white/5 mt-4 space-y-1">
+                    <div className="pt-6 border-t border-blue-500/20 mt-6 space-y-1.5">
                         {sidebarOpen && (
-                            <p className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
-                                Community
+                            <p className="px-3 text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+                                <span className="w-2 h-2 rounded-full bg-gold"></span> Community
                             </p>
                         )}
                         {communityItems.map((item) => {
@@ -140,14 +143,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                                     key={item.href}
                                     href={item.href}
                                     className={`
-                      flex items-center p-3 rounded-xl transition-all
-                      ${isActive
-                                            ? 'bg-accent/20 text-accent shadow-[0_0_15px_rgba(0,255,136,0.1)]'
-                                            : 'text-gray-400 hover:bg-white/5 hover:text-white'}
-                    `}
+                                        flex items-center p-3.5 rounded-2xl transition-all font-bold text-sm
+                                        ${isActive
+                                            ? 'bg-gold/10 text-gold shadow-glow-gold border border-gold/30'
+                                            : 'text-slate-400 hover:bg-slate-800 hover:text-white border border-transparent'}
+                                    `}
                                 >
-                                    <item.icon className="w-5 h-5 min-w-[20px]" />
-                                    <span className={`ml-4 font-medium ${!sidebarOpen && 'md:hidden'}`}>
+                                    <item.icon className={`w-5 h-5 min-w-[20px] ${isActive ? 'text-gold' : 'text-slate-500'}`} />
+                                    <span className={`ml-4 ${!sidebarOpen && 'md:hidden'}`}>
                                         {item.title}
                                     </span>
                                 </Link>
@@ -156,19 +159,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     </div>
                 </nav>
 
-                <div className="p-4 border-t border-white/5">
+                <div className="p-4 border-t border-blue-500/20 bg-slate-900/50">
                     <button
                         onClick={handleLogout}
-                        className="w-full flex items-center p-3 text-red-400 hover:bg-red-400/10 rounded-xl transition-all overflow-hidden"
+                        className="w-full flex items-center p-3.5 text-red-400 hover:bg-red-500/10 border border-transparent hover:border-red-500/30 rounded-2xl font-bold transition-all overflow-hidden text-sm uppercase tracking-wider"
                     >
                         <FiLogOut className="w-5 h-5 min-w-[20px]" />
-                        <span className={`ml-4 font-medium ${!sidebarOpen && 'md:hidden'}`}>Logout</span>
+                        <span className={`ml-4 ${!sidebarOpen && 'md:hidden'}`}>Logout</span>
                     </button>
                 </div>
             </aside>
 
             {/* Main Content */}
-            <main className="flex-1 h-screen overflow-y-auto p-4 md:p-8">
+            <main className="flex-1 h-screen overflow-y-auto p-4 md:p-8 bg-gradient-radial from-[#07111F] to-[#0B1220]">
                 <div className="max-w-7xl mx-auto">
                     {children}
                 </div>

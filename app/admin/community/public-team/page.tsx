@@ -175,30 +175,30 @@ export default function PublicTeamAdminPage() {
                     <p className="text-gray-400 text-sm">Manage team members displayed on the public /team footer page with Google Drive photos.</p>
                 </div>
                 <div className="flex flex-wrap gap-3">
-                    <Link href="/team" target="_blank" className="bg-white/5 hover:bg-white/10 border border-white/10 px-4 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center gap-2">
-                        <FiExternalLink className="w-4 h-4 text-accent" /> View Public Page
+                    <Link href="/team" target="_blank" className="bg-slate-900 border border-blue-500/20 hover:bg-slate-800 border border-blue-500/30 px-4 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center gap-2">
+                        <FiExternalLink className="w-4 h-4 text-gold" /> View Public Page
                     </Link>
-                    <button onClick={openNewModal} className="bg-accent text-black font-bold px-6 py-2.5 rounded-xl hover:scale-105 transition-transform text-xs shadow-[0_0_20px_rgba(0,255,136,0.3)] flex items-center gap-2">
+                    <button onClick={openNewModal} className="bg-blue-600 hover:bg-blue-500 text-white transition-colors text-black font-bold px-6 py-2.5 rounded-xl hover:scale-105 transition-transform text-xs shadow-[0_0_20px_rgba(0,255,136,0.3)] flex items-center gap-2">
                         <FiPlus className="w-4 h-4" /> Add Team Member
                     </button>
                 </div>
             </div>
 
             {/* Filter controls */}
-            <div className="glass p-5 rounded-3xl border border-white/5 flex flex-col md:flex-row gap-4">
+            <div className="glass-panel p-5 rounded-3xl border border-blue-500/20 flex flex-col md:flex-row gap-4">
                 <div className="relative flex-1">
                     <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
                     <input type="text" placeholder="Search team members by name or role..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
-                        className="w-full pl-12 pr-4 py-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent text-sm" />
+                        className="w-full pl-12 pr-4 py-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold text-sm" />
                 </div>
                 <div className="flex flex-wrap gap-2">
                     <button onClick={() => setCategoryFilter('all')}
-                        className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${categoryFilter === 'all' ? 'bg-accent text-black' : 'bg-white/5 text-gray-400'}`}>
+                        className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${categoryFilter === 'all' ? 'bg-blue-600 hover:bg-blue-500 text-white transition-colors text-black' : 'bg-slate-900 border border-blue-500/20 text-gray-400'}`}>
                         All ({members.length})
                     </button>
                     {CATEGORIES.map(c => (
                         <button key={c.id} onClick={() => setCategoryFilter(c.id)}
-                            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${categoryFilter === c.id ? 'bg-accent text-black' : 'bg-white/5 text-gray-400'}`}>
+                            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${categoryFilter === c.id ? 'bg-blue-600 hover:bg-blue-500 text-white transition-colors text-black' : 'bg-slate-900 border border-blue-500/20 text-gray-400'}`}>
                             {c.label}
                         </button>
                     ))}
@@ -207,9 +207,9 @@ export default function PublicTeamAdminPage() {
 
             {/* Grid display */}
             {loading ? (
-                <div className="text-center py-20 text-accent font-bold">Loading team showcase...</div>
+                <div className="text-center py-20 text-gold font-bold">Loading team showcase...</div>
             ) : filteredMembers.length === 0 ? (
-                <div className="glass p-12 text-center text-gray-500 rounded-3xl border border-white/5">
+                <div className="glass-panel p-12 text-center text-gray-500 rounded-3xl border border-blue-500/20">
                     No team members added yet. Click "+ Add Team Member" to create one.
                 </div>
             ) : (
@@ -217,11 +217,11 @@ export default function PublicTeamAdminPage() {
                     {filteredMembers.map(m => {
                         const avatarUrl = formatGoogleDriveImageUrl(m.avatar);
                         return (
-                            <div key={m._id} className={`glass rounded-3xl p-6 border transition-all relative flex flex-col justify-between ${m.isVisible ? 'border-white/5 hover:border-accent/30' : 'border-red-500/20 opacity-60'}`}>
+                            <div key={m._id} className={`glass-panel rounded-3xl p-6 border transition-all relative flex flex-col justify-between ${m.isVisible ? 'border-blue-500/20 hover:border-gold/30' : 'border-red-500/20 opacity-60'}`}>
                                 <div className="space-y-4 text-center">
                                     {/* Action badges */}
                                     <div className="flex justify-between items-center text-xs">
-                                        <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-white/5 border border-white/10 text-gray-400">
+                                        <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-slate-900 border border-blue-500/20 border border-blue-500/30 text-gray-400">
                                             #{m.order || 0} {m.category}
                                         </span>
                                         <button onClick={() => toggleVisibility(m)} title={m.isVisible ? 'Hide from public page' : 'Show on public page'}
@@ -235,7 +235,7 @@ export default function PublicTeamAdminPage() {
                                         {avatarUrl ? (
                                             <img src={avatarUrl} alt={m.name} className="w-full h-full object-cover rounded-full" />
                                         ) : (
-                                            <div className="w-full h-full rounded-full bg-dark-light flex items-center justify-center font-extrabold text-2xl text-accent">
+                                            <div className="w-full h-full rounded-full bg-slate-900 flex items-center justify-center font-extrabold text-2xl text-gold">
                                                 {m.name[0].toUpperCase()}
                                             </div>
                                         )}
@@ -243,7 +243,7 @@ export default function PublicTeamAdminPage() {
 
                                     <div>
                                         <h3 className="font-extrabold text-white text-base">{m.name}</h3>
-                                        <p className="text-accent text-xs font-semibold capitalize">{m.role}</p>
+                                        <p className="text-gold text-xs font-semibold capitalize">{m.role}</p>
                                         {(m.committee || m.team) && (
                                             <p className="text-gray-500 text-[11px] mt-1">{m.committee} {m.team ? `• ${m.team}` : ''}</p>
                                         )}
@@ -253,7 +253,7 @@ export default function PublicTeamAdminPage() {
                                 </div>
 
                                 {/* Actions footer */}
-                                <div className="flex justify-between items-center pt-4 border-t border-white/5 mt-4">
+                                <div className="flex justify-between items-center pt-4 border-t border-blue-500/20 mt-4">
                                     <div className="flex gap-2 text-gray-500 text-xs">
                                         {m.socials?.linkedin && <FiLinkedin title="LinkedIn" />}
                                         {m.socials?.github && <FiGithub title="GitHub" />}
@@ -277,8 +277,8 @@ export default function PublicTeamAdminPage() {
             {/* Modal */}
             {isModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-                    <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="glass w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl p-8 custom-scrollbar-thin">
-                        <h2 className="text-2xl font-extrabold text-white mb-6 border-b border-white/10 pb-4">
+                    <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="glass-panel w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl p-8 custom-scrollbar-thin">
+                        <h2 className="text-2xl font-extrabold text-white mb-6 border-b border-blue-500/30 pb-4">
                             {formData._id ? 'Edit Showcase Team Member' : 'Add New Member to Public Showcase'}
                         </h2>
 
@@ -287,12 +287,12 @@ export default function PublicTeamAdminPage() {
                                 <div className="space-y-1">
                                     <label className="text-xs font-semibold text-gray-400">Full Name *</label>
                                     <input type="text" required value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })}
-                                        placeholder="e.g. Ahmed Hassan" className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent" />
+                                        placeholder="e.g. Ahmed Hassan" className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold" />
                                 </div>
                                 <div className="space-y-1">
                                     <label className="text-xs font-semibold text-gray-400">Role / Job Title *</label>
                                     <input type="text" required value={formData.role} onChange={e => setFormData({ ...formData, role: e.target.value })}
-                                        placeholder="e.g. Founder & CEO / Head of HR" className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent" />
+                                        placeholder="e.g. Founder & CEO / Head of HR" className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold" />
                                 </div>
                             </div>
 
@@ -300,32 +300,32 @@ export default function PublicTeamAdminPage() {
                                 <div className="space-y-1">
                                     <label className="text-xs font-semibold text-gray-400">Showcase Category *</label>
                                     <select value={formData.category} onChange={e => setFormData({ ...formData, category: e.target.value as any })}
-                                        className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent">
+                                        className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold">
                                         {CATEGORIES.map(c => <option key={c.id} value={c.id}>{c.label}</option>)}
                                     </select>
                                 </div>
                                 <div className="space-y-1">
                                     <label className="text-xs font-semibold text-gray-400">Display Order #</label>
                                     <input type="number" value={formData.order} onChange={e => setFormData({ ...formData, order: parseInt(e.target.value) || 0 })}
-                                        className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent" />
+                                        className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold" />
                                 </div>
                             </div>
 
                             {/* Google Drive Photo Input with Instant Live Preview */}
-                            <div className="space-y-2 bg-accent/5 p-4 rounded-2xl border border-accent/20">
+                            <div className="space-y-2 bg-accent/5 p-4 rounded-2xl border border-gold/20">
                                 <div className="flex justify-between items-center">
-                                    <label className="text-xs font-bold text-accent flex items-center gap-1.5">
+                                    <label className="text-xs font-bold text-gold flex items-center gap-1.5">
                                         <FiImage className="w-4 h-4" /> Photo (Direct URL or Google Drive Link)
                                     </label>
                                     <span className="text-[10px] text-gray-400">Google Drive shareable links supported!</span>
                                 </div>
                                 <input type="url" value={formData.avatar} onChange={e => setFormData({ ...formData, avatar: e.target.value })}
                                     placeholder="Paste Google Drive file link (e.g. https://drive.google.com/file/d/...)"
-                                    className="w-full p-3 bg-dark border border-white/10 rounded-xl text-white outline-none focus:border-accent text-xs font-mono" />
+                                    className="w-full p-3 bg-[#07111F] border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold text-xs font-mono" />
 
                                 {formData.avatar && (
                                     <div className="flex items-center gap-3 pt-2">
-                                        <div className="w-12 h-12 rounded-full overflow-hidden border border-accent/30 bg-black shrink-0">
+                                        <div className="w-12 h-12 rounded-full overflow-hidden border border-gold/30 bg-black shrink-0">
                                             {previewAvatarUrl ? (
                                                 <img src={previewAvatarUrl} alt="Preview" className="w-full h-full object-cover" />
                                             ) : (
@@ -344,33 +344,33 @@ export default function PublicTeamAdminPage() {
                                 <div className="space-y-1">
                                     <label className="text-xs font-semibold text-gray-400">Committee Name (Optional)</label>
                                     <input type="text" value={formData.committee} onChange={e => setFormData({ ...formData, committee: e.target.value })}
-                                        placeholder="e.g. Human Resources" className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent" />
+                                        placeholder="e.g. Human Resources" className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold" />
                                 </div>
                                 <div className="space-y-1">
                                     <label className="text-xs font-semibold text-gray-400">Sub-Team Name (Optional)</label>
                                     <input type="text" value={formData.team} onChange={e => setFormData({ ...formData, team: e.target.value })}
-                                        placeholder="e.g. Recruitment Team" className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent" />
+                                        placeholder="e.g. Recruitment Team" className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold" />
                                 </div>
                             </div>
 
                             <div className="space-y-1">
                                 <label className="text-xs font-semibold text-gray-400">Biography / Short Summary</label>
                                 <textarea rows={2} value={formData.bio} onChange={e => setFormData({ ...formData, bio: e.target.value })}
-                                    placeholder="Brief background or achievements..." className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent" />
+                                    placeholder="Brief background or achievements..." className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold" />
                             </div>
 
                             {/* Socials */}
-                            <div className="space-y-2 pt-2 border-t border-white/5">
+                            <div className="space-y-2 pt-2 border-t border-blue-500/20">
                                 <h4 className="text-xs font-bold text-gray-300">Social Media Handles</h4>
                                 <div className="grid sm:grid-cols-2 gap-3">
                                     <input type="url" placeholder="LinkedIn URL" value={formData.socials.linkedin} onChange={e => setFormData({ ...formData, socials: { ...formData.socials, linkedin: e.target.value } })}
-                                        className="p-2.5 bg-dark-light border border-white/10 rounded-xl text-xs text-white" />
+                                        className="p-2.5 bg-slate-900 border border-blue-500/30 rounded-xl text-xs text-white" />
                                     <input type="url" placeholder="GitHub URL" value={formData.socials.github} onChange={e => setFormData({ ...formData, socials: { ...formData.socials, github: e.target.value } })}
-                                        className="p-2.5 bg-dark-light border border-white/10 rounded-xl text-xs text-white" />
+                                        className="p-2.5 bg-slate-900 border border-blue-500/30 rounded-xl text-xs text-white" />
                                     <input type="url" placeholder="Twitter / X URL" value={formData.socials.twitter} onChange={e => setFormData({ ...formData, socials: { ...formData.socials, twitter: e.target.value } })}
-                                        className="p-2.5 bg-dark-light border border-white/10 rounded-xl text-xs text-white" />
+                                        className="p-2.5 bg-slate-900 border border-blue-500/30 rounded-xl text-xs text-white" />
                                     <input type="email" placeholder="Contact Email" value={formData.socials.email} onChange={e => setFormData({ ...formData, socials: { ...formData.socials, email: e.target.value } })}
-                                        className="p-2.5 bg-dark-light border border-white/10 rounded-xl text-xs text-white" />
+                                        className="p-2.5 bg-slate-900 border border-blue-500/30 rounded-xl text-xs text-white" />
                                 </div>
                             </div>
 
@@ -382,9 +382,9 @@ export default function PublicTeamAdminPage() {
                                 </label>
                             </div>
 
-                            <div className="flex justify-end gap-3 pt-6 border-t border-white/10">
-                                <button type="button" onClick={() => setIsModalOpen(false)} className="px-6 py-3 bg-white/5 font-bold rounded-xl text-gray-300">Cancel</button>
-                                <button type="submit" className="px-6 py-3 bg-accent text-black font-bold rounded-xl hover:bg-accent-dark">Save Team Member</button>
+                            <div className="flex justify-end gap-3 pt-6 border-t border-blue-500/30">
+                                <button type="button" onClick={() => setIsModalOpen(false)} className="px-6 py-3 bg-slate-900 border border-blue-500/20 font-bold rounded-xl text-gray-300">Cancel</button>
+                                <button type="submit" className="btn-primary-blue px-6 py-3 rounded-xl font-bold">Save Team Member</button>
                             </div>
                         </form>
                     </motion.div>

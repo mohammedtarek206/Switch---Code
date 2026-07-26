@@ -53,10 +53,10 @@ export default function ActivityLogsAuditsPage() {
 
             {loading ? (
                 <div className="flex items-center justify-center min-h-[40vh]">
-                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-accent"></div>
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gold"></div>
                 </div>
             ) : logs.length === 0 ? (
-                <div className="glass p-12 text-center rounded-2xl">
+                <div className="glass-panel p-12 text-center rounded-2xl">
                     <FiInfo className="w-12 h-12 mx-auto text-gray-500 mb-4" />
                     <p className="text-gray-400">No activity recorded logs found.</p>
                 </div>
@@ -68,16 +68,16 @@ export default function ActivityLogsAuditsPage() {
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: idx * 0.03 }}
-                            className="glass p-5 rounded-2xl border border-white/5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-xs"
+                            className="glass-panel p-5 rounded-2xl border border-blue-500/20 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-xs"
                         >
                             <div className="flex items-start space-x-3.5">
-                                <div className="p-3 bg-accent/10 text-accent rounded-xl mt-0.5">
+                                <div className="p-3 bg-gold/10 text-gold rounded-xl mt-0.5">
                                     <FiActivity className="w-4 h-4" />
                                 </div>
                                 <div>
                                     <div className="flex flex-wrap gap-2 items-center mb-1">
                                         <span className="font-extrabold text-white text-sm uppercase tracking-wider">{log.action.replace(/_/g, ' ')}</span>
-                                        <span className="bg-white/5 text-gray-400 px-2 py-0.5 rounded uppercase font-bold text-[9px] tracking-wider">{log.targetModel}</span>
+                                        <span className="bg-slate-900 border border-blue-500/20 text-gray-400 px-2 py-0.5 rounded uppercase font-bold text-[9px] tracking-wider">{log.targetModel}</span>
                                     </div>
                                     <p className="text-gray-400 text-xs">
                                         Target Reference: <span className="font-mono text-gray-500">{log.targetId}</span>
@@ -92,7 +92,7 @@ export default function ActivityLogsAuditsPage() {
 
                             <div className="flex flex-col items-end text-right md:-mt-1 text-gray-500 gap-1.5 min-w-[200px]">
                                 <div className="flex items-center">
-                                    <FiUser className="mr-1.5 text-primary" />
+                                    <FiUser className="mr-1.5 text-blue-500" />
                                     <span className="font-bold text-white block capitalize">{log.userId?.name || 'Super Admin'}</span>
                                 </div>
                                 <div className="flex items-center text-[10px]">

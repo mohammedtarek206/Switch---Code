@@ -6,6 +6,9 @@ export interface IEventRegistration extends Document {
     name: string;
     email: string;
     phone?: string;
+    university?: string;
+    faculty?: string;
+    status: 'registered' | 'accepted' | 'rejected' | 'waitlist';
     formData: Record<string, unknown>;
     qrCode?: string;
     checkIn?: Date;
@@ -22,6 +25,13 @@ const EventRegistrationSchema: Schema = new Schema(
         name: { type: String, required: true },
         email: { type: String, required: true },
         phone: { type: String },
+        university: { type: String },
+        faculty: { type: String },
+        status: {
+            type: String,
+            enum: ['registered', 'accepted', 'rejected', 'waitlist'],
+            default: 'registered',
+        },
         formData: { type: Schema.Types.Mixed, default: {} },
         qrCode: { type: String },
         checkIn: { type: Date },
@@ -31,7 +41,9 @@ const EventRegistrationSchema: Schema = new Schema(
     { timestamps: true }
 );
 
-EventRegistrationSchema.index({ eventId: 1, email: 1 }, { unique: true });
+if (mongoose.models.EventRegistration) {
+    delete (mongoose.models as any).EventRegistration;
+}
 
 export default mongoose.models.EventRegistration ||
     mongoose.model<IEventRegistration>('EventRegistration', EventRegistrationSchema);

@@ -172,23 +172,23 @@ export default function AccountsManagementPage() {
                     <Link href="/admin/community/teams" className="bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/30 text-blue-400 font-bold px-5 py-3 rounded-xl transition-all flex items-center gap-2 text-sm">
                         <FiUsers className="w-4 h-4" /> Manage Teams
                     </Link>
-                    <button onClick={openNewModal} className="bg-accent text-black font-bold px-6 py-3 rounded-xl hover:scale-105 transition-transform shadow-[0_0_20px_rgba(0,255,136,0.3)] flex items-center gap-2 text-sm">
+                    <button onClick={openNewModal} className="btn-primary-blue px-6 py-3 rounded-xl hover:scale-105 transition-transform shadow-glow-blue flex items-center gap-2 text-sm">
                         <FiPlus className="w-5 h-5" /> Create New Account
                     </button>
                 </div>
             </div>
 
             {/* Filters */}
-            <div className="glass p-5 flex flex-col md:flex-row gap-4 border border-white/5 rounded-3xl">
+            <div className="glass-panel p-5 flex flex-col md:flex-row gap-4 border border-blue-500/20 rounded-3xl">
                 <div className="relative flex-1">
                     <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
                     <input type="text" placeholder="Search by name, username, or email..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
-                        className="w-full pl-12 pr-4 py-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent text-sm" />
+                        className="w-full pl-12 pr-4 py-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold text-sm" />
                 </div>
                 <div className="relative md:w-56">
                     <FiFilter className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
                     <select value={roleFilter} onChange={e => setRoleFilter(e.target.value)}
-                        className="w-full pl-12 pr-4 py-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent text-sm appearance-none">
+                        className="w-full pl-12 pr-4 py-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold text-sm appearance-none">
                         <option value="">All Roles</option>
                         {ALL_ROLES.map(r => <option key={r} value={r}>{r.toUpperCase().replace(/_/g, ' ')}</option>)}
                     </select>
@@ -196,7 +196,7 @@ export default function AccountsManagementPage() {
                 <div className="relative md:w-56">
                     <FiFilter className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
                     <select value={committeeFilter} onChange={e => setCommitteeFilter(e.target.value)}
-                        className="w-full pl-12 pr-4 py-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent text-sm appearance-none">
+                        className="w-full pl-12 pr-4 py-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold text-sm appearance-none">
                         <option value="">All Committees</option>
                         {committees.map(c => <option key={c._id} value={c._id}>{c.name}</option>)}
                     </select>
@@ -204,10 +204,10 @@ export default function AccountsManagementPage() {
             </div>
 
             {/* Accounts Table */}
-            <div className="glass border border-white/5 rounded-3xl overflow-hidden">
+            <div className="glass-panel border border-blue-500/20 rounded-3xl overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left whitespace-nowrap">
-                        <thead className="bg-white/5 border-b border-white/5 text-[10px] uppercase font-bold text-gray-400">
+                        <thead className="bg-slate-900 border border-blue-500/20 border-b border-blue-500/20 text-[10px] uppercase font-bold text-gray-400">
                             <tr>
                                 <th className="p-4">Member Name</th>
                                 <th className="p-4">Username & Email</th>
@@ -219,13 +219,13 @@ export default function AccountsManagementPage() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-white/5 text-sm text-gray-300">
-                            {loading ? <tr><td colSpan={7} className="text-center p-10 text-accent">Loading accounts...</td></tr> : null}
+                            {loading ? <tr><td colSpan={7} className="text-center p-10 text-gold">Loading accounts...</td></tr> : null}
                             {!loading && filteredAccounts.length === 0 ? <tr><td colSpan={7} className="text-center p-10 text-gray-500">No accounts found.</td></tr> : null}
                             {filteredAccounts.map(acc => (
                                 <tr key={acc._id} className="hover:bg-white/[0.02] transition-colors">
                                     <td className="p-4 font-extrabold text-white">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-9 h-9 rounded-full bg-accent/10 border border-accent/30 flex items-center justify-center font-bold text-accent">
+                                            <div className="w-9 h-9 rounded-full bg-gold/10 border border-gold/30 flex items-center justify-center font-bold text-gold">
                                                 {acc.avatar ? <img src={acc.avatar} className="w-full h-full rounded-full object-cover" /> : acc.name[0].toUpperCase()}
                                             </div>
                                             <div>
@@ -236,20 +236,20 @@ export default function AccountsManagementPage() {
                                     </td>
                                     <td className="p-4 font-mono text-xs">
                                         <div className="flex items-center gap-2">
-                                            <span className="text-accent font-bold">{acc.username}</span>
+                                            <span className="text-gold font-bold">{acc.username}</span>
                                             <button onClick={() => copyToClipboard(acc.username, 'Username')} title="Copy Username" className="text-gray-500 hover:text-white"><FiCopy className="w-3.5 h-3.5" /></button>
                                         </div>
                                         <span className="text-gray-500 block text-[11px] font-normal">{acc.email || 'No email'}</span>
                                     </td>
                                     <td className="p-4 text-xs">
-                                        <span className="text-primary font-bold block">{acc.committeeId?.name || 'Global'}</span>
+                                        <span className="text-blue-500 font-bold block">{acc.committeeId?.name || 'Global'}</span>
                                         <span className="text-gray-400 font-medium">{acc.teamId?.name ? `Team: ${acc.teamId.name}` : 'No Sub-Team'}</span>
                                     </td>
                                     <td className="p-4 text-xs font-bold">
-                                        <span className="uppercase bg-white/5 border border-white/10 px-2 py-0.5 rounded text-gray-300 inline-block mb-1">
+                                        <span className="uppercase bg-slate-900 border border-blue-500/20 px-2 py-0.5 rounded text-gray-300 inline-block mb-1">
                                             {acc.role?.replace(/_/g, ' ')}
                                         </span>
-                                        <span className="text-accent block text-[11px] font-normal">{acc.position || 'Member'}</span>
+                                        <span className="text-gold block text-[11px] font-normal">{acc.position || 'Member'}</span>
                                     </td>
                                     <td className="p-4 text-center">
                                         <button onClick={() => toggleStatus(acc._id)}
@@ -279,8 +279,8 @@ export default function AccountsManagementPage() {
             {/* Creation / Edit Modal */}
             {isModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md">
-                    <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="glass w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-3xl p-8 custom-scrollbar-thin">
-                        <h2 className="text-2xl font-bold text-white mb-6 border-b border-white/10 pb-4">
+                    <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="glass-panel w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-3xl p-8 custom-scrollbar-thin">
+                        <h2 className="text-2xl font-bold text-white mb-6 border-b border-blue-500/30 pb-4">
                             {formData._id ? 'Edit User Credentials & Team Assignment' : 'Create New Account & Assign Team'}
                         </h2>
 
@@ -288,71 +288,71 @@ export default function AccountsManagementPage() {
                             <div className="grid md:grid-cols-2 gap-6">
                                 {/* Core Data */}
                                 <div className="space-y-4">
-                                    <h3 className="font-bold text-accent border-b border-white/5 pb-2">Identity Details</h3>
+                                    <h3 className="font-bold text-gold border-b border-blue-500/20 pb-2">Identity Details</h3>
 
                                     <div className="space-y-1">
                                         <label className="text-xs font-semibold text-gray-400">Full Name *</label>
-                                        <input type="text" required value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent" />
+                                        <input type="text" required value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold" />
                                     </div>
                                     <div className="space-y-1">
                                         <label className="text-xs font-semibold text-gray-400">Username (Unique) *</label>
-                                        <input type="text" required value={formData.username} onChange={e => setFormData({ ...formData, username: e.target.value })} className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent" />
+                                        <input type="text" required value={formData.username} onChange={e => setFormData({ ...formData, username: e.target.value })} className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold" />
                                     </div>
                                     <div className="space-y-1">
                                         <label className="text-xs font-semibold text-gray-400">Email Address (Optional)</label>
-                                        <input type="email" value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent" />
+                                        <input type="email" value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold" />
                                     </div>
                                     <div className="space-y-1">
                                         <label className="text-xs font-semibold text-gray-400">Phone Number (Optional)</label>
-                                        <input type="text" value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value })} className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent" />
+                                        <input type="text" value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value })} className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold" />
                                     </div>
                                     {!formData._id && (
                                         <div className="space-y-1">
                                             <label className="text-xs font-semibold text-gray-400">Temporary Password *</label>
-                                            <input type="text" required value={formData.tempPassword} onChange={e => setFormData({ ...formData, tempPassword: e.target.value })} className="w-full p-3 bg-dark border border-accent/20 rounded-xl text-accent font-mono outline-none" />
+                                            <input type="text" required value={formData.tempPassword} onChange={e => setFormData({ ...formData, tempPassword: e.target.value })} className="w-full p-3 bg-[#07111F] border border-gold/20 rounded-xl text-gold font-mono outline-none" />
                                         </div>
                                     )}
                                 </div>
 
                                 {/* Placement Data */}
                                 <div className="space-y-4">
-                                    <h3 className="font-bold text-blue-400 border-b border-white/5 pb-2">Committee, Team & Position</h3>
+                                    <h3 className="font-bold text-blue-400 border-b border-blue-500/20 pb-2">Committee, Team & Position</h3>
 
                                     <div className="space-y-1">
                                         <label className="text-xs font-semibold text-gray-400">Primary System Role *</label>
-                                        <select required value={formData.role} onChange={e => setFormData({ ...formData, role: e.target.value })} className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent">
+                                        <select required value={formData.role} onChange={e => setFormData({ ...formData, role: e.target.value })} className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold">
                                             {ALL_ROLES.map(r => <option key={r} value={r}>{r.toUpperCase().replace(/_/g, ' ')}</option>)}
                                         </select>
                                     </div>
                                     <div className="space-y-1">
                                         <label className="text-xs font-semibold text-gray-400">Committee Attachment</label>
-                                        <select value={formData.committeeId} onChange={e => setFormData({ ...formData, committeeId: e.target.value, teamId: '' })} className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent">
+                                        <select value={formData.committeeId} onChange={e => setFormData({ ...formData, committeeId: e.target.value, teamId: '' })} className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold">
                                             <option value="">Global / Independent</option>
                                             {committees.map(c => <option key={c._id} value={c._id}>{c.name}</option>)}
                                         </select>
                                     </div>
                                     <div className="space-y-1">
                                         <label className="text-xs font-semibold text-gray-400">Team (Sub-Committee)</label>
-                                        <select value={formData.teamId} onChange={e => setFormData({ ...formData, teamId: e.target.value })} className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent">
+                                        <select value={formData.teamId} onChange={e => setFormData({ ...formData, teamId: e.target.value })} className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold">
                                             <option value="">No Specific Team</option>
                                             {filteredFormTeams.map(t => <option key={t._id} value={t._id}>{t.name} ({t.committeeId?.name || 'Sub-Team'})</option>)}
                                         </select>
                                     </div>
                                     <div className="space-y-1">
                                         <label className="text-xs font-semibold text-gray-400">Internal Position Title</label>
-                                        <input type="text" placeholder="e.g. Leader, Member, Mentor" value={formData.position} onChange={e => setFormData({ ...formData, position: e.target.value })} className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent" />
+                                        <input type="text" placeholder="e.g. Leader, Member, Mentor" value={formData.position} onChange={e => setFormData({ ...formData, position: e.target.value })} className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold" />
                                     </div>
                                     <div className="space-y-1">
                                         <label className="text-xs font-semibold text-gray-400">Administrative Notes</label>
-                                        <input type="text" value={formData.notes || ''} onChange={e => setFormData({ ...formData, notes: e.target.value })} className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent" />
+                                        <input type="text" value={formData.notes || ''} onChange={e => setFormData({ ...formData, notes: e.target.value })} className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold" />
                                     </div>
                                 </div>
                             </div>
 
                             {/* Permissions Override */}
                             <div className="space-y-2 pt-4">
-                                <h3 className="font-bold text-purple-400 border-b border-white/5 pb-2">Granular Role Permissions Override</h3>
-                                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 bg-white/5 p-4 rounded-xl border border-white/5">
+                                <h3 className="font-bold text-purple-400 border-b border-blue-500/20 pb-2">Granular Role Permissions Override</h3>
+                                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 bg-slate-900 border border-blue-500/20 p-4 rounded-xl">
                                     {AVAILABLE_PERMISSIONS.map(p => (
                                         <label key={p} className="flex items-center space-x-2 text-xs font-bold text-gray-400 cursor-pointer hover:text-white">
                                             <input type="checkbox" checked={formData.permissions.includes(p)} onChange={() => toggleFormPermission(p)} className="accent-accent w-4 h-4" />
@@ -362,9 +362,9 @@ export default function AccountsManagementPage() {
                                 </div>
                             </div>
 
-                            <div className="flex justify-end gap-3 pt-6 border-t border-white/10">
-                                <button type="button" onClick={() => setIsModalOpen(false)} className="px-6 py-3 bg-white/5 font-bold rounded-xl text-gray-300">Cancel</button>
-                                <button type="submit" className="px-6 py-3 bg-accent text-black font-bold rounded-xl hover:bg-accent-dark">Save Account</button>
+                            <div className="flex justify-end gap-3 pt-6 border-t border-blue-500/30">
+                                <button type="button" onClick={() => setIsModalOpen(false)} className="px-6 py-3 bg-slate-900 border border-blue-500/20 font-bold rounded-xl text-gray-300">Cancel</button>
+                                <button type="submit" className="btn-primary-blue px-6 py-3 rounded-xl font-bold text-sm">Save Account</button>
                             </div>
                         </form>
                     </motion.div>
@@ -374,16 +374,16 @@ export default function AccountsManagementPage() {
             {/* Generated Credentials Popup */}
             {credentialsPopup && (
                 <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-                    <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-dark border border-accent/30 shadow-[0_0_50px_rgba(0,255,136,0.15)] w-full max-w-sm p-8 rounded-3xl text-center space-y-6">
-                        <FiCheckCircle className="w-16 h-16 text-accent mx-auto" />
+                    <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-[#07111F] border border-gold/30 shadow-[0_0_50px_rgba(0,255,136,0.15)] w-full max-w-sm p-8 rounded-3xl text-center space-y-6">
+                        <FiCheckCircle className="w-16 h-16 text-gold mx-auto" />
                         <div>
                             <h2 className="text-2xl font-bold text-white mb-1">{credentialsPopup.name}</h2>
                             <p className="text-gray-400 text-xs">Credentials generated successfully. Share with member.</p>
                         </div>
-                        <div className="bg-white/5 p-4 rounded-xl text-left space-y-3 border border-white/5 font-mono text-xs">
+                        <div className="bg-slate-900 border border-blue-500/20 p-4 rounded-xl text-left space-y-3 border border-blue-500/20 font-mono text-xs">
                             <div>
                                 <span className="text-gray-500 uppercase text-[10px] font-bold block">Username</span>
-                                <span className="text-accent font-bold text-sm">{credentialsPopup.username}</span>
+                                <span className="text-gold font-bold text-sm">{credentialsPopup.username}</span>
                             </div>
                             <div>
                                 <span className="text-gray-500 uppercase text-[10px] font-bold block">Temporary Password</span>
@@ -393,7 +393,7 @@ export default function AccountsManagementPage() {
                         <button onClick={() => {
                             copyToClipboard(`Username: ${credentialsPopup.username}\nTemporary Password: ${credentialsPopup.tempPassword}`, 'Credentials');
                             setCredentialsPopup(null);
-                        }} className="w-full bg-accent text-black py-3 rounded-xl font-bold hover:bg-accent-dark transition-colors">
+                        }} className="w-full btn-primary-blue py-3 rounded-xl font-bold">
                             Copy & Close
                         </button>
                     </motion.div>

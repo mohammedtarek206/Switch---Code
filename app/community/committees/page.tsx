@@ -57,7 +57,7 @@ export default function CommitteesDirectoryPage() {
     const cur = t[lang];
 
     return (
-        <div className={`min-h-screen transition-colors duration-300 py-16 px-4 md:px-8 ${theme === 'dark' ? 'bg-dark text-white' : 'bg-white text-dark-light'
+        <div className={`min-h-screen transition-colors duration-300 py-16 px-4 md:px-8 ${theme === 'dark' ? 'bg-[#07111F] text-white' : 'bg-white text-dark-light'
             }`} dir={lang === 'ar' ? 'rtl' : 'ltr'}>
 
             <div className="max-w-6xl mx-auto flex justify-between items-center mb-10">
@@ -65,10 +65,10 @@ export default function CommitteesDirectoryPage() {
                     &larr; {lang === 'ar' ? 'الرجوع للإحصائيات' : 'Back to Statistics'}
                 </Link>
                 <div className="flex gap-2">
-                    <button onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="px-3.5 py-1.5 bg-white/5 border border-white/10 rounded-xl text-xs font-bold">
+                    <button onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="px-3.5 py-1.5 bg-slate-900 border border-blue-500/20 border border-blue-500/30 rounded-xl text-xs font-bold">
                         {theme === 'dark' ? 'Light Theme ☀️' : 'Dark Theme 🌙'}
                     </button>
-                    <button onClick={() => setLang(lang === 'ar' ? 'en' : 'ar')} className="px-3.5 py-1.5 bg-white/5 border border-white/10 rounded-xl text-xs font-bold font-mono">
+                    <button onClick={() => setLang(lang === 'ar' ? 'en' : 'ar')} className="px-3.5 py-1.5 bg-slate-900 border border-blue-500/20 border border-blue-500/30 rounded-xl text-xs font-bold font-mono">
                         {lang === 'ar' ? 'English' : 'العربية'}
                     </button>
                 </div>
@@ -84,7 +84,7 @@ export default function CommitteesDirectoryPage() {
 
                 {loading ? (
                     <div className="flex justify-center items-center py-20">
-                        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-accent"></div>
+                        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-gold"></div>
                     </div>
                 ) : (
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -94,12 +94,12 @@ export default function CommitteesDirectoryPage() {
                                 initial={{ opacity: 0, y: 15 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: idx * 0.05 }}
-                                className="glass p-6 rounded-3xl border border-white/5 flex flex-col justify-between"
+                                className="glass-panel p-6 rounded-3xl border border-blue-500/20 flex flex-col justify-between"
                                 style={{ borderTop: `4px solid ${c.color || '#00A3FF'}` }}
                             >
                                 <div>
                                     <div className="flex items-center space-x-3 gap-3 mb-4">
-                                        <div className="p-2 bg-white/5 rounded-xl text-primary" style={{ color: c.color }}>
+                                        <div className="p-2 bg-slate-900 border border-blue-500/20 rounded-xl text-blue-500" style={{ color: c.color }}>
                                             <FiGrid className="w-6 h-6" />
                                         </div>
                                         <h3 className="text-lg font-bold text-white">{c.name}</h3>
@@ -108,7 +108,7 @@ export default function CommitteesDirectoryPage() {
                                     <p className="text-gray-400 text-xs leading-relaxed line-clamp-3 mb-6">{c.description}</p>
                                 </div>
 
-                                <div className="space-y-4 pt-4 border-t border-white/5">
+                                <div className="space-y-4 pt-4 border-t border-blue-500/20">
                                     <div className="flex justify-between items-center text-xs text-gray-500">
                                         <span>{cur.leader}</span>
                                         <span className="text-white font-bold">{c.leaderId?.name || 'Unassigned'}</span>
@@ -116,7 +116,7 @@ export default function CommitteesDirectoryPage() {
 
                                     <Link
                                         href={`/community/committees/${c._id}`}
-                                        className="w-full flex items-center justify-center p-3 bg-white/5 hover:bg-white/10 text-white rounded-xl text-xs font-bold transition-all border border-white/5"
+                                        className="w-full flex items-center justify-center p-3 bg-slate-900 border border-blue-500/20 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition-all border border-blue-500/20"
                                     >
                                         {cur.viewDetails} <FiArrowRight className="ml-1.5" />
                                     </Link>

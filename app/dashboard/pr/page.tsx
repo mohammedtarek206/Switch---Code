@@ -74,7 +74,7 @@ export default function PRDashboard() {
     ] as const;
 
     return (
-        <div className="min-h-screen bg-dark text-white py-10 px-4 md:px-8">
+        <div className="min-h-screen bg-[#07111F] text-white py-10 px-4 md:px-8">
             <div className="max-w-6xl mx-auto space-y-8">
                 {/* Header */}
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -93,9 +93,9 @@ export default function PRDashboard() {
                     {[
                         { label: 'Published', val: announcements.length, color: 'text-purple-400' },
                         { label: 'Targeted All', val: announcements.filter(a => a.targetAudience === 'all').length, color: 'text-white' },
-                        { label: 'This Week', val: announcements.filter(a => new Date(a.createdAt) > new Date(Date.now() - 7 * 86400000)).length, color: 'text-accent' },
+                        { label: 'This Week', val: announcements.filter(a => new Date(a.createdAt) > new Date(Date.now() - 7 * 86400000)).length, color: 'text-gold' },
                     ].map(s => (
-                        <div key={s.label} className="glass p-4 rounded-2xl text-center border border-white/5">
+                        <div key={s.label} className="glass-panel p-4 rounded-2xl text-center border border-blue-500/20">
                             <span className="text-[10px] text-gray-500 uppercase font-bold block mb-1">{s.label}</span>
                             <span className={`text-2xl font-extrabold ${s.color}`}>{s.val}</span>
                         </div>
@@ -103,12 +103,12 @@ export default function PRDashboard() {
                 </div>
 
                 {/* Tab nav */}
-                <div className="flex space-x-2 bg-white/5 p-1.5 rounded-2xl w-fit border border-white/5">
+                <div className="flex space-x-2 bg-slate-900 border border-blue-500/20 p-1.5 rounded-2xl w-fit border border-blue-500/20">
                     {tabs.map(({ key, label, icon: Icon }) => (
                         <button
                             key={key}
                             onClick={() => setTab(key)}
-                            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all ${tab === key ? 'bg-white/10 text-white shadow' : 'text-gray-400 hover:text-white'
+                            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all ${tab === key ? 'bg-slate-800 text-white shadow' : 'text-gray-400 hover:text-white'
                                 }`}
                         >
                             <Icon className="w-4 h-4" /> {label}
@@ -123,47 +123,47 @@ export default function PRDashboard() {
                             <h3 className="font-bold text-white">Published Announcements</h3>
                             <button
                                 onClick={() => setShowForm(!showForm)}
-                                className="flex items-center gap-2 bg-accent hover:bg-accent-dark text-black px-4 py-2.5 rounded-xl text-sm font-bold transition-all"
+                                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white transition-colors hover:bg-blue-600 hover:bg-blue-500 text-white transition-colors-dark text-black px-4 py-2.5 rounded-xl text-sm font-bold transition-all"
                             >
                                 <FiPlus /> New Announcement
                             </button>
                         </div>
 
                         {showForm && (
-                            <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="glass p-6 rounded-2xl border border-white/5 space-y-4">
+                            <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="glass-panel p-6 rounded-2xl border border-blue-500/20 space-y-4">
                                 <input
                                     value={title} onChange={e => setTitle(e.target.value)}
                                     placeholder="Announcement title"
-                                    className="w-full p-3 bg-dark border border-white/10 rounded-xl text-white text-sm outline-none focus:border-accent"
+                                    className="w-full p-3 bg-[#07111F] border border-blue-500/30 rounded-xl text-white text-sm outline-none focus:border-gold"
                                 />
                                 <textarea
                                     rows={4} value={content} onChange={e => setContent(e.target.value)}
                                     placeholder="Announcement body content..."
-                                    className="w-full p-3 bg-dark border border-white/10 rounded-xl text-white text-sm outline-none focus:border-accent resize-none"
+                                    className="w-full p-3 bg-[#07111F] border border-blue-500/30 rounded-xl text-white text-sm outline-none focus:border-gold resize-none"
                                 />
                                 <div className="flex gap-3">
-                                    <select value={target} onChange={e => setTarget(e.target.value)} className="bg-dark border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm outline-none flex-1">
+                                    <select value={target} onChange={e => setTarget(e.target.value)} className="bg-[#07111F] border border-blue-500/30 rounded-xl px-4 py-2.5 text-white text-sm outline-none flex-1">
                                         <option value="all">Everyone</option>
                                         <option value="members">Members Only</option>
                                         <option value="leaders">Leaders</option>
                                         <option value="technical">Technical Committee</option>
                                     </select>
-                                    <button onClick={handleCreate} className="bg-accent text-black px-6 py-2.5 rounded-xl font-bold text-sm flex-1">Publish</button>
+                                    <button onClick={handleCreate} className="bg-blue-600 hover:bg-blue-500 text-white transition-colors text-black px-6 py-2.5 rounded-xl font-bold text-sm flex-1">Publish</button>
                                 </div>
                             </motion.div>
                         )}
 
                         {loading ? (
-                            <div className="flex justify-center py-12"><div className="animate-spin rounded-full h-8 w-8 border-t-2 border-accent"></div></div>
+                            <div className="flex justify-center py-12"><div className="animate-spin rounded-full h-8 w-8 border-t-2 border-gold"></div></div>
                         ) : (
                             <div className="space-y-3">
                                 {announcements.map((a, idx) => (
                                     <motion.div key={a._id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.04 }}
-                                        className="glass p-5 rounded-2xl border border-white/5 flex justify-between items-start gap-4">
+                                        className="glass-panel p-5 rounded-2xl border border-blue-500/20 flex justify-between items-start gap-4">
                                         <div>
                                             <div className="flex items-center gap-2 mb-1">
                                                 <h4 className="font-bold text-white text-sm">{a.title}</h4>
-                                                <span className="text-[9px] font-bold uppercase bg-white/5 text-gray-400 px-2 py-0.5 rounded-full">{a.targetAudience}</span>
+                                                <span className="text-[9px] font-bold uppercase bg-slate-900 border border-blue-500/20 text-gray-400 px-2 py-0.5 rounded-full">{a.targetAudience}</span>
                                             </div>
                                             <p className="text-gray-400 text-xs leading-relaxed line-clamp-2">{a.content}</p>
                                             <span className="text-[10px] text-gray-600 mt-2 block">{new Date(a.createdAt).toLocaleString()}</span>
@@ -178,28 +178,28 @@ export default function PRDashboard() {
 
                 {/* Gallery tab */}
                 {tab === 'gallery' && (
-                    <div className="glass p-8 rounded-3xl text-center space-y-4 border border-white/5">
+                    <div className="glass-panel p-8 rounded-3xl text-center space-y-4 border border-blue-500/20">
                         <FiUploadCloud className="w-12 h-12 mx-auto text-gray-500" />
                         <h3 className="font-bold text-white">Media Library</h3>
                         <p className="text-gray-500 text-sm">Upload and manage community event photos, banners, and visual assets.</p>
-                        <Link href="/admin/community/media" className="inline-block bg-accent text-black px-6 py-3 rounded-xl font-bold text-sm">Open Media Library</Link>
+                        <Link href="/admin/community/media" className="inline-block bg-blue-600 hover:bg-blue-500 text-white transition-colors text-black px-6 py-3 rounded-xl font-bold text-sm">Open Media Library</Link>
                     </div>
                 )}
 
                 {/* Social Links tab */}
                 {tab === 'social' && (
-                    <div className="glass p-8 rounded-3xl space-y-4 border border-white/5">
+                    <div className="glass-panel p-8 rounded-3xl space-y-4 border border-blue-500/20">
                         <h3 className="font-bold text-white mb-4">Social Media Links Manager</h3>
                         {['LinkedIn', 'Twitter / X', 'Instagram', 'Facebook', 'YouTube', 'Discord'].map(platform => (
                             <div key={platform} className="flex items-center gap-3">
                                 <span className="text-gray-400 text-sm font-medium w-32">{platform}</span>
                                 <div className="relative flex-1">
                                     <FiLink className="absolute left-3 top-3 text-gray-500" />
-                                    <input type="url" placeholder={`https://...`} className="w-full pl-9 pr-4 py-2.5 bg-dark border border-white/10 rounded-xl text-white text-sm outline-none focus:border-accent" />
+                                    <input type="url" placeholder={`https://...`} className="w-full pl-9 pr-4 py-2.5 bg-[#07111F] border border-blue-500/30 rounded-xl text-white text-sm outline-none focus:border-gold" />
                                 </div>
                             </div>
                         ))}
-                        <button className="bg-accent text-black px-6 py-3 rounded-xl font-bold text-sm mt-2">Save Social Links</button>
+                        <button className="bg-blue-600 hover:bg-blue-500 text-white transition-colors text-black px-6 py-3 rounded-xl font-bold text-sm mt-2">Save Social Links</button>
                     </div>
                 )}
             </div>

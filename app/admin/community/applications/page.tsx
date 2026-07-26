@@ -101,14 +101,14 @@ export default function ApplicationsPage() {
                 </div>
                 <button
                     onClick={exportToCSV}
-                    className="flex items-center bg-white/5 hover:bg-white/10 text-white px-5 py-3 rounded-xl font-bold transition-all border border-white/10"
+                    className="flex items-center btn-primary-blue px-5 py-3 rounded-xl font-bold transition-all"
                 >
-                    <FiDownload className="mr-2 text-accent" /> Export Sheet
+                    <FiDownload className="mr-2 text-gold" /> Export Sheet
                 </button>
             </div>
 
             {/* Filter and search Bar */}
-            <div className="glass p-6 rounded-2xl grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="glass-panel p-6 rounded-2xl grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                 {/* Search */}
                 <div className="relative">
                     <FiSearch className="absolute left-4 top-4 text-gray-500" />
@@ -118,7 +118,7 @@ export default function ApplicationsPage() {
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         onKeyDown={(e) => e.key === 'Enter' && fetchApps()}
-                        className="w-full pl-10 pr-4 py-3 bg-dark-light border border-white/5 rounded-xl text-white outline-none focus:border-accent text-sm"
+                        className="w-full pl-10 pr-4 py-3 bg-slate-900 border border-blue-500/20 rounded-xl text-white outline-none focus:border-gold text-sm"
                     />
                 </div>
 
@@ -127,7 +127,7 @@ export default function ApplicationsPage() {
                     <select
                         value={committeeId}
                         onChange={(e) => setCommitteeId(e.target.value)}
-                        className="w-full p-3 bg-dark-light border border-white/5 rounded-xl text-white outline-none focus:border-accent text-sm cursor-pointer"
+                        className="w-full p-3 bg-slate-900 border border-blue-500/20 rounded-xl text-white outline-none focus:border-gold text-sm cursor-pointer"
                     >
                         <option value="">All Committees</option>
                         {committees.map(c => (
@@ -141,7 +141,7 @@ export default function ApplicationsPage() {
                     <select
                         value={status}
                         onChange={(e) => setStatus(e.target.value)}
-                        className="w-full p-3 bg-dark-light border border-white/5 rounded-xl text-white outline-none focus:border-accent text-sm cursor-pointer"
+                        className="w-full p-3 bg-slate-900 border border-blue-500/20 rounded-xl text-white outline-none focus:border-gold text-sm cursor-pointer"
                     >
                         <option value="">All Statuses</option>
                         <option value="pending">Pending</option>
@@ -160,26 +160,26 @@ export default function ApplicationsPage() {
                         placeholder="University (e.g. Cairo)"
                         value={university}
                         onChange={(e) => setUniversity(e.target.value)}
-                        className="w-full p-3 bg-dark-light border border-white/5 rounded-xl text-white outline-none focus:border-accent text-sm"
+                        className="w-full p-3 bg-slate-900 border border-blue-500/20 rounded-xl text-white outline-none focus:border-gold text-sm"
                     />
                 </div>
             </div>
 
             {loading ? (
                 <div className="flex items-center justify-center min-h-[30vh]">
-                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-accent"></div>
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gold"></div>
                 </div>
             ) : apps.length === 0 ? (
-                <div className="glass p-12 text-center rounded-2xl">
+                <div className="glass-panel p-12 text-center rounded-2xl">
                     <FiSliders className="w-12 h-12 mx-auto text-gray-600 mb-4" />
                     <p className="text-gray-400">No applicants match the filter criteria.</p>
                 </div>
             ) : (
-                <div className="glass rounded-2xl overflow-hidden">
+                <div className="glass-panel rounded-2xl overflow-hidden">
                     <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                             <thead>
-                                <tr className="border-b border-white/5 text-gray-400 text-xs font-bold uppercase">
+                                <tr className="border-b border-blue-500/20 text-gray-400 text-xs font-bold uppercase">
                                     <th className="p-5">Applicant</th>
                                     <th className="p-5">Committee</th>
                                     <th className="p-5">University</th>
@@ -190,10 +190,10 @@ export default function ApplicationsPage() {
                             </thead>
                             <tbody className="divide-y divide-white/5 text-sm text-gray-300">
                                 {apps.map((a) => (
-                                    <tr key={a._id} className="hover:bg-white/5 transition-colors">
+                                    <tr key={a._id} className="hover:bg-slate-900 border border-blue-500/20 transition-colors">
                                         <td className="p-5">
                                             <div className="flex items-center space-x-3">
-                                                <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-xs text-primary font-bold">
+                                                <div className="w-8 h-8 rounded-full bg-slate-900 border border-blue-500/20 flex items-center justify-center text-xs text-blue-500 font-bold">
                                                     {a.name[0].toUpperCase()}
                                                 </div>
                                                 <div>
@@ -216,8 +216,8 @@ export default function ApplicationsPage() {
                                         </td>
                                         <td className="p-5">
                                             <span className={`text-xs px-2.5 py-1 rounded-full font-bold uppercase ${a.status === 'accepted' ? 'bg-green-500/10 text-green-400' :
-                                                    a.status === 'rejected' ? 'bg-red-500/10 text-red-400' :
-                                                        a.status === 'interview' ? 'bg-purple-500/10 text-purple-400' : 'bg-yellow-500/10 text-yellow-400'
+                                                a.status === 'rejected' ? 'bg-red-500/10 text-red-400' :
+                                                    a.status === 'interview' ? 'bg-purple-500/10 text-purple-400' : 'bg-yellow-500/10 text-yellow-400'
                                                 }`}>
                                                 {a.status}
                                             </span>
@@ -229,7 +229,7 @@ export default function ApplicationsPage() {
                                         <td className="p-5 text-right">
                                             <Link
                                                 href={`/admin/community/applications/${a._id}`}
-                                                className="inline-flex p-2 bg-white/5 hover:bg-white/10 rounded-lg text-accent transition-colors"
+                                                className="inline-flex p-2 bg-slate-900 border border-blue-500/20 hover:bg-slate-800 rounded-lg text-gold transition-colors"
                                             >
                                                 <FiEye className="w-4 h-4" />
                                             </Link>

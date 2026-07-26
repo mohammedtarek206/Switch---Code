@@ -167,7 +167,7 @@ export default function PublicCommunityPage() {
     const cur = t[lang];
 
     return (
-        <div className={`min-h-screen transition-colors duration-300 py-20 px-4 md:px-8 ${theme === 'dark' ? 'bg-dark text-white' : 'bg-white text-dark-light'
+        <div className={`min-h-screen transition-colors duration-300 py-20 px-4 md:px-8 ${theme === 'dark' ? 'bg-[#07111F] text-white' : 'bg-white text-dark-light'
             }`} dir={lang === 'ar' ? 'rtl' : 'ltr'}>
 
             {/* Settings bar */}
@@ -180,14 +180,14 @@ export default function PublicCommunityPage() {
                     {/* Theme select */}
                     <button
                         onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                        className="px-3.5 py-1.5 bg-white/5 border border-white/10 rounded-xl text-xs font-bold"
+                        className="px-3.5 py-1.5 bg-slate-900 border border-blue-500/20 border border-blue-500/30 rounded-xl text-xs font-bold"
                     >
                         {theme === 'dark' ? 'Light Theme ☀️' : 'Dark Theme 🌙'}
                     </button>
                     {/* Language selector */}
                     <button
                         onClick={() => setLang(lang === 'ar' ? 'en' : 'ar')}
-                        className="px-3.5 py-1.5 bg-white/5 border border-white/10 rounded-xl text-xs font-bold font-mono"
+                        className="px-3.5 py-1.5 bg-slate-900 border border-blue-500/20 border border-blue-500/30 rounded-xl text-xs font-bold font-mono"
                     >
                         {lang === 'ar' ? 'English' : 'العربية'}
                     </button>
@@ -210,10 +210,10 @@ export default function PublicCommunityPage() {
                     </p>
 
                     <div className="flex flex-wrap justify-center gap-4 pt-4 text-xs font-bold">
-                        <Link href="/community/hall-of-fame" className="bg-primary hover:bg-primary-dark text-white px-5 py-2.5 rounded-xl transition-all shadow-md">
+                        <Link href="/community/hall-of-fame" className="bg-blue-600 hover:bg-blue-600-dark text-white px-5 py-2.5 rounded-xl transition-all shadow-md">
                             {cur.hallOfFame}
                         </Link>
-                        <Link href="/community/committees" className="bg-white/5 border border-white/10 hover:bg-white/10 px-5 py-2.5 rounded-xl transition-all">
+                        <Link href="/community/committees" className="bg-slate-900 border border-blue-500/20 border border-blue-500/30 hover:bg-slate-800 px-5 py-2.5 rounded-xl transition-all">
                             {cur.committeePages}
                         </Link>
                     </div>
@@ -223,7 +223,7 @@ export default function PublicCommunityPage() {
                 {loading ? (
                     <div className="grid md:grid-cols-3 gap-6">
                         {[1, 2, 3].map(i => (
-                            <div key={i} className="animate-pulse bg-white/5 h-48 rounded-3xl" />
+                            <div key={i} className="animate-pulse bg-slate-900 border border-blue-500/20 h-48 rounded-3xl" />
                         ))}
                     </div>
                 ) : (
@@ -234,12 +234,12 @@ export default function PublicCommunityPage() {
                                 initial={{ opacity: 0, y: 15 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: idx * 0.05 }}
-                                className={`glass border p-6 rounded-3xl flex flex-col justify-between hover:scale-[1.02] transition-all duration-300 ${theme === 'dark' ? 'border-white/5 bg-white/5' : 'border-black/5 bg-black/5'
+                                className={`glass-panel border p-6 rounded-3xl flex flex-col justify-between hover:scale-[1.02] transition-all duration-300 ${theme === 'dark' ? 'border-blue-500/20 bg-slate-900 border border-blue-500/20' : 'border-black/5 bg-black/5'
                                     }`}
                             >
                                 <div>
                                     <div className="flex justify-between items-center mb-3">
-                                        <span className="text-[10px] uppercase font-extrabold text-accent bg-accent/15 px-3 py-1 rounded-full">
+                                        <span className="text-[10px] uppercase font-extrabold text-gold bg-gold/20 px-3 py-1 rounded-full">
                                             {lang === 'ar' ? m.titleAr : m.titleEn}
                                         </span>
                                         <span className="text-gray-500 text-[10px]">{lang === 'ar' ? m.subtitleAr : m.subtitleEn}</span>
@@ -247,7 +247,7 @@ export default function PublicCommunityPage() {
 
                                     {m.type === 'member' && m.member ? (
                                         <div className="flex items-center space-x-3 gap-3 my-4">
-                                            <div className="w-12 h-12 bg-white/5 rounded-full flex items-center justify-center font-bold text-accent text-sm border-2 border-primary overflow-hidden">
+                                            <div className="w-12 h-12 bg-slate-900 border border-blue-500/20 rounded-full flex items-center justify-center font-bold text-gold text-sm border-2 border-primary overflow-hidden">
                                                 {m.member.avatar ? (
                                                     <img src={m.member.avatar} alt="Avatar" className="w-full h-full object-cover" />
                                                 ) : (
@@ -269,18 +269,18 @@ export default function PublicCommunityPage() {
                                     )}
                                 </div>
 
-                                <div className="border-t border-white/5 pt-4 mt-4 flex items-center justify-between text-xs">
+                                <div className="border-t border-blue-500/20 pt-4 mt-4 flex items-center justify-between text-xs">
                                     {m.type === 'member' && m.member ? (
                                         <>
-                                            <span className="flex items-center font-extrabold text-accent">
+                                            <span className="flex items-center font-extrabold text-gold">
                                                 <FiAward className="mr-1.5" /> {m.member.performanceScore} {cur.points}
                                             </span>
-                                            <Link href={`/community/members/${m.member._id}`} className="text-primary hover:underline flex items-center gap-1">
+                                            <Link href={`/community/members/${m.member._id}`} className="text-blue-500 hover:underline flex items-center gap-1">
                                                 {cur.visitProfile} <FiArrowRight className="text-[10px]" />
                                             </Link>
                                         </>
                                     ) : (
-                                        <span className="font-extrabold text-primary">{m.score}</span>
+                                        <span className="font-extrabold text-blue-500">{m.score}</span>
                                     )}
                                 </div>
                             </motion.div>

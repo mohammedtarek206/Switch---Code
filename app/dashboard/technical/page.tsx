@@ -88,7 +88,7 @@ export default function TechnicalDashboard() {
     const trackColor = TRACK_COLORS[track] || '#00A3FF';
 
     return (
-        <div className="min-h-screen bg-dark text-white py-10 px-4 md:px-8">
+        <div className="min-h-screen bg-[#07111F] text-white py-10 px-4 md:px-8">
             <div className="max-w-6xl mx-auto space-y-8">
                 {/* Header */}
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -104,7 +104,7 @@ export default function TechnicalDashboard() {
                     </div>
                     <div className="flex items-center gap-3">
                         <select value={track} onChange={e => setTrack(e.target.value)}
-                            className="bg-dark border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm outline-none" >
+                            className="bg-[#07111F] border border-blue-500/30 rounded-xl px-4 py-2.5 text-white text-sm outline-none" >
                             {Object.keys(TRACK_COLORS).map(t => <option key={t}>{t}</option>)}
                         </select>
                         <Link href="/dashboard" className="text-xs text-gray-400 hover:text-white">← Dashboard</Link>
@@ -118,7 +118,7 @@ export default function TechnicalDashboard() {
                         { label: 'Open Tasks', val: MOCK_TASKS.filter(t => t.status !== 'done').length, color: '#EAB308' },
                         { label: 'Next Meeting', val: MOCK_MEETINGS[0]?.date || '—', color: '#8B5CF6' },
                     ].map(s => (
-                        <div key={s.label} className="glass p-5 rounded-2xl border border-white/5">
+                        <div key={s.label} className="glass-panel p-5 rounded-2xl border border-blue-500/20">
                             <span className="text-[10px] text-gray-500 uppercase font-bold block mb-1">{s.label}</span>
                             <span className="text-xl font-extrabold" style={{ color: s.color }}>{s.val}</span>
                         </div>
@@ -126,10 +126,10 @@ export default function TechnicalDashboard() {
                 </div>
 
                 {/* Tab nav */}
-                <div className="flex flex-wrap gap-1.5 bg-white/5 p-1.5 rounded-2xl border border-white/5 w-fit">
+                <div className="flex flex-wrap gap-1.5 bg-slate-900 border border-blue-500/20 p-1.5 rounded-2xl border border-blue-500/20 w-fit">
                     {TABS.map(({ key, label, icon: Icon }) => (
                         <button key={key} onClick={() => setTab(key)}
-                            className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold transition-all ${tab === key ? 'bg-white/10 text-white shadow' : 'text-gray-400 hover:text-white'
+                            className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold transition-all ${tab === key ? 'bg-slate-800 text-white shadow' : 'text-gray-400 hover:text-white'
                                 }`}
                             style={tab === key ? { color: trackColor } : {}}>
                             <Icon className="w-3.5 h-3.5" /> {label}
@@ -142,14 +142,14 @@ export default function TechnicalDashboard() {
                     <div className="space-y-4">
                         <div className="flex justify-between items-center">
                             <h3 className="font-bold text-white">Active Projects</h3>
-                            <button className="flex items-center gap-2 text-xs font-bold bg-white/5 hover:bg-white/10 border border-white/5 px-4 py-2 rounded-xl">
+                            <button className="flex items-center gap-2 text-xs font-bold bg-slate-900 border border-blue-500/20 hover:bg-slate-800 border border-blue-500/20 px-4 py-2 rounded-xl">
                                 <FiPlus /> New Project
                             </button>
                         </div>
                         <div className="grid md:grid-cols-3 gap-4">
                             {MOCK_PROJECTS.map((p, i) => (
                                 <motion.div key={p.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.06 }}
-                                    className="glass p-6 rounded-2xl border border-white/5 space-y-3"
+                                    className="glass-panel p-6 rounded-2xl border border-blue-500/20 space-y-3"
                                     style={{ borderTop: `3px solid ${trackColor}` }}>
                                     <div className="flex justify-between items-start">
                                         <h4 className="font-bold text-white text-sm leading-tight">{p.title}</h4>
@@ -158,9 +158,9 @@ export default function TechnicalDashboard() {
                                         </span>
                                     </div>
                                     <p className="text-gray-500 text-xs">{p.tech}</p>
-                                    <div className="flex items-center justify-between text-xs text-gray-400 pt-2 border-t border-white/5">
+                                    <div className="flex items-center justify-between text-xs text-gray-400 pt-2 border-t border-blue-500/20">
                                         <span className="flex items-center gap-1"><FiUsers className="w-3.5 h-3.5" /> {p.members} devs</span>
-                                        <button className="flex items-center gap-1 text-accent hover:underline">Open <FiArrowRight className="w-3 h-3" /></button>
+                                        <button className="flex items-center gap-1 text-gold hover:underline">Open <FiArrowRight className="w-3 h-3" /></button>
                                     </div>
                                 </motion.div>
                             ))}
@@ -170,15 +170,15 @@ export default function TechnicalDashboard() {
 
                 {/* Tasks tab */}
                 {tab === 'tasks' && (
-                    <div className="glass rounded-3xl border border-white/5 overflow-hidden">
-                        <div className="p-5 border-b border-white/5 flex justify-between items-center">
+                    <div className="glass-panel rounded-3xl border border-blue-500/20 overflow-hidden">
+                        <div className="p-5 border-b border-blue-500/20 flex justify-between items-center">
                             <h3 className="font-bold text-white">Assignments</h3>
-                            <button className="text-xs font-bold bg-white/5 px-4 py-2 rounded-xl border border-white/5 flex items-center gap-1.5">
+                            <button className="text-xs font-bold bg-slate-900 border border-blue-500/20 px-4 py-2 rounded-xl border border-blue-500/20 flex items-center gap-1.5">
                                 <FiPlus /> Add Task
                             </button>
                         </div>
                         <table className="w-full text-left">
-                            <thead className="border-b border-white/5">
+                            <thead className="border-b border-blue-500/20">
                                 <tr className="text-gray-400 text-[10px] font-bold uppercase">
                                     <th className="p-4">Task</th><th className="p-4">Assignee</th><th className="p-4">Due Date</th><th className="p-4">Status</th>
                                 </tr>
@@ -205,8 +205,8 @@ export default function TechnicalDashboard() {
                 {tab === 'roadmap' && (
                     <div className="space-y-4">
                         {MOCK_ROADMAP.map((r, i) => (
-                            <div key={i} className="glass p-6 rounded-2xl border border-white/5 flex items-center gap-4">
-                                <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm shrink-0 ${r.done ? 'bg-green-500/20 text-green-400' : 'bg-white/5 text-gray-400'
+                            <div key={i} className="glass-panel p-6 rounded-2xl border border-blue-500/20 flex items-center gap-4">
+                                <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm shrink-0 ${r.done ? 'bg-green-500/20 text-green-400' : 'bg-slate-900 border border-blue-500/20 text-gray-400'
                                     }`}>
                                     {r.done ? '✓' : i + 1}
                                 </div>
@@ -224,21 +224,21 @@ export default function TechnicalDashboard() {
                 {tab === 'resources' && (
                     <div className="space-y-3">
                         {MOCK_RESOURCES.map((r, i) => (
-                            <div key={i} className="glass p-5 rounded-2xl border border-white/5 flex items-center justify-between">
+                            <div key={i} className="glass-panel p-5 rounded-2xl border border-blue-500/20 flex items-center justify-between">
                                 <div className="flex items-center gap-3">
-                                    <FiLink2 className="text-accent w-4 h-4" />
+                                    <FiLink2 className="text-gold w-4 h-4" />
                                     <div>
                                         <span className="text-white font-semibold text-sm block">{r.title}</span>
                                         <span className="text-gray-500 text-xs">{r.tag}</span>
                                     </div>
                                 </div>
                                 <a href={r.url} target="_blank" rel="noopener noreferrer"
-                                    className="text-xs text-accent hover:underline flex items-center gap-1">
+                                    className="text-xs text-gold hover:underline flex items-center gap-1">
                                     Open <FiArrowRight className="w-3 h-3" />
                                 </a>
                             </div>
                         ))}
-                        <button className="w-full glass p-4 rounded-2xl border border-dashed border-white/10 text-gray-500 text-sm hover:border-white/20 transition-all flex items-center justify-center gap-2">
+                        <button className="w-full glass-panel p-4 rounded-2xl border border-dashed border-blue-500/30 text-gray-500 text-sm hover:border-blue-500/30 transition-all flex items-center justify-center gap-2">
                             <FiPlus /> Add Resource
                         </button>
                     </div>
@@ -248,15 +248,15 @@ export default function TechnicalDashboard() {
                 {tab === 'meetings' && (
                     <div className="space-y-4">
                         {MOCK_MEETINGS.map((m, i) => (
-                            <div key={i} className="glass p-6 rounded-2xl border border-white/5 flex justify-between items-center">
+                            <div key={i} className="glass-panel p-6 rounded-2xl border border-blue-500/20 flex justify-between items-center">
                                 <div className="flex items-center gap-4">
-                                    <div className="p-3 bg-white/5 rounded-xl" style={{ color: trackColor }}><FiCalendar className="w-5 h-5" /></div>
+                                    <div className="p-3 bg-slate-900 border border-blue-500/20 rounded-xl" style={{ color: trackColor }}><FiCalendar className="w-5 h-5" /></div>
                                     <div>
                                         <h4 className="font-bold text-white text-sm">{m.title}</h4>
                                         <p className="text-gray-500 text-xs">{m.date} at {m.time}</p>
                                     </div>
                                 </div>
-                                <a href={m.link} className="text-xs font-bold text-accent hover:underline flex items-center gap-1">
+                                <a href={m.link} className="text-xs font-bold text-gold hover:underline flex items-center gap-1">
                                     Join <FiArrowRight className="w-3 h-3" />
                                 </a>
                             </div>
@@ -273,12 +273,12 @@ export default function TechnicalDashboard() {
                             { label: 'Member Activity Score', value: 88 },
                             { label: 'Meeting Attendance', value: 91 },
                         ].map(m => (
-                            <div key={m.label} className="glass p-6 rounded-2xl border border-white/5 space-y-2">
+                            <div key={m.label} className="glass-panel p-6 rounded-2xl border border-blue-500/20 space-y-2">
                                 <div className="flex justify-between text-sm">
                                     <span className="text-gray-300 font-medium">{m.label}</span>
                                     <span className="text-white font-bold">{m.value}%</span>
                                 </div>
-                                <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden">
+                                <div className="w-full h-2 bg-slate-900 border border-blue-500/20 rounded-full overflow-hidden">
                                     <motion.div className="h-full rounded-full" style={{ backgroundColor: trackColor }}
                                         initial={{ width: 0 }} animate={{ width: `${m.value}%` }} transition={{ duration: 0.8, delay: 0.2 }} />
                                 </div>

@@ -130,7 +130,7 @@ export default function ApplicationDetailPage({ params }: { params: { id: string
     if (loading) {
         return (
             <div className="flex items-center justify-center min-h-[50vh]">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-accent"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gold"></div>
             </div>
         );
     }
@@ -139,7 +139,7 @@ export default function ApplicationDetailPage({ params }: { params: { id: string
         return (
             <div className="text-center py-20">
                 <p className="text-gray-400">Application not found.</p>
-                <Link href="/admin/community/applications" className="text-accent underline">Back to List</Link>
+                <Link href="/admin/community/applications" className="text-gold underline">Back to List</Link>
             </div>
         );
     }
@@ -156,7 +156,7 @@ export default function ApplicationDetailPage({ params }: { params: { id: string
                         <h1 className="text-3xl font-extrabold text-white">{app.name}</h1>
                         <p className="text-gray-400 text-sm">{app.email} • {app.phone || 'No phone number'}</p>
                     </div>
-                    <span className="bg-white/5 border border-white/10 px-4 py-2 rounded-xl text-xs text-accent font-bold">
+                    <span className="bg-slate-900 border border-blue-500/20 px-4 py-2 rounded-xl text-xs text-gold font-bold">
                         Target Committee: {app.committeeId?.name}
                     </span>
                 </div>
@@ -164,9 +164,9 @@ export default function ApplicationDetailPage({ params }: { params: { id: string
 
             <div className="grid lg:grid-cols-3 gap-8">
                 {/* Dynamic Form Submissions answers */}
-                <div className="glass p-8 rounded-3xl lg:col-span-2 space-y-6">
-                    <h3 className="text-xl font-bold text-white border-b border-white/5 pb-4 flex items-center">
-                        <FiBookOpen className="mr-2 text-accent" /> Questionnaire Review
+                <div className="glass-panel p-8 rounded-3xl lg:col-span-2 space-y-6">
+                    <h3 className="text-xl font-bold text-white border-b border-blue-500/20 pb-4 flex items-center">
+                        <FiBookOpen className="mr-2 text-gold" /> Questionnaire Review
                     </h3>
 
                     <div className="grid md:grid-cols-2 gap-6 text-sm">
@@ -180,13 +180,13 @@ export default function ApplicationDetailPage({ params }: { params: { id: string
                         </div>
                     </div>
 
-                    <div className="space-y-6 pt-4 border-t border-white/5">
+                    <div className="space-y-6 pt-4 border-t border-blue-500/20">
                         {app.recruitmentId?.formFields?.map((field) => {
                             const answer = app.formData?.[field.id] || 'Not specified';
                             return (
                                 <div key={field.id} className="space-y-1">
                                     <label className="text-xs text-gray-400 uppercase font-semibold">{field.label}</label>
-                                    <p className="p-4 bg-white/5 rounded-xl border border-white/5 text-gray-300 text-sm whitespace-pre-wrap">
+                                    <p className="p-4 bg-slate-900 border border-blue-500/20 rounded-xl text-gray-300 text-sm whitespace-pre-wrap">
                                         {answer}
                                     </p>
                                 </div>
@@ -196,9 +196,9 @@ export default function ApplicationDetailPage({ params }: { params: { id: string
                 </div>
 
                 {/* Dynamic Interview Board & Decisions */}
-                <div className="glass p-8 rounded-3xl space-y-6">
-                    <h3 className="text-xl font-bold text-white border-b border-white/5 pb-4 flex items-center">
-                        <FiSliders className="mr-2 text-primary" /> Interview & Score Card
+                <div className="glass-panel p-8 rounded-3xl space-y-6">
+                    <h3 className="text-xl font-bold text-white border-b border-blue-500/20 pb-4 flex items-center">
+                        <FiSliders className="mr-2 text-blue-500" /> Interview & Score Card
                     </h3>
 
                     <form onSubmit={handleSaveInterview} className="space-y-4">
@@ -208,7 +208,7 @@ export default function ApplicationDetailPage({ params }: { params: { id: string
                                 type="datetime-local"
                                 value={interviewDate}
                                 onChange={(e) => setInterviewDate(e.target.value)}
-                                className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent text-sm"
+                                className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold text-sm"
                             />
                         </div>
 
@@ -217,7 +217,7 @@ export default function ApplicationDetailPage({ params }: { params: { id: string
                             <select
                                 value={interviewerId}
                                 onChange={(e) => setInterviewerId(e.target.value)}
-                                className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent text-sm"
+                                className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold text-sm"
                             >
                                 <option value="">Select Interviewer</option>
                                 {interviewers.map(i => (
@@ -226,7 +226,7 @@ export default function ApplicationDetailPage({ params }: { params: { id: string
                             </select>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4 border-t border-white/5 pt-4">
+                        <div className="grid grid-cols-2 gap-4 border-t border-blue-500/20 pt-4">
                             <div className="space-y-1">
                                 <label className="text-xs text-gray-400 font-semibold block uppercase">Technical Score</label>
                                 <input
@@ -235,7 +235,7 @@ export default function ApplicationDetailPage({ params }: { params: { id: string
                                     max="10"
                                     value={techScore}
                                     onChange={(e) => setTechScore(Number(e.target.value))}
-                                    className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white text-sm outline-none"
+                                    className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white text-sm outline-none"
                                 />
                             </div>
                             <div className="space-y-1">
@@ -246,7 +246,7 @@ export default function ApplicationDetailPage({ params }: { params: { id: string
                                     max="10"
                                     value={hrScore}
                                     onChange={(e) => setHrScore(Number(e.target.value))}
-                                    className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white text-sm outline-none"
+                                    className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white text-sm outline-none"
                                 />
                             </div>
                             <div className="space-y-1">
@@ -257,7 +257,7 @@ export default function ApplicationDetailPage({ params }: { params: { id: string
                                     max="10"
                                     value={commsScore}
                                     onChange={(e) => setCommsScore(Number(e.target.value))}
-                                    className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white text-sm outline-none"
+                                    className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white text-sm outline-none"
                                 />
                             </div>
                             <div className="space-y-1">
@@ -268,28 +268,28 @@ export default function ApplicationDetailPage({ params }: { params: { id: string
                                     max="10"
                                     value={problemScore}
                                     onChange={(e) => setProblemScore(Number(e.target.value))}
-                                    className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white text-sm outline-none"
+                                    className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white text-sm outline-none"
                                 />
                             </div>
                         </div>
 
-                        <div className="space-y-1 border-t border-white/5 pt-4">
+                        <div className="space-y-1 border-t border-blue-500/20 pt-4">
                             <label className="text-xs text-gray-400 font-semibold uppercase">Notes</label>
                             <textarea
                                 rows={3}
                                 value={notes}
                                 onChange={(e) => setNotes(e.target.value)}
                                 placeholder="Candidate remarks, experience level notes..."
-                                className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white text-sm outline-none resize-none"
+                                className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white text-sm outline-none resize-none"
                             />
                         </div>
 
-                        <div className="space-y-1 border-t border-white/5 pt-4">
+                        <div className="space-y-1 border-t border-blue-500/20 pt-4">
                             <label className="text-xs text-gray-400 font-semibold uppercase">Final Decision</label>
                             <select
                                 value={decision}
                                 onChange={(e) => setDecision(e.target.value)}
-                                className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent text-sm"
+                                className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold text-sm"
                             >
                                 <option value="">No Decision</option>
                                 <option value="accepted">Accepted (Qualifies for Role)</option>
@@ -300,7 +300,7 @@ export default function ApplicationDetailPage({ params }: { params: { id: string
 
                         <button
                             type="submit"
-                            className="w-full bg-accent hover:bg-accent-dark text-black py-3 rounded-xl font-bold transition-all mt-4"
+                            className="w-full btn-primary-blue py-3 rounded-xl font-bold transition-all mt-4"
                         >
                             Save Evaluation
                         </button>

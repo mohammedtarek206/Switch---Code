@@ -88,18 +88,18 @@ export default function CommitteeDetailPage({ params }: { params: { id: string }
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center min-h-screen bg-dark">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-accent"></div>
+            <div className="flex items-center justify-center min-h-screen bg-[#07111F]">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gold"></div>
             </div>
         );
     }
 
     if (!committee) {
         return (
-            <div className="min-h-screen bg-dark flex flex-col justify-center items-center text-gray-400">
+            <div className="min-h-screen bg-[#07111F] flex flex-col justify-center items-center text-gray-400">
                 <FiAlertCircle className="w-12 h-12 mb-4 text-gray-500" />
                 <p>Committee not found.</p>
-                <Link href="/community/committees" className="text-accent underline mt-2">Back</Link>
+                <Link href="/community/committees" className="text-gold underline mt-2">Back</Link>
             </div>
         );
     }
@@ -107,7 +107,7 @@ export default function CommitteeDetailPage({ params }: { params: { id: string }
     const headerColor = committee.color || '#00A3FF';
 
     return (
-        <div className={`min-h-screen transition-colors duration-300 pb-20 ${theme === 'dark' ? 'bg-dark text-white' : 'bg-white text-dark-light'
+        <div className={`min-h-screen transition-colors duration-300 pb-20 ${theme === 'dark' ? 'bg-[#07111F] text-white' : 'bg-white text-dark-light'
             }`} dir={lang === 'ar' ? 'rtl' : 'ltr'}>
 
             {/* Hero Banner header */}
@@ -122,10 +122,10 @@ export default function CommitteeDetailPage({ params }: { params: { id: string }
                     </div>
 
                     <div className="flex gap-2">
-                        <button onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="px-3.5 py-1.5 bg-white/5 border border-white/10 rounded-xl text-xs text-white font-bold">
+                        <button onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="px-3.5 py-1.5 bg-slate-900 border border-blue-500/20 border border-blue-500/30 rounded-xl text-xs text-white font-bold">
                             {theme === 'dark' ? 'Light Theme ☀️' : 'Dark Theme 🌙'}
                         </button>
-                        <button onClick={() => setLang(lang === 'ar' ? 'en' : 'ar')} className="px-3.5 py-1.5 bg-white/5 border border-white/10 rounded-xl text-xs text-white font-bold">
+                        <button onClick={() => setLang(lang === 'ar' ? 'en' : 'ar')} className="px-3.5 py-1.5 bg-slate-900 border border-blue-500/20 border border-blue-500/30 rounded-xl text-xs text-white font-bold">
                             {lang === 'ar' ? 'English' : 'العربية'}
                         </button>
                     </div>
@@ -136,9 +136,9 @@ export default function CommitteeDetailPage({ params }: { params: { id: string }
                 {/* Core content description */}
                 <div className="lg:col-span-2 space-y-8">
                     {/* Overview */}
-                    <div className="glass p-8 rounded-3xl space-y-4">
+                    <div className="glass-panel p-8 rounded-3xl space-y-4">
                         <h3 className="text-xl font-bold flex items-center">
-                            <FiGrid className="mr-2 ml-2 text-accent" /> {cur.overview}
+                            <FiGrid className="mr-2 ml-2 text-gold" /> {cur.overview}
                         </h3>
                         <p className={`text-sm leading-relaxed ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
                             {committee.description}
@@ -146,18 +146,18 @@ export default function CommitteeDetailPage({ params }: { params: { id: string }
                     </div>
 
                     {/* Members team */}
-                    <div className="glass p-8 rounded-3xl space-y-6">
+                    <div className="glass-panel p-8 rounded-3xl space-y-6">
                         <h3 className="text-xl font-bold flex items-center">
-                            <FiUsers className="mr-2 ml-2 text-accent" /> {cur.membersTitle} ({members.length})
+                            <FiUsers className="mr-2 ml-2 text-gold" /> {cur.membersTitle} ({members.length})
                         </h3>
                         {members.length === 0 ? (
                             <p className="text-gray-500 text-xs italic">{cur.noMembers}</p>
                         ) : (
                             <div className="grid sm:grid-cols-2 gap-4">
                                 {members.map((m) => (
-                                    <div key={m._id} className="p-4 bg-white/5 border border-white/5 rounded-2xl flex items-center justify-between">
+                                    <div key={m._id} className="p-4 bg-slate-900 border border-blue-500/20 border border-blue-500/20 rounded-2xl flex items-center justify-between">
                                         <div className="flex items-center space-x-3 gap-3">
-                                            <div className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center font-bold text-xs text-accent">
+                                            <div className="w-10 h-10 bg-slate-900 border border-blue-500/20 rounded-full flex items-center justify-center font-bold text-xs text-gold">
                                                 {m.avatar ? (
                                                     <img src={m.avatar} alt="Avatar" className="w-full h-full rounded-full object-cover" />
                                                 ) : (
@@ -177,11 +177,11 @@ export default function CommitteeDetailPage({ params }: { params: { id: string }
                     </div>
 
                     {/* Projects showcase */}
-                    <div className="glass p-8 rounded-3xl space-y-4">
+                    <div className="glass-panel p-8 rounded-3xl space-y-4">
                         <h3 className="text-xl font-bold flex items-center">
-                            <FiCpu className="mr-2 ml-2 text-accent" /> {cur.projectsTitle}
+                            <FiCpu className="mr-2 ml-2 text-gold" /> {cur.projectsTitle}
                         </h3>
-                        <div className="p-6 bg-white/5 border border-white/5 rounded-2xl text-center text-xs text-gray-500">
+                        <div className="p-6 bg-slate-900 border border-blue-500/20 border border-blue-500/20 rounded-2xl text-center text-xs text-gray-500">
                             {lang === 'ar' ? 'مشاريع الـ Hackathon القادمة وحلول اللجنة قيد التطوير حالياً.' : 'Upcoming Hackathon prototypes & systems are in active development cycles.'}
                         </div>
                     </div>
@@ -190,14 +190,14 @@ export default function CommitteeDetailPage({ params }: { params: { id: string }
                 {/* Sidebar Leaders & Metrics */}
                 <div className="space-y-6">
                     {/* Leaders stack */}
-                    <div className="glass p-8 rounded-3xl space-y-6">
-                        <h3 className="text-lg font-bold border-b border-white/5 pb-3">Leaders in Command</h3>
+                    <div className="glass-panel p-8 rounded-3xl space-y-6">
+                        <h3 className="text-lg font-bold border-b border-blue-500/20 pb-3">Leaders in Command</h3>
 
                         {/* Leader */}
                         <div className="space-y-2">
                             <span className="text-xs text-gray-500 block uppercase font-bold">{cur.leader}</span>
-                            <div className="flex items-center space-x-3 gap-3 p-3 bg-white/5 rounded-xl">
-                                <div className="w-9 h-9 bg-accent/20 text-accent rounded-full flex items-center justify-center font-bold text-xs">
+                            <div className="flex items-center space-x-3 gap-3 p-3 bg-slate-900 border border-blue-500/20 rounded-xl">
+                                <div className="w-9 h-9 bg-gold/20 text-gold rounded-full flex items-center justify-center font-bold text-xs">
                                     {committee.leaderId?.name ? committee.leaderId.name[0].toUpperCase() : '?'}
                                 </div>
                                 <span className="font-extrabold text-white text-sm">{committee.leaderId?.name || 'Vacant / Appointing'}</span>
@@ -207,8 +207,8 @@ export default function CommitteeDetailPage({ params }: { params: { id: string }
                         {/* Vice Leader */}
                         <div className="space-y-2">
                             <span className="text-xs text-gray-500 block uppercase font-bold">{cur.viceLeader}</span>
-                            <div className="flex items-center space-x-3 gap-3 p-3 bg-white/5 rounded-xl">
-                                <div className="w-9 h-9 bg-primary/20 text-primary-light rounded-full flex items-center justify-center font-bold text-xs">
+                            <div className="flex items-center space-x-3 gap-3 p-3 bg-slate-900 border border-blue-500/20 rounded-xl">
+                                <div className="w-9 h-9 bg-blue-600/20 text-blue-500-light rounded-full flex items-center justify-center font-bold text-xs">
                                     {committee.viceLeaderId?.name ? committee.viceLeaderId.name[0].toUpperCase() : '?'}
                                 </div>
                                 <span className="font-extrabold text-white text-sm">{committee.viceLeaderId?.name || 'Vacant / Appointing'}</span>
@@ -217,16 +217,16 @@ export default function CommitteeDetailPage({ params }: { params: { id: string }
                     </div>
 
                     {/* Quick Metrics */}
-                    <div className="glass p-8 rounded-3xl space-y-5">
-                        <h3 className="text-lg font-bold border-b border-white/5 pb-3">Performance Indexes</h3>
+                    <div className="glass-panel p-8 rounded-3xl space-y-5">
+                        <h3 className="text-lg font-bold border-b border-blue-500/20 pb-3">Performance Indexes</h3>
 
                         <div className="space-y-2">
                             <div className="flex justify-between text-xs text-gray-400">
                                 <span>{cur.activityRate}</span>
                                 <span className="text-white font-bold">92%</span>
                             </div>
-                            <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
-                                <div className="h-full bg-accent" style={{ width: '92%' }}></div>
+                            <div className="w-full h-1.5 bg-slate-900 border border-blue-500/20 rounded-full overflow-hidden">
+                                <div className="h-full bg-blue-600 hover:bg-blue-500 text-white transition-colors" style={{ width: '92%' }}></div>
                             </div>
                         </div>
 
@@ -235,8 +235,8 @@ export default function CommitteeDetailPage({ params }: { params: { id: string }
                                 <span>{cur.attendanceRate}</span>
                                 <span className="text-white font-bold">88%</span>
                             </div>
-                            <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
-                                <div className="h-full bg-primary" style={{ width: '88%' }}></div>
+                            <div className="w-full h-1.5 bg-slate-900 border border-blue-500/20 rounded-full overflow-hidden">
+                                <div className="h-full bg-blue-600" style={{ width: '88%' }}></div>
                             </div>
                         </div>
                     </div>

@@ -121,7 +121,7 @@ export default function AnnouncementsPage() {
                 </div>
                 <button
                     onClick={() => { resetForm(); setShowModal(true); }}
-                    className="flex items-center bg-accent hover:bg-accent-dark text-black px-5 py-3 rounded-xl font-bold transition-all"
+                    className="flex items-center btn-primary-blue px-5 py-3 rounded-xl font-bold"
                 >
                     <FiPlus className="mr-2" /> Write Announcement
                 </button>
@@ -129,10 +129,10 @@ export default function AnnouncementsPage() {
 
             {loading ? (
                 <div className="flex items-center justify-center min-h-[40vh]">
-                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-accent"></div>
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gold"></div>
                 </div>
             ) : announcements.length === 0 ? (
-                <div className="glass p-12 text-center rounded-2xl">
+                <div className="glass-panel p-12 text-center rounded-2xl">
                     <FiAlertCircle className="w-12 h-12 mx-auto text-gray-500 mb-4" />
                     <p className="text-gray-400">No announcements posted yet.</p>
                 </div>
@@ -144,15 +144,15 @@ export default function AnnouncementsPage() {
                             initial={{ opacity: 0, x: -15 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: idx * 0.05 }}
-                            className="glass p-6 rounded-2xl border border-white/5 relative"
+                            className="glass-panel p-6 rounded-2xl border border-blue-500/20 relative"
                         >
                             <div className="flex justify-between items-start mb-4">
                                 <div className="flex flex-wrap gap-2 items-center">
-                                    <span className="bg-primary/20 text-primary-light px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider">
+                                    <span className="bg-blue-500/20 text-blue-400 px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider">
                                         {a.tag}
                                     </span>
                                     {a.targetCommitteeId && (
-                                        <span className="bg-accent/15 text-accent px-2.5 py-0.5 rounded-full text-xs font-bold">
+                                        <span className="bg-gold/20 text-gold px-2.5 py-0.5 rounded-full text-xs font-bold">
                                             {a.targetCommitteeId.name}
                                         </span>
                                     )}
@@ -168,7 +168,7 @@ export default function AnnouncementsPage() {
                             <h3 className="text-xl font-bold text-white mb-2">{a.title}</h3>
                             <p className="text-gray-300 text-sm leading-relaxed mb-6 whitespace-pre-wrap">{a.content}</p>
 
-                            <div className="flex items-center space-x-6 text-xs text-gray-500 border-t border-white/5 pt-4">
+                            <div className="flex items-center space-x-6 text-xs text-gray-500 border-t border-blue-500/20 pt-4">
                                 <span className="flex items-center">
                                     <FiUser className="mr-1.5" /> Post By: {a.authorId?.name || 'Admin'}
                                 </span>
@@ -187,7 +187,7 @@ export default function AnnouncementsPage() {
                     <motion.div
                         initial={{ scale: 0.95, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
-                        className="glass w-full max-w-lg rounded-3xl p-8 space-y-6"
+                        className="glass-panel w-full max-w-lg rounded-3xl p-8 space-y-6"
                     >
                         <h2 className="text-2xl font-bold text-white mb-2">Publish Announcement</h2>
 
@@ -200,7 +200,7 @@ export default function AnnouncementsPage() {
                                     value={title}
                                     onChange={(e) => setTitle(e.target.value)}
                                     placeholder="e.g. Schedule for Mid-term Evaluation meetings"
-                                    className="w-full p-4 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent"
+                                    className="w-full p-4 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold"
                                 />
                             </div>
 
@@ -212,7 +212,7 @@ export default function AnnouncementsPage() {
                                     value={content}
                                     onChange={(e) => setContent(e.target.value)}
                                     placeholder="Write clear announcements..."
-                                    className="w-full p-4 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent resize-none text-sm"
+                                    className="w-full p-4 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold resize-none text-sm"
                                 />
                             </div>
 
@@ -222,7 +222,7 @@ export default function AnnouncementsPage() {
                                     <select
                                         value={tag}
                                         onChange={(e) => setTag(e.target.value)}
-                                        className="w-full p-4 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent text-sm"
+                                        className="w-full p-4 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold text-sm"
                                     >
                                         <option value="general">General</option>
                                         <option value="important">Important bulletin</option>
@@ -236,7 +236,7 @@ export default function AnnouncementsPage() {
                                     <select
                                         value={targetCommitteeId}
                                         onChange={(e) => setTargetCommitteeId(e.target.value)}
-                                        className="w-full p-4 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent text-sm"
+                                        className="w-full p-4 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold text-sm"
                                     >
                                         <option value="">Public / All Committees</option>
                                         {committees.map(c => (
@@ -250,13 +250,13 @@ export default function AnnouncementsPage() {
                                 <button
                                     type="button"
                                     onClick={() => setShowModal(false)}
-                                    className="px-6 py-3 bg-white/5 text-white rounded-xl hover:bg-white/10 transition-all font-semibold"
+                                    className="px-6 py-3 bg-slate-900 border border-blue-500/20 text-white rounded-xl hover:bg-slate-800 transition-all font-semibold"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-6 py-3 bg-accent hover:bg-accent-dark text-black rounded-xl transition-all font-bold"
+                                    className="btn-primary-blue px-6 py-3 rounded-xl font-bold"
                                 >
                                     Broadcast Notice
                                 </button>

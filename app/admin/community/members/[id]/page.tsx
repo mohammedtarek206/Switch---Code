@@ -163,7 +163,7 @@ export default function MemberProfileDetailPage({ params }: { params: { id: stri
     if (loading) {
         return (
             <div className="flex items-center justify-center min-h-[50vh]">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-accent"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gold"></div>
             </div>
         );
     }
@@ -172,7 +172,7 @@ export default function MemberProfileDetailPage({ params }: { params: { id: stri
         return (
             <div className="text-center py-20">
                 <p className="text-gray-400">Member profile not found.</p>
-                <Link href="/admin/community/members" className="text-accent underline">Back to List</Link>
+                <Link href="/admin/community/members" className="text-gold underline">Back to List</Link>
             </div>
         );
     }
@@ -186,7 +186,7 @@ export default function MemberProfileDetailPage({ params }: { params: { id: stri
                 </Link>
                 <div className="flex flex-col md:flex-row justify-between items-start gap-6">
                     <div className="flex items-center space-x-4">
-                        <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center font-bold text-2xl text-accent border border-white/10">
+                        <div className="w-16 h-16 bg-slate-900 border border-blue-500/20 rounded-full flex items-center justify-center font-bold text-2xl text-gold border border-blue-500/30">
                             {member.avatar ? (
                                 <img src={member.avatar} alt="Avatar" className="w-full h-full rounded-full object-cover" />
                             ) : (
@@ -198,7 +198,7 @@ export default function MemberProfileDetailPage({ params }: { params: { id: stri
                             <p className="text-gray-400 text-sm">{member.email} • {member.position || 'Member'}</p>
                         </div>
                     </div>
-                    <div className="bg-white/5 border border-white/10 p-4 rounded-2xl flex items-center space-x-3">
+                    <div className="bg-slate-900 border border-blue-500/20 p-4 rounded-2xl flex items-center space-x-3">
                         <FiAward className="text-yellow-500 w-8 h-8" />
                         <div>
                             <span className="text-[10px] text-gray-400 uppercase font-bold block mb-0.5">Performance Score</span>
@@ -210,16 +210,16 @@ export default function MemberProfileDetailPage({ params }: { params: { id: stri
 
             <div className="grid lg:grid-cols-3 gap-8">
                 {/* Performance Scorer Panel */}
-                <div className="glass p-8 rounded-3xl lg:col-span-2 space-y-6">
-                    <div className="flex justify-between items-center border-b border-white/5 pb-4">
+                <div className="glass-panel p-8 rounded-3xl lg:col-span-2 space-y-6">
+                    <div className="flex justify-between items-center border-b border-blue-500/20 pb-4">
                         <h3 className="text-xl font-bold text-white flex items-center">
-                            <FiActivity className="mr-2 text-accent" /> Score Calculator & Override
+                            <FiActivity className="mr-2 text-gold" /> Score Calculator & Override
                         </h3>
                         <div className="flex gap-2 text-xs">
                             <select
                                 value={month}
                                 onChange={(e) => setMonth(Number(e.target.value))}
-                                className="bg-dark p-2 rounded-lg border border-white/5 text-white"
+                                className="bg-[#07111F] p-2 rounded-lg border border-blue-500/20 text-white"
                             >
                                 {Array.from({ length: 12 }, (_, i) => (
                                     <option key={i + 1} value={i + 1}>Month {i + 1}</option>
@@ -228,7 +228,7 @@ export default function MemberProfileDetailPage({ params }: { params: { id: stri
                             <select
                                 value={year}
                                 onChange={(e) => setYear(Number(e.target.value))}
-                                className="bg-dark p-2 rounded-lg border border-white/5 text-white"
+                                className="bg-[#07111F] p-2 rounded-lg border border-blue-500/20 text-white"
                             >
                                 <option value="2026">2026</option>
                                 <option value="2027">2027</option>
@@ -238,24 +238,24 @@ export default function MemberProfileDetailPage({ params }: { params: { id: stri
 
                     {score && (
                         <div className="grid grid-cols-3 gap-4 text-center">
-                            <div className="bg-white/5 p-4 rounded-xl border border-white/5">
+                            <div className="bg-slate-900 border border-blue-500/20 p-4 rounded-xl border border-blue-500/20">
                                 <span className="text-[10px] uppercase font-bold text-gray-500 block mb-1">Attendance Score</span>
                                 <span className="text-lg font-bold text-white">{score.attendanceScore}%</span>
                             </div>
-                            <div className="bg-white/5 p-4 rounded-xl border border-white/5">
+                            <div className="bg-slate-900 border border-blue-500/20 p-4 rounded-xl border border-blue-500/20">
                                 <span className="text-[10px] uppercase font-bold text-gray-500 block mb-1">Tasks Done Status</span>
                                 <span className="text-lg font-bold text-white">{score.tasksScore}%</span>
                             </div>
-                            <div className="bg-white/5 p-4 rounded-xl border border-white/5">
+                            <div className="bg-slate-900 border border-blue-500/20 p-4 rounded-xl border border-blue-500/20">
                                 <span className="text-[10px] uppercase font-bold text-gray-500 block mb-1">Automated Sum</span>
-                                <span className="text-lg font-bold text-accent">
+                                <span className="text-lg font-bold text-gold">
                                     {Math.round(score.attendanceScore + score.tasksScore + score.projectsScore)} pts
                                 </span>
                             </div>
                         </div>
                     )}
 
-                    <form onSubmit={handleSaveScores} className="space-y-4 pt-4 border-t border-white/5">
+                    <form onSubmit={handleSaveScores} className="space-y-4 pt-4 border-t border-blue-500/20">
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-1">
                                 <label className="text-xs text-gray-400 font-semibold uppercase">Leader Evaluation (Max 15)</label>
@@ -265,7 +265,7 @@ export default function MemberProfileDetailPage({ params }: { params: { id: stri
                                     max="15"
                                     value={evalLeader}
                                     onChange={(e) => setEvalLeader(Number(e.target.value))}
-                                    className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none text-sm"
+                                    className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none text-sm"
                                 />
                             </div>
                             <div className="space-y-1">
@@ -276,7 +276,7 @@ export default function MemberProfileDetailPage({ params }: { params: { id: stri
                                     max="15"
                                     value={evalAdmin}
                                     onChange={(e) => setEvalAdmin(Number(e.target.value))}
-                                    className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none text-sm"
+                                    className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none text-sm"
                                 />
                             </div>
                         </div>
@@ -288,13 +288,13 @@ export default function MemberProfileDetailPage({ params }: { params: { id: stri
                                 placeholder="Leave blank to use standard formula totals"
                                 value={manualOverride}
                                 onChange={(e) => setManualOverride(e.target.value)}
-                                className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none text-sm"
+                                className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none text-sm"
                             />
                         </div>
 
                         <button
                             type="submit"
-                            className="w-full bg-accent hover:bg-accent-dark text-black py-3 rounded-xl font-bold transition-all text-xs"
+                            className="w-full btn-primary-blue py-3 rounded-xl font-bold transition-all text-xs"
                         >
                             Update Score Analytics
                         </button>
@@ -302,16 +302,16 @@ export default function MemberProfileDetailPage({ params }: { params: { id: stri
                 </div>
 
                 {/* Badges system */}
-                <div className="glass p-8 rounded-3xl space-y-6">
-                    <h3 className="text-xl font-bold text-white border-b border-white/5 pb-4 flex items-center">
-                        <FiShield className="mr-2 text-primary" /> Awarded Badges
+                <div className="glass-panel p-8 rounded-3xl space-y-6">
+                    <h3 className="text-xl font-bold text-white border-b border-blue-500/20 pb-4 flex items-center">
+                        <FiShield className="mr-2 text-blue-500" /> Awarded Badges
                     </h3>
 
                     <div className="flex gap-2">
                         <select
                             value={selectedBadgeId}
                             onChange={(e) => setSelectedBadgeId(e.target.value)}
-                            className="flex-1 p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none text-xs"
+                            className="flex-1 p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none text-xs"
                         >
                             <option value="">Grant Badge...</option>
                             {allBadges.map(b => (
@@ -320,20 +320,20 @@ export default function MemberProfileDetailPage({ params }: { params: { id: stri
                         </select>
                         <button
                             onClick={handleAssignBadge}
-                            className="p-3 bg-accent text-black rounded-xl hover:bg-accent-dark font-bold font-bold text-xs"
+                            className="p-3 btn-primary-blue rounded-xl font-bold text-xs"
                         >
                             Award
                         </button>
                     </div>
 
-                    <div className="space-y-3 pt-4 border-t border-white/5 max-h-60 overflow-y-auto custom-scrollbar-thin">
+                    <div className="space-y-3 pt-4 border-t border-blue-500/20 max-h-60 overflow-y-auto custom-scrollbar-thin">
                         {member.badges?.length === 0 ? (
                             <p className="text-gray-500 text-xs italic text-center py-4">No badges awarded yet.</p>
                         ) : (
                             member.badges?.map((b) => (
                                 <div
                                     key={b._id}
-                                    className="p-4 bg-white/5 rounded-xl flex items-center justify-between border border-white/5"
+                                    className="p-4 bg-slate-900 border border-blue-500/20 rounded-xl flex items-center justify-between border border-blue-500/20"
                                     style={{ borderLeft: `3px solid ${b.color || '#00A3FF'}` }}
                                 >
                                     <div>

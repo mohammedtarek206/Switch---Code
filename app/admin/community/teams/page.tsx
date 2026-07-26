@@ -112,28 +112,28 @@ export default function TeamsManagementPage() {
                     <h1 className="text-3xl font-extrabold text-white mb-2">Teams Management</h1>
                     <p className="text-gray-400 text-sm">Create and manage sub-teams within committees, assign leaders and custom styling.</p>
                 </div>
-                <button onClick={openNewModal} className="bg-accent text-black font-bold px-6 py-3 rounded-xl hover:scale-105 transition-transform shadow-[0_0_20px_rgba(0,255,136,0.3)] flex items-center gap-2">
+                <button onClick={openNewModal} className="btn-primary-blue px-6 py-3 rounded-xl hover:scale-105 transition-transform shadow-glow-blue flex items-center gap-2">
                     <FiPlus className="w-5 h-5" /> Create New Team
                 </button>
             </div>
 
             {/* Teams Grid */}
             {loading ? (
-                <div className="text-center py-12 text-accent">Loading teams...</div>
+                <div className="text-center py-12 text-gold">Loading teams...</div>
             ) : teams.length === 0 ? (
-                <div className="glass p-12 text-center text-gray-500 rounded-3xl">No sub-teams created yet. Click above to create one.</div>
+                <div className="glass-panel p-12 text-center text-gray-500 rounded-3xl">No sub-teams created yet. Click above to create one.</div>
             ) : (
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {teams.map(team => (
                         <motion.div key={team._id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-                            className="glass p-6 rounded-3xl border border-white/5 space-y-4 relative overflow-hidden flex flex-col justify-between"
+                            className="glass-panel p-6 rounded-3xl border border-blue-500/20 space-y-4 relative overflow-hidden flex flex-col justify-between"
                         >
                             <div className="absolute top-0 right-0 w-32 h-32 blur-3xl rounded-full pointer-events-none" style={{ backgroundColor: team.color || '#00FF88', opacity: 0.15 }} />
 
                             <div>
                                 <div className="flex justify-between items-start mb-3">
                                     <div>
-                                        <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-white/5 border border-white/10 text-primary">
+                                        <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-slate-900 border border-blue-500/20 border border-blue-500/30 text-blue-500">
                                             {team.committeeId?.name || 'Committee'}
                                         </span>
                                         <h3 className="text-xl font-bold text-white mt-1">{team.name}</h3>
@@ -146,9 +146,9 @@ export default function TeamsManagementPage() {
                                 <p className="text-gray-400 text-xs line-clamp-2">{team.description || 'No description provided.'}</p>
                             </div>
 
-                            <div className="space-y-2 border-t border-white/5 pt-3 text-xs">
+                            <div className="space-y-2 border-t border-blue-500/20 pt-3 text-xs">
                                 <div className="flex items-center justify-between text-gray-300">
-                                    <span className="text-gray-500 flex items-center gap-1"><FiShield className="text-accent" /> Leader:</span>
+                                    <span className="text-gray-500 flex items-center gap-1"><FiShield className="text-gold" /> Leader:</span>
                                     <span className="font-bold text-white">{team.leaderId?.name || 'Unassigned'}</span>
                                 </div>
                                 <div className="flex items-center justify-between text-gray-300">
@@ -157,7 +157,7 @@ export default function TeamsManagementPage() {
                                 </div>
                             </div>
 
-                            <div className="flex justify-end gap-2 pt-2 border-t border-white/5">
+                            <div className="flex justify-end gap-2 pt-2 border-t border-blue-500/20">
                                 <button onClick={() => openEditModal(team)} className="p-2 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 rounded-xl font-bold text-xs flex items-center gap-1">
                                     <FiEdit2 className="w-3.5 h-3.5" /> Edit
                                 </button>
@@ -173,13 +173,13 @@ export default function TeamsManagementPage() {
             {/* Create/Edit Modal */}
             {isModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md">
-                    <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="glass w-full max-w-lg rounded-3xl p-8 space-y-6">
+                    <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="glass-panel w-full max-w-lg rounded-3xl p-8 space-y-6">
                         <h2 className="text-2xl font-bold text-white mb-2">{formData._id ? 'Edit Team' : 'Create New Team'}</h2>
                         <form onSubmit={handleSubmit} className="space-y-4 text-sm">
                             <div className="space-y-1">
                                 <label className="text-xs font-semibold text-gray-400">Parent Committee *</label>
                                 <select required value={formData.committeeId} onChange={e => setFormData({ ...formData, committeeId: e.target.value })}
-                                    className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent">
+                                    className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold">
                                     <option value="">Select Committee</option>
                                     {committees.map(c => <option key={c._id} value={c._id}>{c.name}</option>)}
                                 </select>
@@ -187,30 +187,30 @@ export default function TeamsManagementPage() {
                             <div className="space-y-1">
                                 <label className="text-xs font-semibold text-gray-400">Team Name *</label>
                                 <input type="text" required placeholder="e.g. Frontend, AI, Recruitment" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })}
-                                    className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent" />
+                                    className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold" />
                             </div>
                             <div className="space-y-1">
                                 <label className="text-xs font-semibold text-gray-400">Description</label>
                                 <textarea rows={2} value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })}
-                                    className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent" />
+                                    className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold" />
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-1">
                                     <label className="text-xs font-semibold text-gray-400">Brand Color</label>
                                     <input type="color" value={formData.color} onChange={e => setFormData({ ...formData, color: e.target.value })}
-                                        className="w-full h-11 p-1 bg-dark-light border border-white/10 rounded-xl text-white cursor-pointer" />
+                                        className="w-full h-11 p-1 bg-slate-900 border border-blue-500/30 rounded-xl text-white cursor-pointer" />
                                 </div>
                                 <div className="space-y-1">
                                     <label className="text-xs font-semibold text-gray-400">Icon Identifier</label>
                                     <input type="text" value={formData.icon} onChange={e => setFormData({ ...formData, icon: e.target.value })}
-                                        className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent" />
+                                        className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold" />
                                 </div>
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-1">
                                     <label className="text-xs font-semibold text-gray-400">Team Leader</label>
                                     <select value={formData.leaderId} onChange={e => setFormData({ ...formData, leaderId: e.target.value })}
-                                        className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent">
+                                        className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold">
                                         <option value="">Unassigned</option>
                                         {users.map(u => <option key={u._id} value={u._id}>{u.name} ({u.username})</option>)}
                                     </select>
@@ -218,15 +218,15 @@ export default function TeamsManagementPage() {
                                 <div className="space-y-1">
                                     <label className="text-xs font-semibold text-gray-400">Vice Leader</label>
                                     <select value={formData.viceLeaderId} onChange={e => setFormData({ ...formData, viceLeaderId: e.target.value })}
-                                        className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent">
+                                        className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold">
                                         <option value="">Unassigned</option>
                                         {users.map(u => <option key={u._id} value={u._id}>{u.name} ({u.username})</option>)}
                                     </select>
                                 </div>
                             </div>
-                            <div className="flex justify-end gap-3 pt-4 border-t border-white/10">
-                                <button type="button" onClick={() => setIsModalOpen(false)} className="px-5 py-2.5 bg-white/5 font-bold rounded-xl text-gray-300">Cancel</button>
-                                <button type="submit" className="px-5 py-2.5 bg-accent text-black font-bold rounded-xl hover:bg-accent-dark">Save Team</button>
+                            <div className="flex justify-end gap-3 pt-4 border-t border-blue-500/30">
+                                <button type="button" onClick={() => setIsModalOpen(false)} className="px-5 py-2.5 bg-slate-900 border border-blue-500/20 font-bold rounded-xl text-gray-300">Cancel</button>
+                                <button type="submit" className="btn-primary-blue px-5 py-2.5 rounded-xl font-bold">Save Team</button>
                             </div>
                         </form>
                     </motion.div>

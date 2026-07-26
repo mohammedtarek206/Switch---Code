@@ -118,12 +118,12 @@ export default function EventsPage() {
         <div className="space-y-8 pb-12">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold text-white mb-2">Events Board</h1>
-                    <p className="text-gray-400">Schedule training sessions, seminars, or community meetups.</p>
+                    <h1 className="text-3xl font-black text-white mb-2 tracking-tight">Events Board</h1>
+                    <p className="text-slate-400 font-medium tracking-wide">Schedule training sessions, seminars, or community meetups.</p>
                 </div>
                 <button
                     onClick={() => { resetForm(); setShowModal(true); }}
-                    className="flex items-center bg-accent hover:bg-accent-dark text-black px-5 py-3 rounded-xl font-bold transition-all"
+                    className="flex items-center btn-primary-blue px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-widest transition-all shadow-glow-blue"
                 >
                     <FiPlus className="mr-2" /> Schedule Event
                 </button>
@@ -131,7 +131,7 @@ export default function EventsPage() {
 
             {loading ? (
                 <div className="flex items-center justify-center min-h-[40vh]">
-                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-accent"></div>
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -141,40 +141,40 @@ export default function EventsPage() {
                             initial={{ opacity: 0, y: 15 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: idx * 0.05 }}
-                            className="glass p-6 rounded-2xl flex flex-col justify-between"
+                            className="glass-card p-6 rounded-3xl flex flex-col justify-between group"
                         >
                             <div>
                                 <div className="flex justify-between items-center mb-4">
-                                    <span className="flex items-center text-xs text-accent bg-accent/15 px-3 py-1 rounded-full font-bold">
-                                        <FiAward className="mr-1" /> {e.pointsAwarded} pts
+                                    <span className="flex items-center text-[10px] uppercase text-gold bg-gold/10 border border-gold/30 px-3 py-1.5 rounded-full font-black tracking-widest shadow-lg">
+                                        <FiAward className="mr-1.5" /> {e.pointsAwarded} pts
                                     </span>
                                     <button
                                         onClick={() => handleDelete(e._id)}
-                                        className="p-1 hover:bg-white/5 rounded text-red-400 hover:text-red-500"
+                                        className="p-2 hover:bg-red-500/10 rounded-xl text-slate-400 hover:text-red-400 border border-transparent hover:border-red-500/30 transition-all"
                                     >
                                         <FiTrash2 className="w-4 h-4" />
                                     </button>
                                 </div>
 
-                                <h3 className="text-lg font-bold text-white mb-2">{e.title}</h3>
-                                <p className="text-gray-400 text-sm line-clamp-3 mb-4">{e.description}</p>
+                                <h3 className="text-xl font-black text-white mb-2 group-hover:text-gold transition-colors">{e.title}</h3>
+                                <p className="text-slate-400 text-xs line-clamp-3 mb-5 leading-relaxed font-medium">{e.description}</p>
 
-                                <div className="space-y-2 text-xs text-gray-500 pt-4 border-t border-white/5">
+                                <div className="space-y-3 text-xs text-slate-400 pt-5 border-t border-blue-500/20 font-semibold">
                                     <div className="flex items-center">
-                                        <FiCalendar className="mr-2 text-primary" />
+                                        <FiCalendar className="mr-3 text-blue-500" />
                                         <span>{new Date(e.date).toLocaleDateString()}</span>
                                     </div>
                                     <div className="flex items-center">
-                                        <FiClock className="mr-2 text-primary" />
+                                        <FiClock className="mr-3 text-blue-500" />
                                         <span>{new Date(e.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                                     </div>
                                     <div className="flex items-center">
-                                        <FiMapPin className="mr-2 text-primary" />
+                                        <FiMapPin className="mr-3 text-blue-500" />
                                         <span className="truncate">{e.location}</span>
                                     </div>
                                     {e.committeeId && (
                                         <div className="flex items-center">
-                                            <FiTag className="mr-2 text-primary" />
+                                            <FiTag className="mr-3 text-blue-500" />
                                             <span>{e.committeeId.name}</span>
                                         </div>
                                     )}
@@ -184,9 +184,9 @@ export default function EventsPage() {
                             <div className="mt-6">
                                 <Link
                                     href={`/admin/community/events/${e._id}`}
-                                    className="w-full flex items-center justify-center p-3 bg-white/5 hover:bg-white/10 text-white rounded-xl text-xs font-bold transition-all border border-white/5"
+                                    className="w-full flex items-center justify-center p-3.5 bg-slate-900 border border-blue-500/20 hover:border-gold/50 text-white rounded-xl text-xs font-black uppercase tracking-widest transition-all group-hover:shadow-glow-gold"
                                 >
-                                    <FiEye className="mr-2" /> Attendance & QR Scanners
+                                    <FiEye className="mr-2" /> Attendance & Scanners
                                 </Link>
                             </div>
                         </motion.div>
@@ -196,82 +196,85 @@ export default function EventsPage() {
 
             {/* Schedule Event Modal */}
             {showModal && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#07111F]/90 backdrop-blur-xl">
                     <motion.div
                         initial={{ scale: 0.95, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
-                        className="glass w-full max-w-lg rounded-3xl p-8 space-y-6"
+                        className="glass-panel w-full max-w-lg rounded-[2.5rem] p-8 space-y-6 border border-blue-500/30"
                     >
-                        <h2 className="text-2xl font-bold text-white mb-2">Schedule New Event</h2>
+                        <div>
+                            <span className="text-[10px] font-black uppercase tracking-widest text-gold mb-1 block">Events Manager</span>
+                            <h2 className="text-2xl font-black text-white tracking-tight">Schedule New Event</h2>
+                        </div>
 
                         <form onSubmit={handleSubmit} className="space-y-4">
-                            <div className="space-y-1">
-                                <label className="text-sm font-semibold text-gray-300">Event Title</label>
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-black uppercase tracking-wider text-slate-300">Event Title</label>
                                 <input
                                     type="text"
                                     required
                                     value={title}
                                     onChange={(e) => setTitle(e.target.value)}
                                     placeholder="e.g. Git & GitHub Crash Course"
-                                    className="w-full p-4 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent"
+                                    className="w-full p-4 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold font-medium text-sm transition-colors"
                                 />
                             </div>
 
-                            <div className="space-y-1">
-                                <label className="text-sm font-semibold text-gray-300">Description</label>
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-black uppercase tracking-wider text-slate-300">Description</label>
                                 <textarea
                                     required
                                     rows={3}
                                     value={description}
                                     onChange={(e) => setDescription(e.target.value)}
                                     placeholder="What is this event about?"
-                                    className="w-full p-4 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent resize-none"
+                                    className="w-full p-4 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold resize-none font-medium text-sm transition-colors"
                                 />
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-1">
-                                    <label className="text-sm font-semibold text-gray-300">Date & Time</label>
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-black uppercase tracking-wider text-slate-300">Date & Time</label>
                                     <input
                                         type="datetime-local"
                                         required
                                         value={date}
                                         onChange={(e) => setDate(e.target.value)}
-                                        className="w-full p-4 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent"
+                                        className="w-full p-4 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold font-medium text-sm transition-colors"
                                     />
                                 </div>
 
-                                <div className="space-y-1">
-                                    <label className="text-sm font-semibold text-gray-300">Location / Meet link</label>
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-black uppercase tracking-wider text-slate-300">Location / Meet link</label>
                                     <input
                                         type="text"
                                         required
                                         value={location}
                                         onChange={(e) => setLocation(e.target.value)}
-                                        placeholder="e.g. Lab 4 or Google Meet link"
-                                        className="w-full p-4 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent"
+                                        placeholder="e.g. Lab 4"
+                                        className="w-full p-4 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold font-medium text-sm transition-colors"
                                     />
                                 </div>
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-1">
-                                    <label className="text-sm font-semibold text-gray-300">Performance Points</label>
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-black uppercase tracking-wider text-slate-300">Performance Points</label>
                                     <input
                                         type="number"
                                         required
                                         value={pointsAwarded}
                                         onChange={(e) => setPointsAwarded(Number(e.target.value))}
-                                        className="w-full p-4 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent"
+                                        className="w-full p-4 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold font-medium text-sm transition-colors"
                                     />
                                 </div>
 
-                                <div className="space-y-1">
-                                    <label className="text-sm font-semibold text-gray-300">Organizer (Committee)</label>
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-black uppercase tracking-wider text-slate-300">Organizer (Committee)</label>
                                     <select
                                         value={committeeId}
                                         onChange={(e) => setCommitteeId(e.target.value)}
-                                        className="w-full p-4 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent text-sm"
+                                        className="w-full p-4 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold font-medium text-sm transition-colors"
                                     >
                                         <option value="">None / Public Org</option>
                                         {committees.map(c => (
@@ -281,17 +284,17 @@ export default function EventsPage() {
                                 </div>
                             </div>
 
-                            <div className="flex justify-end space-x-3 pt-4">
+                            <div className="flex justify-end space-x-3 pt-6">
                                 <button
                                     type="button"
                                     onClick={() => setShowModal(false)}
-                                    className="px-6 py-3 bg-white/5 text-white rounded-xl hover:bg-white/10 transition-all font-semibold"
+                                    className="px-6 py-3.5 bg-slate-900 hover:bg-red-500/10 border border-blue-500/30 hover:border-red-500/30 text-white rounded-xl transition-all font-black text-xs uppercase tracking-widest"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-6 py-3 bg-accent hover:bg-accent-dark text-black rounded-xl transition-all font-bold"
+                                    className="btn-primary-blue px-8 py-3.5 rounded-xl font-black text-xs uppercase tracking-widest"
                                 >
                                     Save Event
                                 </button>

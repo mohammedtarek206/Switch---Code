@@ -56,7 +56,7 @@ export default function AdminDashboard() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: index * 0.1 }}
-                        className="glass p-6 rounded-2xl flex items-center"
+                        className="glass-panel p-6 rounded-2xl flex items-center"
                     >
                         <div className={`p-4 rounded-xl ${stat.bg} ${stat.color} mr-4`}>
                             <stat.icon className="w-6 h-6" />
@@ -70,17 +70,17 @@ export default function AdminDashboard() {
             </div>
 
             <div className="grid lg:grid-cols-2 gap-8">
-                <div className="glass p-8 rounded-2xl">
+                <div className="glass-panel p-8 rounded-2xl">
                     <h3 className="text-xl font-bold text-white mb-6">Recent Activity</h3>
                     <p className="text-gray-500 text-center py-12">No recent activity found.</p>
                 </div>
-                <div className="glass p-8 rounded-2xl">
+                <div className="glass-panel p-8 rounded-2xl">
                     <h3 className="text-xl font-bold text-white mb-6">Quick Actions</h3>
                     <div className="space-y-4">
-                        <button className="w-full p-4 bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 rounded-xl transition-all text-left flex items-center">
+                        <button className="w-full p-4 bg-blue-600/10 hover:bg-blue-600/20 text-blue-500 border border-primary/20 rounded-xl transition-all text-left flex items-center">
                             <FiBook className="mr-3" /> Add New Track
                         </button>
-                        <button className="w-full p-4 bg-accent/10 hover:bg-accent/20 text-accent border border-accent/20 rounded-xl transition-all text-left flex items-center">
+                        <button className="w-full p-4 bg-gold/10 hover:bg-gold/20 text-gold border border-gold/20 rounded-xl transition-all text-left flex items-center">
                             <FiKey className="mr-3" /> Generate Access Codes
                         </button>
                     </div>

@@ -110,7 +110,7 @@ export default function CommitteeDashboard() {
         fetchAll(user);
     }
 
-    if (loading) return <div className="min-h-screen bg-dark flex justify-center items-center"><div className="animate-spin rounded-full h-10 w-10 border-t-2 border-accent" /></div>;
+    if (loading) return <div className="min-h-screen bg-[#07111F] flex justify-center items-center"><div className="animate-spin rounded-full h-10 w-10 border-t-2 border-gold" /></div>;
     if (!user) return null;
 
     const isLeader = ['committee_leader', 'vice_committee_leader', 'admin', 'super_admin', 'president'].includes(user.role);
@@ -129,11 +129,11 @@ export default function CommitteeDashboard() {
     ];
 
     return (
-        <div className="min-h-screen bg-dark text-white">
+        <div className="min-h-screen bg-[#07111F] text-white">
             {/* Top Header */}
-            <div className="bg-dark-light border-b border-white/5 px-6 py-4 flex justify-between items-center">
+            <div className="bg-slate-900 border-b border-blue-500/20 px-6 py-4 flex justify-between items-center">
                 <div className="flex items-center gap-4">
-                    <Link href="/dashboard" className="p-2 hover:bg-white/5 rounded-xl text-gray-400 hover:text-white transition-colors">
+                    <Link href="/dashboard" className="p-2 hover:bg-slate-900 border border-blue-500/20 rounded-xl text-gray-400 hover:text-white transition-colors">
                         <FiArrowLeft className="w-5 h-5" />
                     </Link>
                     <div>
@@ -142,12 +142,12 @@ export default function CommitteeDashboard() {
                     </div>
                 </div>
                 <div className="flex items-center gap-2">
-                    <span className={`text-xs font-bold uppercase px-3 py-1 rounded-full border ${isLeader ? 'bg-accent/10 border-accent/20 text-accent' : 'bg-blue-500/10 border-blue-500/20 text-blue-400'}`}>
+                    <span className={`text-xs font-bold uppercase px-3 py-1 rounded-full border ${isLeader ? 'bg-gold/10 border-gold/20 text-gold' : 'bg-blue-500/10 border-blue-500/20 text-blue-400'}`}>
                         {user.role?.replace(/_/g, ' ')}
                     </span>
                     {isLeader && (
                         <div className="flex gap-2 ml-2">
-                            <button onClick={() => setShowTaskModal(true)} className="bg-accent text-black font-bold px-3 py-2 rounded-xl text-xs flex items-center gap-1.5 hover:bg-accent/90">
+                            <button onClick={() => setShowTaskModal(true)} className="bg-gold text-black font-bold px-3 py-2 rounded-xl text-xs flex items-center gap-1.5 hover:bg-gold/90">
                                 <FiPlus className="w-4 h-4" /> New Task
                             </button>
                         </div>
@@ -156,10 +156,10 @@ export default function CommitteeDashboard() {
             </div>
 
             {/* Tabs */}
-            <div className="border-b border-white/5 px-6 flex gap-1 overflow-x-auto">
+            <div className="border-b border-blue-500/20 px-6 flex gap-1 overflow-x-auto">
                 {TABS.map(t => (
                     <button key={t.id} onClick={() => setActiveTab(t.id as any)}
-                        className={`flex items-center gap-1.5 px-4 py-3 text-xs font-bold border-b-2 transition-colors whitespace-nowrap ${activeTab === t.id ? 'border-accent text-accent' : 'border-transparent text-gray-400 hover:text-white'}`}>
+                        className={`flex items-center gap-1.5 px-4 py-3 text-xs font-bold border-b-2 transition-colors whitespace-nowrap ${activeTab === t.id ? 'border-gold text-gold' : 'border-transparent text-gray-400 hover:text-white'}`}>
                         <t.icon className="w-4 h-4" />{t.label}
                     </button>
                 ))}
@@ -178,11 +178,11 @@ export default function CommitteeDashboard() {
                                     { label: 'Total Tasks', val: stats.totalTasks, color: 'text-purple-400', bg: 'bg-purple-500/10' },
                                     { label: 'Completed', val: stats.completedTasks, color: 'text-green-400', bg: 'bg-green-500/10' },
                                     { label: 'Overdue', val: stats.lateTasks, color: 'text-red-400', bg: 'bg-red-500/10' },
-                                    { label: 'Completion %', val: `${stats.completionRate}%`, color: 'text-accent', bg: 'bg-accent/10' },
+                                    { label: 'Completion %', val: `${stats.completionRate}%`, color: 'text-gold', bg: 'bg-gold/10' },
                                     { label: 'Warnings', val: stats.totalWarnings, color: 'text-orange-400', bg: 'bg-orange-500/10' },
                                     { label: 'Rewards', val: stats.totalRewards, color: 'text-yellow-400', bg: 'bg-yellow-500/10' },
                                 ].map(s => (
-                                    <div key={s.label} className={`glass p-4 rounded-2xl border border-white/5 flex flex-col gap-2`}>
+                                    <div key={s.label} className={`glass-panel p-4 rounded-2xl border border-blue-500/20 flex flex-col gap-2`}>
                                         <div className={`text-xs font-bold uppercase tracking-wider ${s.color}`}>{s.label}</div>
                                         <div className="text-2xl font-extrabold text-white">{s.val}</div>
                                     </div>
@@ -194,12 +194,12 @@ export default function CommitteeDashboard() {
                         {!isLeader && (
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                                 {[
-                                    { label: 'Avg Score', val: `${data?.avgScore || 0}`, color: 'text-accent' },
+                                    { label: 'Avg Score', val: `${data?.avgScore || 0}`, color: 'text-gold' },
                                     { label: 'My Tasks', val: tasks.length, color: 'text-blue-400' },
                                     { label: 'Warnings', val: data?.warnings?.length || 0, color: 'text-red-400' },
                                     { label: 'Rewards', val: data?.rewards?.length || 0, color: 'text-yellow-400' },
                                 ].map(s => (
-                                    <div key={s.label} className="glass p-5 rounded-2xl border border-white/5">
+                                    <div key={s.label} className="glass-panel p-5 rounded-2xl border border-blue-500/20">
                                         <div className={`text-xs font-bold uppercase text-gray-500 mb-1`}>{s.label}</div>
                                         <div className={`text-3xl font-extrabold ${s.color}`}>{s.val}</div>
                                     </div>
@@ -208,10 +208,10 @@ export default function CommitteeDashboard() {
                         )}
 
                         {/* Active Tasks Preview */}
-                        <div className="glass rounded-3xl border border-white/5 overflow-hidden">
-                            <div className="p-5 border-b border-white/5 flex justify-between items-center">
+                        <div className="glass-panel rounded-3xl border border-blue-500/20 overflow-hidden">
+                            <div className="p-5 border-b border-blue-500/20 flex justify-between items-center">
                                 <h3 className="font-bold text-white">Active Tasks</h3>
-                                <button onClick={() => setActiveTab('tasks')} className="text-xs text-accent hover:underline flex items-center gap-1">View all <FiChevronRight /></button>
+                                <button onClick={() => setActiveTab('tasks')} className="text-xs text-gold hover:underline flex items-center gap-1">View all <FiChevronRight /></button>
                             </div>
                             <div className="divide-y divide-white/5">
                                 {tasks.filter(t => t.status !== 'done').slice(0, 5).map((task: any) => (
@@ -231,11 +231,11 @@ export default function CommitteeDashboard() {
 
                         {/* Upcoming Meetings */}
                         {(data?.meetings || []).length > 0 && (
-                            <div className="glass rounded-3xl border border-white/5 p-5">
+                            <div className="glass-panel rounded-3xl border border-blue-500/20 p-5">
                                 <h3 className="font-bold text-white mb-4 flex items-center gap-2"><FiCalendar className="text-blue-400" />Upcoming Meetings</h3>
                                 <div className="space-y-3">
                                     {(data.meetings || []).filter((m: any) => m.status === 'upcoming').slice(0, 3).map((m: any) => (
-                                        <div key={m._id} className="bg-white/5 p-3 rounded-xl flex items-center gap-4">
+                                        <div key={m._id} className="bg-slate-900 border border-blue-500/20 p-3 rounded-xl flex items-center gap-4">
                                             <div className="bg-blue-500/10 text-blue-400 p-3 rounded-xl text-center min-w-[48px]">
                                                 <div className="text-base font-extrabold">{new Date(m.date).getDate()}</div>
                                                 <div className="text-[10px] uppercase">{new Date(m.date).toLocaleString('en', { month: 'short' })}</div>
@@ -253,17 +253,17 @@ export default function CommitteeDashboard() {
 
                         {/* Leader Quick Actions */}
                         {isLeader && (
-                            <div className="glass rounded-3xl border border-white/5 p-5">
+                            <div className="glass-panel rounded-3xl border border-blue-500/20 p-5">
                                 <h3 className="font-bold text-white mb-4">Quick Actions</h3>
                                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                                     {[
-                                        { label: 'New Task', icon: FiPlus, color: 'text-accent bg-accent/10', action: () => setShowTaskModal(true) },
+                                        { label: 'New Task', icon: FiPlus, color: 'text-gold bg-gold/10', action: () => setShowTaskModal(true) },
                                         { label: 'Evaluate Member', icon: FiStar, color: 'text-yellow-400 bg-yellow-500/10', action: () => setShowEvalModal(true) },
                                         { label: 'Issue Warning', icon: FiAlertTriangle, color: 'text-red-400 bg-red-500/10', action: () => setShowWarnModal(true) },
                                         { label: 'Grant Reward', icon: FiAward, color: 'text-purple-400 bg-purple-500/10', action: () => setShowRewardModal(true) },
                                         { label: 'Schedule Meeting', icon: FiCalendar, color: 'text-blue-400 bg-blue-500/10', action: () => setShowMeetingModal(true) },
                                     ].map(a => (
-                                        <button key={a.label} onClick={a.action} className={`glass p-4 rounded-xl border border-white/5 flex items-center gap-3 hover:bg-white/5 transition-all text-left`}>
+                                        <button key={a.label} onClick={a.action} className={`glass-panel p-4 rounded-xl border border-blue-500/20 flex items-center gap-3 hover:bg-slate-900 border border-blue-500/20 transition-all text-left`}>
                                             <div className={`p-2 rounded-xl ${a.color}`}><a.icon className="w-5 h-5" /></div>
                                             <span className="text-sm font-bold text-white">{a.label}</span>
                                         </button>
@@ -279,18 +279,18 @@ export default function CommitteeDashboard() {
                     <div className="space-y-4">
                         <div className="flex justify-between items-center">
                             <h2 className="text-xl font-bold">Tasks Board</h2>
-                            {isLeader && <button onClick={() => setShowTaskModal(true)} className="bg-accent text-black font-bold px-4 py-2 rounded-xl text-sm flex items-center gap-2"><FiPlus />New Task</button>}
+                            {isLeader && <button onClick={() => setShowTaskModal(true)} className="bg-gold text-black font-bold px-4 py-2 rounded-xl text-sm flex items-center gap-2"><FiPlus />New Task</button>}
                         </div>
                         {/* Kanban columns */}
                         <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-4">
                             {['todo', 'in_progress', 'review', 'revision', 'done'].map(col => (
-                                <div key={col} className="glass rounded-2xl border border-white/5 overflow-hidden">
-                                    <div className={`p-3 border-b border-white/5 text-xs font-extrabold uppercase tracking-wider ${STATUS_COLORS[col]}`}>
+                                <div key={col} className="glass-panel rounded-2xl border border-blue-500/20 overflow-hidden">
+                                    <div className={`p-3 border-b border-blue-500/20 text-xs font-extrabold uppercase tracking-wider ${STATUS_COLORS[col]}`}>
                                         {col.replace('_', ' ')} ({tasks.filter(t => t.status === col).length})
                                     </div>
                                     <div className="p-3 space-y-3 min-h-[200px]">
                                         {tasks.filter(t => t.status === col).map((task: any) => (
-                                            <div key={task._id} className="bg-white/5 p-3 rounded-xl border border-white/5 cursor-pointer hover:border-accent/30 transition-all"
+                                            <div key={task._id} className="bg-slate-900 border border-blue-500/20 p-3 rounded-xl border border-blue-500/20 cursor-pointer hover:border-gold/30 transition-all"
                                                 onClick={() => setSelectedTask(task === selectedTask ? null : task)}>
                                                 <p className="font-bold text-sm text-white mb-1">{task.title}</p>
                                                 <div className="flex items-center gap-1 flex-wrap">
@@ -300,7 +300,7 @@ export default function CommitteeDashboard() {
                                                 {task.progress > 0 && (
                                                     <div className="mt-2">
                                                         <div className="flex justify-between text-[10px] text-gray-500 mb-1"><span>Progress</span><span>{task.progress}%</span></div>
-                                                        <div className="w-full h-1.5 bg-white/5 rounded-full"><div className="h-full bg-accent rounded-full" style={{ width: `${task.progress}%` }} /></div>
+                                                        <div className="w-full h-1.5 bg-slate-900 border border-blue-500/20 rounded-full"><div className="h-full bg-gold rounded-full" style={{ width: `${task.progress}%` }} /></div>
                                                     </div>
                                                 )}
                                                 {/* Member quick actions */}
@@ -327,7 +327,7 @@ export default function CommitteeDashboard() {
 
                         {/* Task Detail Panel */}
                         {selectedTask && (
-                            <div className="glass rounded-3xl border border-accent/20 p-6 space-y-4">
+                            <div className="glass-panel rounded-3xl border border-gold/20 p-6 space-y-4">
                                 <div className="flex justify-between items-start">
                                     <div>
                                         <h3 className="text-xl font-extrabold text-white">{selectedTask.title}</h3>
@@ -348,7 +348,7 @@ export default function CommitteeDashboard() {
                                             onChange={e => setSelectedTask({ ...selectedTask, progress: parseInt(e.target.value) })}
                                             className="w-full accent-accent" />
                                         <button onClick={() => updateTask(selectedTask._id, 'UPDATE_PROGRESS', { progress: selectedTask.progress })}
-                                            className="bg-accent text-black font-bold px-4 py-2 rounded-xl text-sm">Save Progress</button>
+                                            className="bg-gold text-black font-bold px-4 py-2 rounded-xl text-sm">Save Progress</button>
                                     </div>
                                 )}
                                 {/* Checklist */}
@@ -370,18 +370,18 @@ export default function CommitteeDashboard() {
                                     <h4 className="text-sm font-bold text-white mb-2">Comments ({selectedTask.comments?.length || 0})</h4>
                                     <div className="space-y-2 mb-3 max-h-40 overflow-y-auto">
                                         {(selectedTask.comments || []).map((c: any, i: number) => (
-                                            <div key={i} className="bg-white/5 p-3 rounded-xl text-sm">
-                                                <p className="text-accent font-bold text-xs mb-1">{c.authorId?.name || 'Member'}</p>
+                                            <div key={i} className="bg-slate-900 border border-blue-500/20 p-3 rounded-xl text-sm">
+                                                <p className="text-gold font-bold text-xs mb-1">{c.authorId?.name || 'Member'}</p>
                                                 <p className="text-gray-300">{c.content}</p>
                                             </div>
                                         ))}
                                     </div>
                                     <div className="flex gap-2">
-                                        <input id="comment-input" type="text" placeholder="Add a comment..." className="flex-1 p-2.5 bg-dark-light border border-white/10 rounded-xl text-sm text-white outline-none focus:border-accent" />
+                                        <input id="comment-input" type="text" placeholder="Add a comment..." className="flex-1 p-2.5 bg-slate-900 border border-blue-500/30 rounded-xl text-sm text-white outline-none focus:border-gold" />
                                         <button onClick={() => {
                                             const inp = document.getElementById('comment-input') as HTMLInputElement;
                                             if (inp?.value) { updateTask(selectedTask._id, 'ADD_COMMENT', { content: inp.value }); inp.value = ''; }
-                                        }} className="bg-accent text-black font-bold px-4 rounded-xl text-sm">Send</button>
+                                        }} className="bg-gold text-black font-bold px-4 rounded-xl text-sm">Send</button>
                                     </div>
                                 </div>
                                 {/* Activity log */}
@@ -402,14 +402,14 @@ export default function CommitteeDashboard() {
 
                 {/* ──── MEMBERS TAB (leader only) ──── */}
                 {activeTab === 'members' && isLeader && (
-                    <div className="glass rounded-3xl border border-white/5 overflow-hidden">
-                        <div className="p-5 border-b border-white/5 flex justify-between items-center">
+                    <div className="glass-panel rounded-3xl border border-blue-500/20 overflow-hidden">
+                        <div className="p-5 border-b border-blue-500/20 flex justify-between items-center">
                             <h3 className="font-bold text-white">Committee Members ({members.length})</h3>
                         </div>
                         <div className="divide-y divide-white/5">
                             {members.map((m: any) => (
                                 <div key={m._id} className="p-4 flex items-center gap-4 hover:bg-white/[0.02]">
-                                    <div className="w-10 h-10 rounded-full bg-accent/10 border border-accent/30 flex items-center justify-center font-bold text-accent">
+                                    <div className="w-10 h-10 rounded-full bg-gold/10 border border-gold/30 flex items-center justify-center font-bold text-gold">
                                         {m.avatar ? <img src={m.avatar} className="w-full h-full rounded-full object-cover" /> : m.name[0]}
                                     </div>
                                     <div className="flex-1">
@@ -418,7 +418,7 @@ export default function CommitteeDashboard() {
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <span className="text-xs font-bold bg-yellow-500/10 text-yellow-400 px-2 py-1 rounded-lg">⭐ {m.performanceScore || 0}</span>
-                                        <button onClick={() => { setEvalForm({ ...evalForm, memberId: m._id }); setShowEvalModal(true); }} className="text-xs bg-accent/10 text-accent px-3 py-1.5 rounded-lg font-bold hover:bg-accent/20">Evaluate</button>
+                                        <button onClick={() => { setEvalForm({ ...evalForm, memberId: m._id }); setShowEvalModal(true); }} className="text-xs bg-gold/10 text-gold px-3 py-1.5 rounded-lg font-bold hover:bg-gold/20">Evaluate</button>
                                         <button onClick={() => { setWarnForm({ ...warnForm, memberId: m._id }); setShowWarnModal(true); }} className="text-xs bg-red-500/10 text-red-400 px-3 py-1.5 rounded-lg font-bold hover:bg-red-500/20">Warn</button>
                                         <button onClick={() => { setRewardForm({ ...rewardForm, memberId: m._id }); setShowRewardModal(true); }} className="text-xs bg-purple-500/10 text-purple-400 px-3 py-1.5 rounded-lg font-bold hover:bg-purple-500/20">Reward</button>
                                     </div>
@@ -438,27 +438,27 @@ export default function CommitteeDashboard() {
                         </div>
                         <div className="space-y-4">
                             {(data?.evaluations || []).map((ev: any) => (
-                                <div key={ev._id} className="glass rounded-2xl border border-white/5 p-6">
+                                <div key={ev._id} className="glass-panel rounded-2xl border border-blue-500/20 p-6">
                                     <div className="flex justify-between items-center mb-4">
                                         <div>
                                             <p className="font-bold text-white">{ev.period} Evaluation · {ev.month}/{ev.year}</p>
                                             <p className="text-xs text-gray-400">By: {ev.evaluatorId?.name}</p>
                                         </div>
-                                        <div className="text-3xl font-extrabold text-accent">{ev.totalScore}<span className="text-sm text-gray-500">/100</span></div>
+                                        <div className="text-3xl font-extrabold text-gold">{ev.totalScore}<span className="text-sm text-gray-500">/100</span></div>
                                     </div>
                                     <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
                                         {CRITERIA.map(c => (
-                                            <div key={c} className="bg-white/5 p-2.5 rounded-xl text-center">
+                                            <div key={c} className="bg-slate-900 border border-blue-500/20 p-2.5 rounded-xl text-center">
                                                 <div className="text-[10px] text-gray-500 uppercase">{CRITERIA_LABELS[c]}</div>
                                                 <div className="text-lg font-bold text-white">{ev[c]}<span className="text-xs text-gray-500">/10</span></div>
-                                                <div className="w-full h-1 bg-white/10 rounded-full mt-1"><div className="h-full bg-accent rounded-full" style={{ width: `${ev[c] * 10}%` }} /></div>
+                                                <div className="w-full h-1 bg-slate-800 rounded-full mt-1"><div className="h-full bg-gold rounded-full" style={{ width: `${ev[c] * 10}%` }} /></div>
                                             </div>
                                         ))}
                                     </div>
-                                    {ev.leaderComment && <p className="mt-3 text-sm text-gray-300 bg-white/5 p-3 rounded-xl"><span className="font-bold text-accent">Leader: </span>{ev.leaderComment}</p>}
+                                    {ev.leaderComment && <p className="mt-3 text-sm text-gray-300 bg-slate-900 border border-blue-500/20 p-3 rounded-xl"><span className="font-bold text-gold">Leader: </span>{ev.leaderComment}</p>}
                                 </div>
                             ))}
-                            {(data?.evaluations || []).length === 0 && <div className="glass p-10 text-center text-gray-500 rounded-3xl">No evaluations yet.</div>}
+                            {(data?.evaluations || []).length === 0 && <div className="glass-panel p-10 text-center text-gray-500 rounded-3xl">No evaluations yet.</div>}
                         </div>
                     </div>
                 )}
@@ -472,7 +472,7 @@ export default function CommitteeDashboard() {
                         </div>
                         <div className="space-y-3">
                             {(data?.meetings || []).map((m: any) => (
-                                <div key={m._id} className="glass p-4 rounded-2xl border border-white/5 flex items-center gap-4">
+                                <div key={m._id} className="glass-panel p-4 rounded-2xl border border-blue-500/20 flex items-center gap-4">
                                     <div className="bg-blue-500/10 text-blue-400 p-3 rounded-xl text-center min-w-[56px]">
                                         <div className="text-xl font-extrabold">{new Date(m.date).getDate()}</div>
                                         <div className="text-[10px] uppercase">{new Date(m.date).toLocaleString('en', { month: 'short' })}</div>
@@ -488,7 +488,7 @@ export default function CommitteeDashboard() {
                                     </div>
                                 </div>
                             ))}
-                            {(data?.meetings || []).length === 0 && <div className="glass p-10 text-center text-gray-500 rounded-3xl">No meetings scheduled.</div>}
+                            {(data?.meetings || []).length === 0 && <div className="glass-panel p-10 text-center text-gray-500 rounded-3xl">No meetings scheduled.</div>}
                         </div>
                     </div>
                 )}
@@ -502,7 +502,7 @@ export default function CommitteeDashboard() {
                         </div>
                         <div className="space-y-3">
                             {(data?.warnings || []).map((w: any) => (
-                                <div key={w._id} className="glass p-4 rounded-2xl border border-red-500/10">
+                                <div key={w._id} className="glass-panel p-4 rounded-2xl border border-red-500/10">
                                     <div className="flex justify-between items-start">
                                         <div>
                                             <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded border ${w.level === 'critical' ? 'bg-red-900/50 text-red-300 border-red-500/30' : w.level === 'high' ? 'bg-red-500/20 text-red-400 border-red-500/20' : w.level === 'medium' ? 'bg-orange-500/20 text-orange-400 border-orange-500/20' : 'bg-yellow-500/20 text-yellow-400 border-yellow-500/20'}`}>{w.level} severity</span>
@@ -516,7 +516,7 @@ export default function CommitteeDashboard() {
                                     </div>
                                 </div>
                             ))}
-                            {(data?.warnings || []).length === 0 && <div className="glass p-10 text-center text-gray-500 rounded-3xl">✅ No warnings on record. Keep it up!</div>}
+                            {(data?.warnings || []).length === 0 && <div className="glass-panel p-10 text-center text-gray-500 rounded-3xl">✅ No warnings on record. Keep it up!</div>}
                         </div>
                     </div>
                 )}
@@ -530,7 +530,7 @@ export default function CommitteeDashboard() {
                         </div>
                         <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
                             {(data?.rewards || []).map((r: any) => (
-                                <div key={r._id} className="glass p-5 rounded-2xl border border-yellow-500/10 text-center space-y-2">
+                                <div key={r._id} className="glass-panel p-5 rounded-2xl border border-yellow-500/10 text-center space-y-2">
                                     <div className="text-4xl">{REWARD_ICONS[r.rewardType] || '🏅'}</div>
                                     <p className="font-extrabold text-white">{r.title}</p>
                                     <p className="text-xs text-gray-400">{r.rewardType.replace(/_/g, ' ')}</p>
@@ -538,7 +538,7 @@ export default function CommitteeDashboard() {
                                     <p className="text-[10px] text-gray-600">From: {r.grantedBy?.name} · {new Date(r.createdAt).toLocaleDateString()}</p>
                                 </div>
                             ))}
-                            {(data?.rewards || []).length === 0 && <div className="glass p-10 text-center text-gray-500 rounded-3xl col-span-3">No rewards yet. Earn your first one!</div>}
+                            {(data?.rewards || []).length === 0 && <div className="glass-panel p-10 text-center text-gray-500 rounded-3xl col-span-3">No rewards yet. Earn your first one!</div>}
                         </div>
                     </div>
                 )}
@@ -549,20 +549,20 @@ export default function CommitteeDashboard() {
             {/* New Task Modal */}
             {showTaskModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-                    <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="glass w-full max-w-xl rounded-3xl p-6 max-h-[90vh] overflow-y-auto">
+                    <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="glass-panel w-full max-w-xl rounded-3xl p-6 max-h-[90vh] overflow-y-auto">
                         <h2 className="text-xl font-bold text-white mb-5">Create New Task</h2>
                         <form onSubmit={createTask} className="space-y-4 text-sm">
-                            <input required placeholder="Task title *" value={taskForm.title} onChange={e => setTaskForm({ ...taskForm, title: e.target.value })} className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent" />
-                            <textarea placeholder="Description" value={taskForm.description} onChange={e => setTaskForm({ ...taskForm, description: e.target.value })} className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent" rows={3} />
+                            <input required placeholder="Task title *" value={taskForm.title} onChange={e => setTaskForm({ ...taskForm, title: e.target.value })} className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold" />
+                            <textarea placeholder="Description" value={taskForm.description} onChange={e => setTaskForm({ ...taskForm, description: e.target.value })} className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold" rows={3} />
                             <div className="grid grid-cols-2 gap-3">
-                                <select value={taskForm.priority} onChange={e => setTaskForm({ ...taskForm, priority: e.target.value })} className="p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent">
+                                <select value={taskForm.priority} onChange={e => setTaskForm({ ...taskForm, priority: e.target.value })} className="p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold">
                                     {['low', 'medium', 'high', 'critical'].map(p => <option key={p} value={p}>{p}</option>)}
                                 </select>
-                                <input type="date" value={taskForm.deadline} onChange={e => setTaskForm({ ...taskForm, deadline: e.target.value })} className="p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent" />
+                                <input type="date" value={taskForm.deadline} onChange={e => setTaskForm({ ...taskForm, deadline: e.target.value })} className="p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold" />
                             </div>
                             <div>
                                 <label className="text-xs font-bold text-gray-400 mb-2 block">Assign to Members</label>
-                                <div className="space-y-1 bg-white/5 p-3 rounded-xl max-h-40 overflow-y-auto">
+                                <div className="space-y-1 bg-slate-900 border border-blue-500/20 p-3 rounded-xl max-h-40 overflow-y-auto">
                                     {members.map((m: any) => (
                                         <label key={m._id} className="flex items-center gap-2 text-sm text-gray-300 cursor-pointer">
                                             <input type="checkbox" checked={taskForm.assignees.includes(m._id)} className="accent-accent"
@@ -573,9 +573,9 @@ export default function CommitteeDashboard() {
                                     {members.length === 0 && <p className="text-xs text-gray-500">No members loaded</p>}
                                 </div>
                             </div>
-                            <div className="flex justify-end gap-3 pt-4 border-t border-white/10">
-                                <button type="button" onClick={() => setShowTaskModal(false)} className="px-5 py-2.5 bg-white/5 rounded-xl text-gray-300 font-bold">Cancel</button>
-                                <button type="submit" className="px-5 py-2.5 bg-accent text-black rounded-xl font-bold">Create Task</button>
+                            <div className="flex justify-end gap-3 pt-4 border-t border-blue-500/30">
+                                <button type="button" onClick={() => setShowTaskModal(false)} className="px-5 py-2.5 bg-slate-900 border border-blue-500/20 rounded-xl text-gray-300 font-bold">Cancel</button>
+                                <button type="submit" className="px-5 py-2.5 bg-gold text-black rounded-xl font-bold">Create Task</button>
                             </div>
                         </form>
                     </motion.div>
@@ -585,14 +585,14 @@ export default function CommitteeDashboard() {
             {/* Evaluate Modal */}
             {showEvalModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-                    <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="glass w-full max-w-2xl rounded-3xl p-6 max-h-[90vh] overflow-y-auto">
+                    <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="glass-panel w-full max-w-2xl rounded-3xl p-6 max-h-[90vh] overflow-y-auto">
                         <h2 className="text-xl font-bold text-white mb-5">Evaluate Member</h2>
                         <div className="space-y-4 text-sm">
-                            <select value={evalForm.memberId} onChange={e => setEvalForm({ ...evalForm, memberId: e.target.value })} className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent">
+                            <select value={evalForm.memberId} onChange={e => setEvalForm({ ...evalForm, memberId: e.target.value })} className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold">
                                 <option value="">Select member *</option>
                                 {members.map((m: any) => <option key={m._id} value={m._id}>{m.name}</option>)}
                             </select>
-                            <select value={evalForm.period} onChange={e => setEvalForm({ ...evalForm, period: e.target.value })} className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent">
+                            <select value={evalForm.period} onChange={e => setEvalForm({ ...evalForm, period: e.target.value })} className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold">
                                 <option value="monthly">Monthly</option>
                                 <option value="weekly">Weekly</option>
                             </select>
@@ -604,13 +604,13 @@ export default function CommitteeDashboard() {
                                     </div>
                                 ))}
                             </div>
-                            <div className="bg-accent/5 border border-accent/10 p-3 rounded-xl text-center">
+                            <div className="bg-gold/5 border border-gold/10 p-3 rounded-xl text-center">
                                 <span className="text-xs text-gray-400 uppercase">Calculated Total Score</span>
-                                <div className="text-3xl font-extrabold text-accent">{Math.round(CRITERIA.reduce((a, c) => a + evalForm[c], 0) / CRITERIA.length * 10)}<span className="text-sm text-gray-400">/100</span></div>
+                                <div className="text-3xl font-extrabold text-gold">{Math.round(CRITERIA.reduce((a, c) => a + evalForm[c], 0) / CRITERIA.length * 10)}<span className="text-sm text-gray-400">/100</span></div>
                             </div>
-                            <textarea placeholder="Leader comment..." value={evalForm.leaderComment} onChange={e => setEvalForm({ ...evalForm, leaderComment: e.target.value })} className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent" rows={2} />
-                            <div className="flex justify-end gap-3 pt-4 border-t border-white/10">
-                                <button onClick={() => setShowEvalModal(false)} className="px-5 py-2.5 bg-white/5 rounded-xl text-gray-300 font-bold">Cancel</button>
+                            <textarea placeholder="Leader comment..." value={evalForm.leaderComment} onChange={e => setEvalForm({ ...evalForm, leaderComment: e.target.value })} className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold" rows={2} />
+                            <div className="flex justify-end gap-3 pt-4 border-t border-blue-500/30">
+                                <button onClick={() => setShowEvalModal(false)} className="px-5 py-2.5 bg-slate-900 border border-blue-500/20 rounded-xl text-gray-300 font-bold">Cancel</button>
                                 <button onClick={async () => {
                                     if (!evalForm.memberId) { alert('Select a member'); return; }
                                     const ok = await postAction('EVALUATE', evalForm);
@@ -625,20 +625,20 @@ export default function CommitteeDashboard() {
             {/* Warning Modal */}
             {showWarnModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-                    <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="glass w-full max-w-md rounded-3xl p-6">
+                    <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="glass-panel w-full max-w-md rounded-3xl p-6">
                         <h2 className="text-xl font-bold text-white mb-5">Issue Warning</h2>
                         <div className="space-y-3 text-sm">
-                            <select value={warnForm.memberId} onChange={e => setWarnForm({ ...warnForm, memberId: e.target.value })} className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent">
+                            <select value={warnForm.memberId} onChange={e => setWarnForm({ ...warnForm, memberId: e.target.value })} className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold">
                                 <option value="">Select member *</option>
                                 {members.map((m: any) => <option key={m._id} value={m._id}>{m.name}</option>)}
                             </select>
-                            <input placeholder="Reason *" value={warnForm.reason} onChange={e => setWarnForm({ ...warnForm, reason: e.target.value })} className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent" />
-                            <select value={warnForm.level} onChange={e => setWarnForm({ ...warnForm, level: e.target.value })} className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent">
+                            <input placeholder="Reason *" value={warnForm.reason} onChange={e => setWarnForm({ ...warnForm, reason: e.target.value })} className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold" />
+                            <select value={warnForm.level} onChange={e => setWarnForm({ ...warnForm, level: e.target.value })} className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold">
                                 {['low', 'medium', 'high', 'critical'].map(l => <option key={l} value={l}>{l} severity</option>)}
                             </select>
-                            <textarea placeholder="Additional notes..." value={warnForm.notes} onChange={e => setWarnForm({ ...warnForm, notes: e.target.value })} className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent" rows={2} />
-                            <div className="flex justify-end gap-3 pt-4 border-t border-white/10">
-                                <button onClick={() => setShowWarnModal(false)} className="px-5 py-2.5 bg-white/5 rounded-xl text-gray-300 font-bold">Cancel</button>
+                            <textarea placeholder="Additional notes..." value={warnForm.notes} onChange={e => setWarnForm({ ...warnForm, notes: e.target.value })} className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold" rows={2} />
+                            <div className="flex justify-end gap-3 pt-4 border-t border-blue-500/30">
+                                <button onClick={() => setShowWarnModal(false)} className="px-5 py-2.5 bg-slate-900 border border-blue-500/20 rounded-xl text-gray-300 font-bold">Cancel</button>
                                 <button onClick={async () => {
                                     if (!warnForm.memberId || !warnForm.reason) { alert('Fill required fields'); return; }
                                     const ok = await postAction('WARN', warnForm);
@@ -653,20 +653,20 @@ export default function CommitteeDashboard() {
             {/* Reward Modal */}
             {showRewardModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-                    <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="glass w-full max-w-md rounded-3xl p-6">
+                    <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="glass-panel w-full max-w-md rounded-3xl p-6">
                         <h2 className="text-xl font-bold text-white mb-5">Grant Reward</h2>
                         <div className="space-y-3 text-sm">
-                            <select value={rewardForm.memberId} onChange={e => setRewardForm({ ...rewardForm, memberId: e.target.value })} className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent">
+                            <select value={rewardForm.memberId} onChange={e => setRewardForm({ ...rewardForm, memberId: e.target.value })} className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold">
                                 <option value="">Select member *</option>
                                 {members.map((m: any) => <option key={m._id} value={m._id}>{m.name}</option>)}
                             </select>
-                            <select value={rewardForm.rewardType} onChange={e => setRewardForm({ ...rewardForm, rewardType: e.target.value, title: e.target.value.replace(/_/g, ' ') })} className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent">
+                            <select value={rewardForm.rewardType} onChange={e => setRewardForm({ ...rewardForm, rewardType: e.target.value, title: e.target.value.replace(/_/g, ' ') })} className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold">
                                 {Object.entries(REWARD_ICONS).map(([k, v]) => <option key={k} value={k}>{v} {k.replace(/_/g, ' ')}</option>)}
                             </select>
-                            <input placeholder="Custom title" value={rewardForm.title} onChange={e => setRewardForm({ ...rewardForm, title: e.target.value })} className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent" />
-                            <textarea placeholder="Notes..." value={rewardForm.notes} onChange={e => setRewardForm({ ...rewardForm, notes: e.target.value })} className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent" rows={2} />
-                            <div className="flex justify-end gap-3 pt-4 border-t border-white/10">
-                                <button onClick={() => setShowRewardModal(false)} className="px-5 py-2.5 bg-white/5 rounded-xl text-gray-300 font-bold">Cancel</button>
+                            <input placeholder="Custom title" value={rewardForm.title} onChange={e => setRewardForm({ ...rewardForm, title: e.target.value })} className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold" />
+                            <textarea placeholder="Notes..." value={rewardForm.notes} onChange={e => setRewardForm({ ...rewardForm, notes: e.target.value })} className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold" rows={2} />
+                            <div className="flex justify-end gap-3 pt-4 border-t border-blue-500/30">
+                                <button onClick={() => setShowRewardModal(false)} className="px-5 py-2.5 bg-slate-900 border border-blue-500/20 rounded-xl text-gray-300 font-bold">Cancel</button>
                                 <button onClick={async () => {
                                     if (!rewardForm.memberId) { alert('Select a member'); return; }
                                     const ok = await postAction('REWARD', rewardForm);
@@ -681,19 +681,19 @@ export default function CommitteeDashboard() {
             {/* Meeting Modal */}
             {showMeetingModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-                    <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="glass w-full max-w-md rounded-3xl p-6">
+                    <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="glass-panel w-full max-w-md rounded-3xl p-6">
                         <h2 className="text-xl font-bold text-white mb-5">Schedule Meeting</h2>
                         <div className="space-y-3 text-sm">
-                            <input placeholder="Meeting title *" value={meetingForm.title} onChange={e => setMeetingForm({ ...meetingForm, title: e.target.value })} className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent" />
+                            <input placeholder="Meeting title *" value={meetingForm.title} onChange={e => setMeetingForm({ ...meetingForm, title: e.target.value })} className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold" />
                             <div className="grid grid-cols-2 gap-3">
-                                <input type="date" value={meetingForm.date} onChange={e => setMeetingForm({ ...meetingForm, date: e.target.value })} className="p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent" />
-                                <input type="time" value={meetingForm.time} onChange={e => setMeetingForm({ ...meetingForm, time: e.target.value })} className="p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent" />
+                                <input type="date" value={meetingForm.date} onChange={e => setMeetingForm({ ...meetingForm, date: e.target.value })} className="p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold" />
+                                <input type="time" value={meetingForm.time} onChange={e => setMeetingForm({ ...meetingForm, time: e.target.value })} className="p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold" />
                             </div>
-                            <input placeholder="Location (or 'Online')" value={meetingForm.location} onChange={e => setMeetingForm({ ...meetingForm, location: e.target.value })} className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent" />
-                            <input placeholder="Google Meet link (optional)" type="url" value={meetingForm.meetLink} onChange={e => setMeetingForm({ ...meetingForm, meetLink: e.target.value })} className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent" />
-                            <textarea placeholder="Agenda..." value={meetingForm.agenda} onChange={e => setMeetingForm({ ...meetingForm, agenda: e.target.value })} className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent" rows={2} />
-                            <div className="flex justify-end gap-3 pt-4 border-t border-white/10">
-                                <button onClick={() => setShowMeetingModal(false)} className="px-5 py-2.5 bg-white/5 rounded-xl text-gray-300 font-bold">Cancel</button>
+                            <input placeholder="Location (or 'Online')" value={meetingForm.location} onChange={e => setMeetingForm({ ...meetingForm, location: e.target.value })} className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold" />
+                            <input placeholder="Google Meet link (optional)" type="url" value={meetingForm.meetLink} onChange={e => setMeetingForm({ ...meetingForm, meetLink: e.target.value })} className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold" />
+                            <textarea placeholder="Agenda..." value={meetingForm.agenda} onChange={e => setMeetingForm({ ...meetingForm, agenda: e.target.value })} className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold" rows={2} />
+                            <div className="flex justify-end gap-3 pt-4 border-t border-blue-500/30">
+                                <button onClick={() => setShowMeetingModal(false)} className="px-5 py-2.5 bg-slate-900 border border-blue-500/20 rounded-xl text-gray-300 font-bold">Cancel</button>
                                 <button onClick={async () => {
                                     if (!meetingForm.title || !meetingForm.date) { alert('Title and date required'); return; }
                                     const ok = await postAction('MEETING', meetingForm);

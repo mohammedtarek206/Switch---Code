@@ -81,7 +81,7 @@ export default function AdminPartners() {
                 </div>
                 <button
                     onClick={() => setShowModal(true)}
-                    className="bg-accent hover:bg-accent/80 text-dark font-black px-6 py-3 rounded-xl flex items-center transition-all shadow-lg"
+                    className="bg-blue-600 hover:bg-blue-500 text-white transition-colors hover:bg-accent/80 text-dark font-black px-6 py-3 rounded-xl flex items-center transition-all shadow-lg"
                 >
                     <FiPlus className="mr-2" /> Add Partner
                 </button>
@@ -89,14 +89,14 @@ export default function AdminPartners() {
 
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
                 {partners.map((partner) => (
-                    <div key={partner._id} className="glass p-6 rounded-2xl border border-white/5 relative group hover:border-accent/50 transition-all flex flex-col items-center">
+                    <div key={partner._id} className="glass-panel p-6 rounded-2xl border border-blue-500/20 relative group hover:border-gold/50 transition-all flex flex-col items-center">
                         <button
                             onClick={() => handleDelete(partner._id)}
                             className="absolute -top-2 -right-2 p-2 bg-red-500 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-all shadow-lg"
                         >
                             <FiTrash2 size={14} />
                         </button>
-                        <div className="aspect-square w-full bg-white/5 rounded-xl flex items-center justify-center p-4 mb-3">
+                        <div className="aspect-square w-full bg-slate-900 border border-blue-500/20 rounded-xl flex items-center justify-center p-4 mb-3">
                             <img src={partner.logoUrl} alt={partner.name} className="max-h-full max-w-full object-contain filter grayscale group-hover:grayscale-0 transition-all" />
                         </div>
                         <p className="text-xs font-bold text-gray-400 text-center truncate w-full">{partner.name}</p>
@@ -112,7 +112,7 @@ export default function AdminPartners() {
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.9 }}
-                            className="bg-dark-light w-full max-w-md rounded-3xl p-8 border border-white/10"
+                            className="bg-slate-900 w-full max-w-md rounded-3xl p-8 border border-blue-500/30"
                         >
                             <div className="flex justify-between items-center mb-8">
                                 <h2 className="text-2xl font-bold text-white">Add Partner</h2>
@@ -126,7 +126,7 @@ export default function AdminPartners() {
                                     <label className="text-gray-400 text-sm font-bold uppercase tracking-wider">Partner Name</label>
                                     <input
                                         type="text"
-                                        className="w-full bg-dark/50 border border-white/10 rounded-xl p-4 text-white focus:border-accent outline-none"
+                                        className="w-full bg-[#07111F]/50 border border-blue-500/30 rounded-xl p-4 text-white focus:border-gold outline-none"
                                         placeholder="e.g. Google"
                                         value={name}
                                         onChange={(e) => setName(e.target.value)}
@@ -139,7 +139,7 @@ export default function AdminPartners() {
                                         <FiImage className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
                                         <input
                                             type="text"
-                                            className="w-full bg-dark/50 border border-white/10 rounded-xl p-4 pl-12 text-white focus:border-accent outline-none"
+                                            className="w-full bg-[#07111F]/50 border border-blue-500/30 rounded-xl p-4 pl-12 text-white focus:border-gold outline-none"
                                             placeholder="https://..."
                                             value={logoUrl}
                                             onChange={(e) => setLogoUrl(e.target.value)}
@@ -151,7 +151,7 @@ export default function AdminPartners() {
                                 <button
                                     type="submit"
                                     disabled={loading}
-                                    className="w-full bg-accent hover:bg-accent/80 text-dark font-black py-4 rounded-xl text-lg transition-all"
+                                    className="w-full bg-blue-600 hover:bg-blue-500 text-white transition-colors hover:bg-accent/80 text-dark font-black py-4 rounded-xl text-lg transition-all"
                                 >
                                     {loading ? 'Adding...' : 'ADD PARTNER'}
                                 </button>

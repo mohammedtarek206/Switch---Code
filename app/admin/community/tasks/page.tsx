@@ -180,7 +180,7 @@ export default function TasksPage() {
                 </div>
                 <button
                     onClick={() => { resetForm(); setShowCreateModal(true); }}
-                    className="flex items-center bg-accent hover:bg-accent-dark text-black px-5 py-3 rounded-xl font-bold transition-all"
+                    className="flex items-center btn-primary-blue px-5 py-3 rounded-xl font-bold transition-all"
                 >
                     <FiPlus className="mr-2" /> Assign Task
                 </button>
@@ -188,17 +188,17 @@ export default function TasksPage() {
 
             {loading ? (
                 <div className="flex items-center justify-center min-h-[40vh]">
-                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-accent"></div>
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gold"></div>
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 items-start">
                     {columns.map((col) => {
                         const columnTasks = tasks.filter(t => t.status === col.id);
                         return (
-                            <div key={col.id} className="glass rounded-2xl p-4 flex flex-col space-y-4 min-h-[500px]">
+                            <div key={col.id} className="glass-panel rounded-2xl p-4 flex flex-col space-y-4 min-h-[500px]">
                                 <div className={`border-l-4 ${col.color} pl-3 py-1 flex justify-between items-center`}>
                                     <h3 className="font-extrabold text-white text-sm uppercase tracking-wider">{col.label}</h3>
-                                    <span className="bg-white/5 text-gray-400 text-xs px-2.5 py-0.5 rounded-full font-bold">
+                                    <span className="bg-slate-900 border border-blue-500/20 text-gray-400 text-xs px-2.5 py-0.5 rounded-full font-bold">
                                         {columnTasks.length}
                                     </span>
                                 </div>
@@ -209,11 +209,11 @@ export default function TasksPage() {
                                             layoutId={task._id}
                                             key={task._id}
                                             onClick={() => setSelectedTask(task)}
-                                            className="bg-white/5 hover:bg-white/10 p-5 rounded-xl border border-white/5 cursor-pointer relative group transition-all"
+                                            className="bg-slate-900 border border-blue-500/20 hover:bg-slate-800 p-5 rounded-xl border border-blue-500/20 cursor-pointer relative group transition-all"
                                         >
                                             <div className="flex justify-between items-start mb-2">
                                                 <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold uppercase ${task.priority === 'high' ? 'bg-red-500/10 text-red-500' :
-                                                        task.priority === 'medium' ? 'bg-yellow-500/10 text-yellow-500' : 'bg-green-500/10 text-green-500'
+                                                    task.priority === 'medium' ? 'bg-yellow-500/10 text-yellow-500' : 'bg-green-500/10 text-green-500'
                                                     }`}>
                                                     {task.priority}
                                                 </span>
@@ -230,7 +230,7 @@ export default function TasksPage() {
                                                                 };
                                                                 handleStatusChange(task._id, nextMap[col.id]);
                                                             }}
-                                                            className="text-[10px] bg-accent/20 text-accent px-1.5 py-0.5 rounded"
+                                                            className="text-[10px] bg-gold/20 text-gold px-1.5 py-0.5 rounded"
                                                         >
                                                             &rarr; Move
                                                         </button>
@@ -238,19 +238,19 @@ export default function TasksPage() {
                                                 </div>
                                             </div>
 
-                                            <h4 className="text-white font-bold text-sm mb-1 leading-snug group-hover:text-accent transition-colors">
+                                            <h4 className="text-white font-bold text-sm mb-1 leading-snug group-hover:text-gold transition-colors">
                                                 {task.title}
                                             </h4>
                                             <p className="text-gray-400 text-xs line-clamp-2 leading-relaxed mb-4">{task.description}</p>
 
-                                            <div className="flex justify-between items-center text-[10px] text-gray-500 border-t border-white/5 pt-3">
+                                            <div className="flex justify-between items-center text-[10px] text-gray-500 border-t border-blue-500/20 pt-3">
                                                 <div className="flex items-center">
-                                                    <FiUser className="mr-1 text-primary" />
+                                                    <FiUser className="mr-1 text-blue-500" />
                                                     <span className="truncate max-w-[80px]">{task.assigneeId?.name || 'Unassigned'}</span>
                                                 </div>
                                                 {task.dueDate && (
                                                     <div className="flex items-center">
-                                                        <FiCalendar className="mr-1 text-primary" />
+                                                        <FiCalendar className="mr-1 text-blue-500" />
                                                         <span>{new Date(task.dueDate).toLocaleDateString()}</span>
                                                     </div>
                                                 )}
@@ -267,10 +267,10 @@ export default function TasksPage() {
             {/* Task Details / Commenting Modal */}
             {selectedTask && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-                    <div className="glass w-full max-w-xl rounded-3xl p-8 space-y-6">
+                    <div className="glass-panel w-full max-w-xl rounded-3xl p-8 space-y-6">
                         <div>
                             <div className="flex justify-between items-start mb-2">
-                                <span className="bg-accent/10 border border-accent/20 text-accent text-xs px-3 py-1 rounded-full font-bold uppercase">
+                                <span className="bg-gold/10 border border-gold/20 text-gold text-xs px-3 py-1 rounded-full font-bold uppercase">
                                     {selectedTask.status.replace('_', ' ')}
                                 </span>
                                 <button
@@ -285,25 +285,25 @@ export default function TasksPage() {
                         </div>
 
                         {/* Task assignment details metrics */}
-                        <div className="grid grid-cols-2 gap-4 bg-white/5 p-4 rounded-xl text-xs text-gray-300">
+                        <div className="grid grid-cols-2 gap-4 bg-slate-900 border border-blue-500/20 p-4 rounded-xl text-xs text-gray-300">
                             <div>
                                 <span className="text-gray-500 block mb-1">Assignee</span>
                                 <span className="font-bold text-white flex items-center">
-                                    <FiUser className="mr-1.5 text-primary" /> {selectedTask.assigneeId?.name || 'Unassigned'}
+                                    <FiUser className="mr-1.5 text-blue-500" /> {selectedTask.assigneeId?.name || 'Unassigned'}
                                 </span>
                             </div>
                             <div>
                                 <span className="text-gray-500 block mb-1">Deadline</span>
                                 <span className="font-bold text-white flex items-center">
-                                    <FiCalendar className="mr-1.5 text-accent" /> {selectedTask.dueDate ? new Date(selectedTask.dueDate).toLocaleDateString() : 'No Limit'}
+                                    <FiCalendar className="mr-1.5 text-gold" /> {selectedTask.dueDate ? new Date(selectedTask.dueDate).toLocaleDateString() : 'No Limit'}
                                 </span>
                             </div>
                         </div>
 
                         {/* Comment Section feed */}
-                        <div className="space-y-4 border-t border-white/5 pt-4">
+                        <div className="space-y-4 border-t border-blue-500/20 pt-4">
                             <h3 className="font-bold text-white text-sm flex items-center">
-                                <FiMessageSquare className="mr-2 text-primary" /> Task Discussion
+                                <FiMessageSquare className="mr-2 text-blue-500" /> Task Discussion
                             </h3>
 
                             <div className="space-y-2 max-h-40 overflow-y-auto custom-scrollbar-thin">
@@ -311,7 +311,7 @@ export default function TasksPage() {
                                     <p className="text-gray-500 text-xs italic text-center py-4">No comments posted yet.</p>
                                 ) : (
                                     selectedTask.comments?.map((c) => (
-                                        <div key={c._id} className="p-3 bg-white/5 rounded-xl text-xs">
+                                        <div key={c._id} className="p-3 bg-slate-900 border border-blue-500/20 rounded-xl text-xs">
                                             <div className="flex justify-between text-gray-500 mb-1">
                                                 <span className="font-bold text-white">{c.authorId?.name}</span>
                                                 <span>{new Date(c.createdAt).toLocaleDateString()}</span>
@@ -328,11 +328,11 @@ export default function TasksPage() {
                                     placeholder="Post comment..."
                                     value={commentContent}
                                     onChange={(e) => setCommentContent(e.target.value)}
-                                    className="flex-1 p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none text-xs"
+                                    className="flex-1 p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none text-xs"
                                 />
                                 <button
                                     type="submit"
-                                    className="px-4 py-3 bg-accent hover:bg-accent-dark text-black rounded-xl text-xs font-bold transition-all"
+                                    className="btn-primary-blue px-4 py-3 rounded-xl text-xs font-bold transition-all"
                                 >
                                     Send
                                 </button>
@@ -348,7 +348,7 @@ export default function TasksPage() {
                     <motion.div
                         initial={{ scale: 0.95, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
-                        className="glass w-full max-w-lg rounded-3xl p-8 space-y-6"
+                        className="glass-panel w-full max-w-lg rounded-3xl p-8 space-y-6"
                     >
                         <h2 className="text-2xl font-bold text-white">Assign Task</h2>
 
@@ -361,7 +361,7 @@ export default function TasksPage() {
                                     value={title}
                                     onChange={(e) => setTitle(e.target.value)}
                                     placeholder="e.g. Design newsletter layouts"
-                                    className="w-full p-4 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent"
+                                    className="w-full p-4 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold"
                                 />
                             </div>
 
@@ -373,7 +373,7 @@ export default function TasksPage() {
                                     value={description}
                                     onChange={(e) => setDescription(e.target.value)}
                                     placeholder="Details of deliverables..."
-                                    className="w-full p-4 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent resize-none"
+                                    className="w-full p-4 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold resize-none"
                                 />
                             </div>
 
@@ -383,7 +383,7 @@ export default function TasksPage() {
                                     <select
                                         value={priority}
                                         onChange={(e) => setPriority(e.target.value as Task['priority'])}
-                                        className="w-full p-4 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent"
+                                        className="w-full p-4 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold"
                                     >
                                         <option value="low">Low</option>
                                         <option value="medium">Medium</option>
@@ -398,7 +398,7 @@ export default function TasksPage() {
                                         required
                                         value={dueDate}
                                         onChange={(e) => setDueDate(e.target.value)}
-                                        className="w-full p-4 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent"
+                                        className="w-full p-4 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold"
                                     />
                                 </div>
                             </div>
@@ -409,7 +409,7 @@ export default function TasksPage() {
                                     <select
                                         value={assigneeId}
                                         onChange={(e) => setAssigneeId(e.target.value)}
-                                        className="w-full p-4 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent text-sm"
+                                        className="w-full p-4 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold text-sm"
                                     >
                                         <option value="">Search assignee...</option>
                                         {members.map(m => (
@@ -423,7 +423,7 @@ export default function TasksPage() {
                                     <select
                                         value={committeeId}
                                         onChange={(e) => setCommitteeId(e.target.value)}
-                                        className="w-full p-4 bg-dark-light border border-white/10 rounded-xl text-white outline-none"
+                                        className="w-full p-4 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none"
                                     >
                                         <option value="">Unassigned to a specific comm</option>
                                         {committees.map(c => (
@@ -437,13 +437,13 @@ export default function TasksPage() {
                                 <button
                                     type="button"
                                     onClick={() => setShowCreateModal(false)}
-                                    className="px-6 py-3 bg-white/5 text-white rounded-xl hover:bg-white/10 transition-all font-semibold"
+                                    className="px-6 py-3 bg-slate-900 border border-blue-500/20 text-white rounded-xl hover:bg-slate-800 transition-all font-semibold"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-6 py-3 bg-accent hover:bg-accent-dark text-black rounded-xl transition-all font-bold"
+                                    className="btn-primary-blue px-6 py-3 rounded-xl font-bold"
                                 >
                                     Assign Task
                                 </button>

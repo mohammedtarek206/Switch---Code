@@ -1,437 +1,242 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { FiArrowLeft, FiActivity, FiUsers, FiCheckCircle, FiSearch, FiCamera, FiAlertCircle, FiXCircle, FiMail, FiBell, FiDownload } from 'react-icons/fi';
-import Link from 'next/link';
+import {
+    FiCalendar, FiUsers, FiCheckCircle, FiXCircle, FiClock,
+    FiDownload, FiSearch, FiFilter, FiMail, FiCheckSquare, FiLogOut
+} from 'react-icons/fi';
 
-interface Registrant {
-    _id: string;
-    userId: {
-        _id: string;
-        name: string;
-        email: string;
-        phone?: string;
-        university?: string;
-        faculty?: string;
-        academicYear?: string;
-    };
-    attended: boolean;
-    status?: 'accepted' | 'rejected' | 'waiting' | 'pending';
-    ticketCode: string;
-    createdAt: string;
-}
+export default function EventApplicationsDashboard() {
+    const params = useParams();
+    const eventId = params?.id as string;
 
-interface Event {
-    _id: string;
-    title: string;
-    description: string;
-    date: string;
-    pointsAwarded: number;
-}
-
-export default function EventDetailPage({ params }: { params: { id: string } }) {
-    const [event, setEvent] = useState<Event | null>(null);
-    const [registrants, setRegistrants] = useState<Registrant[]>([]);
+    const [event, setEvent] = useState<any>(null);
+    const [applications, setApplications] = useState<any[]>([]);
+    const [stats, setStats] = useState<any>(null);
     const [loading, setLoading] = useState(true);
-    const [manualTicket, setManualTicket] = useState('');
-    const [scanResult, setScanResult] = useState<{ success: boolean; message: string } | null>(null);
     const [search, setSearch] = useState('');
+    const [filterStatus, setFilterStatus] = useState('all');
 
-    async function fetchDetails() {
+    useEffect(() => {
+        if (eventId) fetchApplications();
+    }, [eventId]);
+
+    async function fetchApplications() {
+        setLoading(true);
+        const token = localStorage.getItem('token');
         try {
-            const token = localStorage.getItem('token');
-            const [eventRes, regRes] = await Promise.all([
-                fetch(`/api/community/events/${params.id}`, { headers: { Authorization: `Bearer ${token}` } }),
-                fetch(`/api/community/events/${params.id}/register`, { headers: { Authorization: `Bearer ${token}` } })
-            ]);
-
-            if (eventRes.ok) setEvent(await eventRes.json());
-            if (regRes.ok) {
-                const data = await regRes.json();
-                // Fallback status values for dummy items that don't have them
-                const normalized = data.map((r: Registrant) => ({
-                    ...r,
-                    status: r.status || (r.attended ? 'accepted' : 'pending')
-                }));
-                setRegistrants(normalized);
+            const res = await fetch(`/api/admin/events/${eventId}/applications`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setEvent(data.event);
+                setApplications(data.applications);
+                setStats(data.stats);
             }
         } catch (err) {
-            console.error(err);
+            console.error('Failed to load event applications', err);
         } finally {
             setLoading(false);
         }
     }
 
-    useEffect(() => {
-        fetchDetails();
-    }, [params.id]);
-
-    async function validateTicket(code: string) {
-        if (!code) return;
+    async function updateStatus(registrationId: string, status?: string, action?: string) {
         const token = localStorage.getItem('token');
         try {
-            const res = await fetch(`/api/community/events/${params.id}/attendance`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`
-                },
-                body: JSON.stringify({ ticketCode: code })
-            });
-
-            const data = await res.json();
-            if (res.ok) {
-                setScanResult({ success: true, message: `Validated! Attended: ${data.registrant?.userId?.name || 'User'}` });
-                setManualTicket('');
-                fetchDetails();
-            } else {
-                setScanResult({ success: false, message: data.error || 'Invalid ticket code' });
-            }
-        } catch {
-            setScanResult({ success: false, message: 'Network error validating ticket' });
-        }
-    }
-
-    async function handleToggleAttendance(registrantId: string, currentStatus: boolean) {
-        const token = localStorage.getItem('token');
-        try {
-            const targetReg = registrants.find(r => r._id === registrantId);
-            if (!targetReg) return;
-
-            const res = await fetch(`/api/community/events/${params.id}/attendance`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`
-                },
-                body: JSON.stringify({ ticketCode: targetReg.ticketCode, force: !currentStatus })
-            });
-
-            if (res.ok) {
-                fetchDetails();
-            }
-        } catch (err) {
-            console.error(err);
-        }
-    }
-
-    async function handleStatusUpdate(registrantId: string, newStatus: string) {
-        // In a real database we update user status. Let's send PUT request to API or mock state update
-        const token = localStorage.getItem('token');
-        try {
-            const res = await fetch(`/api/community/events/${params.id}/register`, {
+            const res = await fetch(`/api/admin/events/${eventId}/applications`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`
                 },
-                body: JSON.stringify({ registrantId, status: newStatus })
+                body: JSON.stringify({ registrationId, status, action })
             });
-            if (res.ok) {
-                fetchDetails();
-            } else {
-                // Fallback: update UI state internally
-                setRegistrants(registrants.map(r => r._id === registrantId ? { ...r, status: newStatus as any } : r));
-            }
-        } catch {
-            setRegistrants(registrants.map(r => r._id === registrantId ? { ...r, status: newStatus as any } : r));
+            if (res.ok) fetchApplications();
+        } catch (err) {
+            console.error('Failed to update applicant', err);
         }
     }
 
-    async function handleSendEmail(email: string) {
-        const token = localStorage.getItem('token');
-        const msg = prompt('Enter your email bulletin message to registrant:');
-        if (!msg) return;
-        try {
-            const res = await fetch('/api/community/notifications', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`
-                },
-                body: JSON.stringify({ email, message: msg, type: 'email' })
-            });
-            if (res.ok) alert('Email sent successfully!');
-        } catch {
-            alert('Email sent simulation completed.');
-        }
-    }
-
-    async function handleSendNotification(userId: string) {
-        const token = localStorage.getItem('token');
-        const msg = prompt('Enter notification title:');
-        if (!msg) return;
-        try {
-            const res = await fetch('/api/community/notifications', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`
-                },
-                body: JSON.stringify({ userId, message: msg, type: 'push' })
-            });
-            if (res.ok) alert('Notification dispatched!');
-        } catch {
-            alert('Notification dispatched simulation completed.');
-        }
-    }
-
-    function handleExportCSV() {
-        const headers = ['Name', 'Phone', 'Email', 'University', 'Faculty', 'Ticket Code', 'Status', 'Attended', 'Registered Date'];
-        const rows = registrants.map(r => [
-            r.userId?.name || '',
-            r.userId?.phone || '',
-            r.userId?.email || '',
-            r.userId?.university || '',
-            r.userId?.faculty || '',
-            r.ticketCode || '',
-            r.status || 'pending',
-            r.attended ? 'Yes' : 'No',
-            new Date(r.createdAt).toLocaleDateString()
+    function exportCSV() {
+        if (!applications.length) return;
+        const headers = ['Name', 'Email', 'Phone', 'University', 'Faculty', 'Status', 'Attended', 'Date'];
+        const rows = applications.map(a => [
+            `"${a.name}"`,
+            `"${a.email}"`,
+            `"${a.phone || ''}"`,
+            `"${a.university || ''}"`,
+            `"${a.faculty || ''}"`,
+            `"${a.status}"`,
+            `"${a.attended ? 'Yes' : 'No'}"`,
+            `"${new Date(a.createdAt).toLocaleDateString()}"`
         ]);
 
-        const csvContent = "data:text/csv;charset=utf-8,"
-            + [headers.join(','), ...rows.map(e => e.map(val => `"${val}"`).join(","))].join("\n");
-
+        const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
         const encodedUri = encodeURI(csvContent);
-        const link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", `${event?.title.replace(/\s+/g, '_')}_registrants.csv`);
+        const link = document.createElement('a');
+        link.setAttribute('href', encodedUri);
+        link.setAttribute('download', `${event?.title || 'event'}_registrations.csv`);
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
     }
 
-    const attendantsCount = registrants.filter(r => r.attended).length;
-    const absentsCount = registrants.filter(r => !r.attended).length;
-    const acceptedCount = registrants.filter(r => r.status === 'accepted').length;
-    const rejectedCount = registrants.filter(r => r.status === 'rejected').length;
-    const waitingCount = registrants.filter(r => r.status === 'waiting').length;
-
-    const filteredRegs = registrants.filter(r =>
-        r.userId?.name?.toLowerCase().includes(search.toLowerCase()) ||
-        r.userId?.email?.toLowerCase().includes(search.toLowerCase()) ||
-        r.ticketCode?.toLowerCase().includes(search.toLowerCase())
-    );
+    const filtered = applications.filter(a => {
+        const matchesSearch = a.name.toLowerCase().includes(search.toLowerCase()) || a.email.toLowerCase().includes(search.toLowerCase());
+        const matchesStatus = filterStatus === 'all' || a.status === filterStatus;
+        return matchesSearch && matchesStatus;
+    });
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center min-h-[50vh]">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-accent"></div>
-            </div>
-        );
-    }
-
-    if (!event) {
-        return (
-            <div className="text-center py-20">
-                <p className="text-gray-400">Event not found.</p>
-                <Link href="/admin/community/events" className="text-accent underline">Back to List</Link>
+            <div className="min-h-[80vh] flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
             </div>
         );
     }
 
     return (
-        <div className="space-y-8 pb-12">
-            {/* Header */}
-            <div className="space-y-4">
-                <Link href="/admin/community/events" className="flex items-center text-gray-400 hover:text-white w-fit">
-                    <FiArrowLeft className="mr-2" /> Back to Events
-                </Link>
-                <div className="flex flex-col md:flex-row justify-between items-start gap-4">
-                    <div>
-                        <h1 className="text-3xl font-extrabold text-white">{event.title}</h1>
-                        <p className="text-gray-400 text-sm leading-relaxed max-w-2xl mt-1">{event.description}</p>
+        <div className="space-y-8 pb-20 max-w-7xl mx-auto">
+            {/* Event Header */}
+            <div className="glass-panel p-8 rounded-[2.5rem] border border-blue-500/20 relative overflow-hidden flex flex-col md:flex-row justify-between items-start md:items-center gap-6 shadow-glow-blue">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/10 blur-3xl rounded-full pointer-events-none"></div>
+                <div className="relative z-10">
+                    <span className="text-[10px] uppercase font-black text-gold tracking-widest mb-2 inline-block">
+                        Event Management Dashboard
+                    </span>
+                    <h1 className="text-3xl font-black text-white">{event?.title}</h1>
+                    <p className="text-slate-400 text-sm font-semibold mt-2">
+                        📅 {new Date(event?.date).toLocaleDateString()} | 📍 {event?.location || 'Online'} | 👥 Seats: {event?.seats || 'Unlimited'}
+                    </p>
+                </div>
+
+                <div className="flex flex-wrap gap-3 relative z-10">
+                    <button onClick={exportCSV} className="flex items-center gap-2 bg-blue-900/30 hover:bg-blue-600/30 text-blue-400 font-black tracking-widest uppercase px-6 py-3.5 rounded-2xl text-xs border border-blue-500/30 transition-all shadow-md">
+                        <FiDownload className="w-4 h-4" /> Export Excel
+                    </button>
+                    <button onClick={() => {
+                        const link = `${window.location.origin}/events/${eventId}`;
+                        navigator.clipboard.writeText(link);
+                        alert('Application link copied to clipboard!');
+                    }} className="flex items-center gap-2 bg-blue-900/30 hover:bg-blue-600/30 text-gold font-black tracking-widest uppercase px-6 py-3.5 rounded-2xl text-xs border border-gold/30 hover:border-gold transition-all shadow-md">
+                        🔗 Copy Apply Link
+                    </button>
+                    <button onClick={() => window.print()} className="flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-slate-300 border border-blue-500/20 hover:border-gold/50 font-black tracking-widest uppercase px-6 py-3.5 rounded-2xl text-xs transition-all shadow-md">
+                        🖨️ Print Report
+                    </button>
+                </div>
+            </div>
+
+            {/* Stats Grid */}
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+                {[
+                    { label: 'Total', value: stats?.total || 0, color: 'text-white' },
+                    { label: 'Accepted', value: stats?.accepted || 0, color: 'text-green-400' },
+                    { label: 'Waitlist', value: stats?.waitlist || 0, color: 'text-yellow-400' },
+                    { label: 'Rejected', value: stats?.rejected || 0, color: 'text-red-400' },
+                    { label: 'Registered', value: stats?.registered || 0, color: 'text-blue-500' },
+                    { label: 'Check-In', value: stats?.checkedIn || 0, color: 'text-gold' },
+                    { label: 'Check-Out', value: stats?.checkedOut || 0, color: 'text-purple-400' },
+                ].map((s, i) => (
+                    <div key={i} className="glass-card p-5 rounded-2xl border border-blue-500/20 text-center shadow-md">
+                        <span className={`text-3xl font-black block ${s.color}`}>{s.value}</span>
+                        <span className="text-[10px] uppercase font-black tracking-widest text-slate-500 mt-1 block">{s.label}</span>
                     </div>
-                    <div className="flex items-center space-x-3 gap-2">
+                ))}
+            </div>
+
+            {/* Filter and Search */}
+            <div className="glass-panel p-5 rounded-3xl border border-blue-500/20 flex flex-col md:flex-row gap-5 items-center justify-between">
+                <div className="relative w-full md:w-96">
+                    <FiSearch className="absolute left-4 top-3.5 text-blue-500" />
+                    <input
+                        type="text"
+                        placeholder="Search applicant name or email..."
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        className="w-full bg-slate-900 border border-blue-500/30 rounded-2xl pl-12 pr-4 py-3 text-sm text-white focus:outline-none focus:border-gold font-medium transition-colors"
+                    />
+                </div>
+
+                <div className="flex gap-2 w-full md:w-auto overflow-x-auto pb-2 md:pb-0 hide-scrollbar">
+                    {['all', 'registered', 'accepted', 'waitlist', 'rejected'].map(st => (
                         <button
-                            onClick={handleExportCSV}
-                            className="flex items-center bg-white/5 hover:bg-white/10 text-white border border-white/10 px-4 py-2.5 rounded-xl text-xs font-bold transition-all"
+                            key={st}
+                            onClick={() => setFilterStatus(st)}
+                            className={`px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest border transition-all shrink-0 ${filterStatus === st ? 'bg-gold/10 text-gold border-gold/40 shadow-glow-gold' : 'bg-slate-900 text-slate-400 border-blue-500/20 hover:border-gold/30 hover:text-gold'}`}
                         >
-                            <FiDownload className="mr-1.5" /> Export Registrants CSV
+                            {st}
                         </button>
-                        <span className="bg-accent/15 border border-accent/20 px-4 py-2 rounded-xl text-xs text-accent font-bold">
-                            Date: {new Date(event.date).toLocaleString()}
-                        </span>
-                    </div>
+                    ))}
                 </div>
             </div>
 
-            {/* Advanced metrics board */}
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                <div className="bg-white/5 border border-white/5 p-4 rounded-2xl text-center">
-                    <span className="text-[10px] text-gray-500 uppercase font-bold block mb-1">Total Registrants</span>
-                    <span className="text-2xl font-extrabold text-white">{registrants.length}</span>
-                </div>
-                <div className="bg-white/5 border border-white/5 p-4 rounded-2xl text-center">
-                    <span className="text-[10px] text-green-400 uppercase font-bold block mb-1">Accepted</span>
-                    <span className="text-2xl font-extrabold text-green-400">{acceptedCount}</span>
-                </div>
-                <div className="bg-white/5 border border-white/5 p-4 rounded-2xl text-center">
-                    <span className="text-[10px] text-red-400 uppercase font-bold block mb-1">Rejected</span>
-                    <span className="text-2xl font-extrabold text-red-400">{rejectedCount}</span>
-                </div>
-                <div className="bg-white/5 border border-white/5 p-4 rounded-2xl text-center">
-                    <span className="text-[10px] text-primary uppercase font-bold block mb-1">Checked In</span>
-                    <span className="text-2xl font-extrabold text-primary">{attendantsCount}</span>
-                </div>
-                <div className="bg-white/5 border border-white/5 p-4 rounded-2xl text-center">
-                    <span className="text-[10px] text-yellow-500 uppercase font-bold block mb-1">Absents</span>
-                    <span className="text-2xl font-extrabold text-yellow-500">{absentsCount}</span>
-                </div>
-            </div>
-
-            {/* QR scanner input / manual validator stats */}
-            <div className="grid lg:grid-cols-3 gap-8">
-                <div className="glass p-8 rounded-3xl lg:col-span-2 space-y-6">
-                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                        <h3 className="text-xl font-bold text-white flex items-center">
-                            <FiUsers className="mr-2 text-accent" /> Attendees Grid
-                        </h3>
-                        {/* Quick search input */}
-                        <div className="relative w-full sm:w-64">
-                            <FiSearch className="absolute left-3 top-3 text-gray-500" />
-                            <input
-                                type="text"
-                                placeholder="Search name, email, ticket..."
-                                value={search}
-                                onChange={(e) => setSearch(e.target.value)}
-                                className="w-full pl-9 pr-4 py-2 bg-dark-light border border-white/5 rounded-xl text-white outline-none focus:border-accent text-xs"
-                            />
-                        </div>
-                    </div>
-
-                    <div className="overflow-x-auto custom-scrollbar-thin">
-                        <table className="w-full text-left border-collapse min-w-[700px]">
-                            <thead>
-                                <tr className="border-b border-white/5 text-gray-400 text-[10px] font-bold uppercase">
-                                    <th className="py-4">Registrant / Contact</th>
-                                    <th className="py-4">University Details</th>
-                                    <th className="py-4">Ticket</th>
-                                    <th className="py-4">Status Override</th>
-                                    <th className="py-4">Attendance</th>
-                                    <th className="py-4 text-right">Actions</th>
+            {/* Applicants Table */}
+            <div className="glass-panel rounded-3xl border border-blue-500/20 overflow-hidden shadow-lg shadow-blue-900/10">
+                <div className="overflow-x-auto">
+                    <table className="w-full text-left whitespace-nowrap min-w-[900px]">
+                        <thead className="bg-slate-900/70 border-b border-blue-500/20 text-[10px] uppercase font-black tracking-widest text-slate-400">
+                            <tr>
+                                <th className="p-5">Applicant</th>
+                                <th className="p-5">Contact</th>
+                                <th className="p-5">Education</th>
+                                <th className="p-5">Status</th>
+                                <th className="p-5">Check-In / Out</th>
+                                <th className="p-5 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-blue-500/10 text-sm text-slate-300">
+                            {filtered.length === 0 ? (
+                                <tr>
+                                    <td colSpan={6} className="text-center p-12 text-slate-500 font-medium">No applicants found for this event.</td>
                                 </tr>
-                            </thead>
-                            <tbody className="divide-y divide-white/5 text-xs text-gray-300">
-                                {filteredRegs.map((r) => (
-                                    <tr key={r._id} className="hover:bg-white/5 transition-colors">
-                                        <td className="py-4">
-                                            <span className="text-white font-bold block">{r.userId?.name || 'Unknown User'}</span>
-                                            <span className="text-gray-500 block">{r.userId?.email || 'N/A'}</span>
-                                            <span className="text-gray-500 block">{r.userId?.phone || 'No phone'}</span>
-                                        </td>
-                                        <td className="py-4">
-                                            <span className="text-white block font-medium">{r.userId?.university || 'N/A'}</span>
-                                            <span className="text-gray-500 block">{r.userId?.faculty} ({r.userId?.academicYear || 'Year 1'})</span>
-                                        </td>
-                                        <td className="py-4 font-mono text-[10px] text-gray-400">
-                                            {r.ticketCode}
-                                        </td>
-                                        <td className="py-4">
-                                            <select
-                                                value={r.status}
-                                                onChange={(e) => handleStatusUpdate(r._id, e.target.value)}
-                                                className="bg-dark border border-white/10 rounded p-1 text-[10px] text-white outline-none"
-                                            >
-                                                <option value="pending">Pending</option>
-                                                <option value="accepted">Accepted</option>
-                                                <option value="rejected">Rejected</option>
-                                                <option value="waiting">Waiting list</option>
-                                            </select>
-                                        </td>
-                                        <td className="py-4">
-                                            <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase ${r.attended ? 'bg-green-500/10 text-green-400' : 'bg-yellow-500/10 text-yellow-400'
-                                                }`}>
-                                                {r.attended ? 'Attended' : 'Absent'}
-                                            </span>
-                                        </td>
-                                        <td className="py-4 text-right space-x-1.5 whitespace-nowrap">
-                                            {/* Toggle code attendance */}
-                                            <button
-                                                onClick={() => handleToggleAttendance(r._id, r.attended)}
-                                                className={`px-2 py-1 rounded text-[10px] font-semibold transition-all ${r.attended ? 'bg-red-500/10 text-red-400 hover:bg-red-500/20' : 'bg-primary/20 text-primary-light hover:bg-primary/30'
-                                                    }`}
-                                            >
-                                                {r.attended ? 'Absent' : 'Present'}
-                                            </button>
-                                            <button
-                                                onClick={() => handleSendEmail(r.userId?.email || '')}
-                                                className="p-1 hover:bg-white/5 rounded text-gray-400"
-                                                title="Send Email"
-                                            >
-                                                <FiMail className="w-3.5 h-3.5 inline" />
-                                            </button>
-                                            <button
-                                                onClick={() => handleSendNotification(r.userId?._id || '')}
-                                                className="p-1 hover:bg-white/5 rounded text-gray-400"
-                                                title="Send Push Notification"
-                                            >
-                                                <FiBell className="w-3.5 h-3.5 inline" />
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                {/* Validation Box & Manual Input */}
-                <div className="glass p-8 rounded-3xl space-y-6">
-                    <h3 className="text-xl font-bold text-white flex items-center">
-                        <FiCamera className="mr-2 text-accent" /> Validate Ticket QR/ID
-                    </h3>
-
-                    <div className="bg-white/5 p-6 rounded-2xl text-center space-y-4 border border-white/5">
-                        <p className="text-xs text-gray-400">
-                            For live scanning, use a handheld scanner to read target codes into the field below, or enter codes manually.
-                        </p>
-
-                        <div className="space-y-3">
-                            <input
-                                type="text"
-                                placeholder="Enter Ticket ID (e.g. EC_...)"
-                                value={manualTicket}
-                                onChange={(e) => setManualTicket(e.target.value)}
-                                onKeyDown={(e) => e.key === 'Enter' && validateTicket(manualTicket)}
-                                className="w-full p-4 bg-dark text-white rounded-xl outline-none font-mono text-sm text-center focus:border-accent border border-white/5"
-                            />
-                            <button
-                                onClick={() => validateTicket(manualTicket)}
-                                className="w-full bg-accent hover:bg-accent-dark text-black py-3 rounded-xl font-bold transition-all"
-                            >
-                                Validate and Check-In
-                            </button>
-                        </div>
-                    </div>
-
-                    {scanResult && (
-                        <motion.div
-                            initial={{ scale: 0.95, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            className={`p-4 rounded-xl flex items-start space-x-3 text-xs leading-normal ${scanResult.success ? 'bg-green-500/15 border border-green-500/20 text-green-400' : 'bg-red-500/15 border border-red-500/20 text-red-400'
-                                }`}
-                        >
-                            {scanResult.success ? <FiCheckCircle className="w-5 h-5 min-w-[20px]" /> : <FiAlertCircle className="w-5 h-5 min-w-[20px]" />}
-                            <span>{scanResult.message}</span>
-                        </motion.div>
-                    )}
-
-                    {/* Quick Metrics */}
-                    <div className="space-y-4 pt-4 border-t border-white/5">
-                        <div className="flex justify-between items-center text-xs">
-                            <span className="text-gray-400">Attendance Ratio</span>
-                            <span className="text-white font-bold">{registrants.length ? Math.round((attendantsCount / registrants.length) * 100) : 0}%</span>
-                        </div>
-                        <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden">
-                            <div
-                                className="h-full bg-primary"
-                                style={{ width: `${registrants.length ? Math.round((attendantsCount / registrants.length) * 100) : 0}%` }}
-                            ></div>
-                        </div>
-                    </div>
+                            ) : null}
+                            {filtered.map(app => (
+                                <tr key={app._id} className="hover:bg-blue-950/20 transition-colors">
+                                    <td className="p-5 font-black text-white">
+                                        {app.name}
+                                    </td>
+                                    <td className="p-5 text-xs font-medium space-y-1">
+                                        <span className="text-gold block">{app.email}</span>
+                                        <span className="text-slate-400 block">{app.phone || 'N/A'}</span>
+                                    </td>
+                                    <td className="p-5 text-xs font-medium space-y-1">
+                                        <span className="text-white block">{app.university || 'Not specified'}</span>
+                                        <span className="text-slate-500 block">{app.faculty || ''}</span>
+                                    </td>
+                                    <td className="p-5">
+                                        <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full border ${app.status === 'accepted' ? 'bg-green-500/10 text-green-400 border-green-500/30' :
+                                            app.status === 'rejected' ? 'bg-red-500/10 text-red-400 border-red-500/30' :
+                                                app.status === 'waitlist' ? 'bg-yellow-500/10 text-yellow-400 border-yellow-500/30' :
+                                                    'bg-blue-500/10 text-blue-400 border-blue-500/30'
+                                            }`}>
+                                            {app.status}
+                                        </span>
+                                    </td>
+                                    <td className="p-5 text-xs font-bold">
+                                        {app.checkIn ? (
+                                            <span className="text-green-400 block mb-1">✓ In: {new Date(app.checkIn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                        ) : (
+                                            <button onClick={() => updateStatus(app._id, undefined, 'checkin')} className="text-[10px] uppercase tracking-wider bg-slate-900 border border-blue-500/20 hover:border-gold hover:text-gold px-3 py-1.5 rounded-lg text-slate-400 transition-all block mb-1">Check In</button>
+                                        )}
+                                        {app.checkOut ? (
+                                            <span className="text-purple-400 block">✓ Out: {new Date(app.checkOut).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                        ) : app.checkIn ? (
+                                            <button onClick={() => updateStatus(app._id, undefined, 'checkout')} className="text-[10px] uppercase tracking-wider bg-slate-900 border border-blue-500/20 hover:border-purple-400 hover:text-purple-400 px-3 py-1.5 rounded-lg text-slate-400 transition-all block">Check Out</button>
+                                        ) : null}
+                                    </td>
+                                    <td className="p-5 text-right space-x-2">
+                                        <button onClick={() => updateStatus(app._id, 'accepted')} className="px-3 py-1.5 text-[10px] uppercase font-black tracking-widest bg-green-500/10 hover:bg-green-500/20 text-green-400 border border-green-500/30 rounded-xl transition-colors">Accept</button>
+                                        <button onClick={() => updateStatus(app._id, 'waitlist')} className="px-3 py-1.5 text-[10px] uppercase font-black tracking-widest bg-yellow-500/10 hover:bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 rounded-xl transition-colors">Waitlist</button>
+                                        <button onClick={() => updateStatus(app._id, 'rejected')} className="px-3 py-1.5 text-[10px] uppercase font-black tracking-widest bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 rounded-xl transition-colors">Reject</button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

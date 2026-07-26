@@ -11,24 +11,41 @@ const config: Config = {
     extend: {
       colors: {
         primary: {
-          DEFAULT: '#0066FF',
-          dark: '#0044CC',
-          light: '#3385FF',
+          DEFAULT: '#2563EB',
+          dark: '#1D4ED8',
+          light: '#60A5FA',
+        },
+        secondary: {
+          DEFAULT: '#1E40AF',
+          dark: '#1E3A8A',
         },
         accent: {
-          DEFAULT: '#00FF88',
-          dark: '#00CC6E',
-          light: '#33FFAA',
+          DEFAULT: '#FACC15',
+          dark: '#EAB308',
+          light: '#FEF08A',
         },
-        cyber: {
-          DEFAULT: '#8B5CF6',
-          dark: '#6D28D9',
-          light: '#A78BFA',
+        navy: {
+          bg: '#07111F',
+          deep: '#0B1220',
+          surface: '#111827',
+          card: '#172554',
+          border: 'rgba(59, 130, 246, 0.25)',
+        },
+        gold: {
+          DEFAULT: '#FACC15',
+          hover: '#EAB308',
         },
         dark: {
-          DEFAULT: '#0A0E27',
-          light: '#1A1F3A',
+          DEFAULT: '#07111F',
+          surface: '#0B1220',
+          card: '#111827',
+          border: 'rgba(59,130,246,0.25)',
         },
+      },
+      boxShadow: {
+        'glow-blue': '0 0 25px -5px rgba(37, 99, 235, 0.5)',
+        'glow-gold': '0 0 25px -5px rgba(250, 204, 21, 0.5)',
+        'glass-card': '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
       },
       fontFamily: {
         arabic: ['Cairo', 'sans-serif'],

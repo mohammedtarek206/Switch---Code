@@ -158,7 +158,7 @@ export default function CommitteeDetailPage({ params }: { params: { id: string }
     if (loading) {
         return (
             <div className="flex items-center justify-center min-h-[50vh]">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-accent"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gold"></div>
             </div>
         );
     }
@@ -167,7 +167,7 @@ export default function CommitteeDetailPage({ params }: { params: { id: string }
         return (
             <div className="space-y-4 text-center py-20">
                 <p className="text-gray-400">Committee not found.</p>
-                <Link href="/admin/community/committees" className="text-accent underline">Back to List</Link>
+                <Link href="/admin/community/committees" className="text-gold underline">Back to List</Link>
             </div>
         );
     }
@@ -193,8 +193,8 @@ export default function CommitteeDetailPage({ params }: { params: { id: string }
                         </div>
                         <p className="text-gray-400 max-w-3xl leading-relaxed">{committee.description}</p>
                     </div>
-                    <div className="flex items-center space-x-3 bg-white/5 px-4 py-2 rounded-xl">
-                        <FiTag className="text-accent" />
+                    <div className="flex items-center space-x-3 bg-slate-900 border border-blue-500/20 px-4 py-2 rounded-xl">
+                        <FiTag className="text-gold" />
                         <span className="text-sm font-semibold capitalize text-gray-300">
                             {committee.type.replace('_', ' ')}
                         </span>
@@ -204,20 +204,20 @@ export default function CommitteeDetailPage({ params }: { params: { id: string }
 
             {/* Leaders Appointing Row */}
             <div className="grid md:grid-cols-2 gap-6">
-                <div className="glass p-6 rounded-2xl flex flex-col justify-between">
+                <div className="glass-panel p-6 rounded-2xl flex flex-col justify-between">
                     <div>
                         <div className="flex justify-between items-center mb-4">
                             <span className="text-xs uppercase font-extrabold text-gray-400 tracking-wider">Committee Leader</span>
                             <button
                                 onClick={() => setIsLeaderModal(true)}
-                                className="text-xs text-accent font-bold hover:underline"
+                                className="text-xs text-gold font-bold hover:underline"
                             >
                                 Appoint / Change
                             </button>
                         </div>
                         {committee.leaderId ? (
                             <div className="flex items-center space-x-3">
-                                <div className="w-12 h-12 bg-white/5 rounded-full flex items-center justify-center font-bold text-lg text-primary">
+                                <div className="w-12 h-12 bg-slate-900 border border-blue-500/20 rounded-full flex items-center justify-center font-bold text-lg text-blue-500">
                                     {committee.leaderId.avatar ? (
                                         <img src={committee.leaderId.avatar} alt="Leader" className="w-full h-full rounded-full object-cover" />
                                     ) : (
@@ -235,20 +235,20 @@ export default function CommitteeDetailPage({ params }: { params: { id: string }
                     </div>
                 </div>
 
-                <div className="glass p-6 rounded-2xl flex flex-col justify-between">
+                <div className="glass-panel p-6 rounded-2xl flex flex-col justify-between">
                     <div>
                         <div className="flex justify-between items-center mb-4">
                             <span className="text-xs uppercase font-extrabold text-gray-400 tracking-wider">Vice Leader</span>
                             <button
                                 onClick={() => setIsViceModal(true)}
-                                className="text-xs text-accent font-bold hover:underline"
+                                className="text-xs text-gold font-bold hover:underline"
                             >
                                 Appoint / Change
                             </button>
                         </div>
                         {committee.viceLeaderId ? (
                             <div className="flex items-center space-x-3">
-                                <div className="w-12 h-12 bg-white/5 rounded-full flex items-center justify-center font-bold text-lg text-accent">
+                                <div className="w-12 h-12 bg-slate-900 border border-blue-500/20 rounded-full flex items-center justify-center font-bold text-lg text-gold">
                                     {committee.viceLeaderId.avatar ? (
                                         <img src={committee.viceLeaderId.avatar} alt="Vice Leader" className="w-full h-full rounded-full object-cover" />
                                     ) : (
@@ -268,12 +268,12 @@ export default function CommitteeDetailPage({ params }: { params: { id: string }
             </div>
 
             {/* Member Directory within committee */}
-            <div className="glass p-8 rounded-3xl space-y-6">
+            <div className="glass-panel p-8 rounded-3xl space-y-6">
                 <div className="flex justify-between items-center">
                     <h3 className="text-xl font-bold text-white">Committee Members ({members.length})</h3>
                     <button
                         onClick={() => setShowAddMember(true)}
-                        className="flex items-center bg-accent hover:bg-accent-dark text-black px-4 py-2.5 rounded-xl text-sm font-bold transition-all"
+                        className="flex items-center btn-primary-blue px-4 py-2.5 rounded-xl text-sm font-bold transition-all"
                     >
                         <FiUserPlus className="mr-2" /> Add Member
                     </button>
@@ -285,7 +285,7 @@ export default function CommitteeDetailPage({ params }: { params: { id: string }
                     <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                             <thead>
-                                <tr className="border-b border-white/5 text-gray-400 text-xs uppercase font-extrabold">
+                                <tr className="border-b border-blue-500/20 text-gray-400 text-xs uppercase font-extrabold">
                                     <th className="py-4">Name</th>
                                     <th className="py-4">Role/Position</th>
                                     <th className="py-4">Status</th>
@@ -296,7 +296,7 @@ export default function CommitteeDetailPage({ params }: { params: { id: string }
                                 {members.map((m) => (
                                     <tr key={m._id} className="text-gray-300">
                                         <td className="py-4 flex items-center space-x-3">
-                                            <div className="w-9 h-9 bg-white/5 rounded-full flex items-center justify-center font-bold text-sm">
+                                            <div className="w-9 h-9 bg-slate-900 border border-blue-500/20 rounded-full flex items-center justify-center font-bold text-sm">
                                                 {m.userId?.avatar ? (
                                                     <img src={m.userId.avatar} alt="Avatar" className="w-full h-full rounded-full object-cover" />
                                                 ) : (
@@ -309,7 +309,7 @@ export default function CommitteeDetailPage({ params }: { params: { id: string }
                                             </div>
                                         </td>
                                         <td className="py-4">
-                                            <span className="bg-white/5 text-accent text-xs px-3 py-1 rounded-full font-semibold">
+                                            <span className="bg-slate-900 border border-blue-500/20 text-gold text-xs px-3 py-1 rounded-full font-semibold">
                                                 {m.position}
                                             </span>
                                         </td>
@@ -322,7 +322,7 @@ export default function CommitteeDetailPage({ params }: { params: { id: string }
                                         <td className="py-4 text-right space-x-2">
                                             <button
                                                 onClick={() => handlePositionChange(m._id, m.position)}
-                                                className="px-3 py-1 text-xs bg-white/10 hover:bg-white/15 text-white rounded-lg transition-all"
+                                                className="px-3 py-1 text-xs bg-slate-800 hover:bg-white/15 text-white rounded-lg transition-all"
                                             >
                                                 Change Position
                                             </button>
@@ -345,7 +345,7 @@ export default function CommitteeDetailPage({ params }: { params: { id: string }
             {/* Leader Selection Modal */}
             {(isLeaderModal || isViceModal) && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-                    <div className="glass w-full max-w-md rounded-3xl p-8 space-y-6">
+                    <div className="glass-panel w-full max-w-md rounded-3xl p-8 space-y-6">
                         <h2 className="text-2xl font-bold text-white">
                             Appoint {isLeaderModal ? 'Committee Leader' : 'Vice Committee Leader'}
                         </h2>
@@ -355,26 +355,26 @@ export default function CommitteeDetailPage({ params }: { params: { id: string }
                                 placeholder="Search candidates by name..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="w-full p-4 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent"
+                                className="w-full p-4 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold"
                             />
                             <div className="space-y-2 max-h-48 overflow-y-auto">
                                 {filteredUsers.map((u) => (
                                     <button
                                         key={u._id}
                                         onClick={() => handleAssignLeader(u._id, isLeaderModal ? 'leader' : 'vice')}
-                                        className="w-full p-3 bg-white/5 hover:bg-white/10 text-left rounded-xl transition-all flex justify-between items-center text-sm"
+                                        className="w-full p-3 bg-slate-900 border border-blue-500/20 hover:bg-slate-800 text-left rounded-xl transition-all flex justify-between items-center text-sm"
                                     >
                                         <div>
                                             <span className="text-white block font-bold">{u.name}</span>
                                             <span className="text-gray-400 text-xs">{u.email}</span>
                                         </div>
-                                        <FiShield className="text-accent" />
+                                        <FiShield className="text-gold" />
                                     </button>
                                 ))}
                             </div>
                             <button
                                 onClick={() => { setIsLeaderModal(false); setIsViceModal(false); setSearchTerm(''); }}
-                                className="w-full py-3 bg-white/10 text-white rounded-xl font-semibold"
+                                className="w-full py-3 bg-slate-800 text-white rounded-xl font-semibold"
                             >
                                 Close
                             </button>
@@ -386,7 +386,7 @@ export default function CommitteeDetailPage({ params }: { params: { id: string }
             {/* Member Addition Modal */}
             {showAddMember && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-                    <div className="glass w-full max-w-md rounded-3xl p-8 space-y-6">
+                    <div className="glass-panel w-full max-w-md rounded-3xl p-8 space-y-6">
                         <h2 className="text-2xl font-bold text-white">Add Member to Committee</h2>
                         <div className="space-y-4">
                             <input
@@ -394,26 +394,26 @@ export default function CommitteeDetailPage({ params }: { params: { id: string }
                                 placeholder="Search member name or email..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="w-full p-4 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent"
+                                className="w-full p-4 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold"
                             />
                             <div className="space-y-2 max-h-48 overflow-y-auto">
                                 {filteredUsers.map((u) => (
                                     <button
                                         key={u._id}
                                         onClick={() => handleAddMember(u._id)}
-                                        className="w-full p-3 bg-white/5 hover:bg-white/10 text-left rounded-xl transition-all flex justify-between items-center text-sm"
+                                        className="w-full p-3 bg-slate-900 border border-blue-500/20 hover:bg-slate-800 text-left rounded-xl transition-all flex justify-between items-center text-sm"
                                     >
                                         <div>
                                             <span className="text-white block font-bold">{u.name}</span>
                                             <span className="text-gray-400 text-xs">{u.email}</span>
                                         </div>
-                                        <FiUserPlus className="text-accent hover:scale-110 transition-transform" />
+                                        <FiUserPlus className="text-gold hover:scale-110 transition-transform" />
                                     </button>
                                 ))}
                             </div>
                             <button
                                 onClick={() => { setShowAddMember(false); setSearchTerm(''); }}
-                                className="w-full py-3 bg-white/10 text-white rounded-xl font-semibold"
+                                className="w-full py-3 bg-slate-800 text-white rounded-xl font-semibold"
                             >
                                 Close
                             </button>

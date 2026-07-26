@@ -97,7 +97,7 @@ export default function HRDashboard() {
     };
 
     return (
-        <div className="min-h-screen bg-dark text-white py-10 px-4 md:px-8">
+        <div className="min-h-screen bg-[#07111F] text-white py-10 px-4 md:px-8">
             <div className="max-w-7xl mx-auto space-y-8">
                 {/* Header */}
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -120,7 +120,7 @@ export default function HRDashboard() {
                         { label: 'Rejected', val: stats.rejected, color: 'text-red-400' },
                         { label: 'Waiting', val: stats.waiting, color: 'text-blue-400' },
                     ].map(s => (
-                        <div key={s.label} className="glass p-4 rounded-2xl text-center border border-white/5">
+                        <div key={s.label} className="glass-panel p-4 rounded-2xl text-center border border-blue-500/20">
                             <span className="text-[10px] text-gray-500 uppercase font-bold block mb-1">{s.label}</span>
                             <span className={`text-2xl font-extrabold ${s.color}`}>{s.val}</span>
                         </div>
@@ -128,18 +128,18 @@ export default function HRDashboard() {
                 </div>
 
                 {/* Filters */}
-                <div className="glass p-6 rounded-2xl border border-white/5 flex flex-col sm:flex-row gap-4">
+                <div className="glass-panel p-6 rounded-2xl border border-blue-500/20 flex flex-col sm:flex-row gap-4">
                     <div className="relative flex-1">
                         <FiSearch className="absolute left-3 top-3 text-gray-500" />
                         <input
                             value={search} onChange={e => setSearch(e.target.value)}
                             placeholder="Search by name or email..."
-                            className="w-full pl-9 pr-4 py-2.5 bg-dark border border-white/10 rounded-xl text-white text-sm outline-none focus:border-accent"
+                            className="w-full pl-9 pr-4 py-2.5 bg-[#07111F] border border-blue-500/30 rounded-xl text-white text-sm outline-none focus:border-gold"
                         />
                     </div>
                     <select
                         value={statusFilter} onChange={e => setStatusFilter(e.target.value)}
-                        className="bg-dark border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm outline-none"
+                        className="bg-[#07111F] border border-blue-500/30 rounded-xl px-4 py-2.5 text-white text-sm outline-none"
                     >
                         <option value="all">All Statuses</option>
                         <option value="pending">Pending</option>
@@ -151,12 +151,12 @@ export default function HRDashboard() {
 
                 {/* Applications Table */}
                 {loading ? (
-                    <div className="flex justify-center py-20"><div className="animate-spin rounded-full h-10 w-10 border-t-2 border-accent"></div></div>
+                    <div className="flex justify-center py-20"><div className="animate-spin rounded-full h-10 w-10 border-t-2 border-gold"></div></div>
                 ) : (
-                    <div className="glass rounded-3xl border border-white/5 overflow-hidden">
+                    <div className="glass-panel rounded-3xl border border-blue-500/20 overflow-hidden">
                         <div className="overflow-x-auto">
                             <table className="w-full text-left min-w-[800px]">
-                                <thead className="border-b border-white/5">
+                                <thead className="border-b border-blue-500/20">
                                     <tr className="text-gray-400 text-[10px] font-bold uppercase">
                                         <th className="p-4">Applicant</th>
                                         <th className="p-4">Committee</th>
@@ -190,8 +190,8 @@ export default function HRDashboard() {
                                                     <button onClick={() => updateStatus(app._id, 'accepted')} className="p-1.5 rounded-lg bg-green-500/10 hover:bg-green-500/20 text-green-400" title="Accept"><FiCheckCircle className="w-3.5 h-3.5" /></button>
                                                     <button onClick={() => updateStatus(app._id, 'rejected')} className="p-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400" title="Reject"><FiXCircle className="w-3.5 h-3.5" /></button>
                                                     <button onClick={() => updateStatus(app._id, 'waiting')} className="p-1.5 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 text-blue-400" title="Waiting List"><FiClock className="w-3.5 h-3.5" /></button>
-                                                    <button onClick={() => { setSelectedApp(app); setNote(app.hrNote || ''); }} className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-gray-400" title="Add Note"><FiMessageSquare className="w-3.5 h-3.5" /></button>
-                                                    <Link href={`/admin/community/applications/${app._id}`} className="p-1.5 rounded-lg bg-accent/10 hover:bg-accent/20 text-accent text-[10px] font-bold px-3">Review</Link>
+                                                    <button onClick={() => { setSelectedApp(app); setNote(app.hrNote || ''); }} className="p-1.5 rounded-lg bg-slate-900 border border-blue-500/20 hover:bg-slate-800 text-gray-400" title="Add Note"><FiMessageSquare className="w-3.5 h-3.5" /></button>
+                                                    <Link href={`/admin/community/applications/${app._id}`} className="p-1.5 rounded-lg bg-gold/10 hover:bg-gold/20 text-gold text-[10px] font-bold px-3">Review</Link>
                                                 </div>
                                             </td>
                                         </tr>
@@ -209,16 +209,16 @@ export default function HRDashboard() {
             {/* Note Modal */}
             {selectedApp && (
                 <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                    <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="glass p-8 rounded-3xl w-full max-w-md space-y-4 border border-white/10">
+                    <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="glass-panel p-8 rounded-3xl w-full max-w-md space-y-4 border border-blue-500/30">
                         <h3 className="font-bold text-white">Add HR Note — {selectedApp.name}</h3>
                         <textarea
                             rows={5} value={note} onChange={e => setNote(e.target.value)}
                             placeholder="Internal HR evaluation notes..."
-                            className="w-full p-4 bg-dark border border-white/10 rounded-xl text-white text-sm outline-none focus:border-accent resize-none"
+                            className="w-full p-4 bg-[#07111F] border border-blue-500/30 rounded-xl text-white text-sm outline-none focus:border-gold resize-none"
                         />
                         <div className="flex gap-3">
-                            <button onClick={() => saveNote(selectedApp._id)} className="flex-1 bg-accent text-black py-3 rounded-xl font-bold text-sm">Save Note</button>
-                            <button onClick={() => setSelectedApp(null)} className="flex-1 bg-white/5 text-gray-300 py-3 rounded-xl font-bold text-sm">Cancel</button>
+                            <button onClick={() => saveNote(selectedApp._id)} className="flex-1 bg-blue-600 hover:bg-blue-500 text-white transition-colors text-black py-3 rounded-xl font-bold text-sm">Save Note</button>
+                            <button onClick={() => setSelectedApp(null)} className="flex-1 bg-slate-900 border border-blue-500/20 text-gray-300 py-3 rounded-xl font-bold text-sm">Cancel</button>
                         </div>
                     </motion.div>
                 </div>

@@ -153,7 +153,7 @@ export default function AdminTracks() {
                         });
                         setShowModal(true);
                     }}
-                    className="bg-primary hover:bg-primary/80 text-white px-6 py-3 rounded-xl flex items-center transition-all shadow-lg shadow-primary/20"
+                    className="bg-blue-600 hover:bg-blue-600/80 text-white px-6 py-3 rounded-xl flex items-center transition-all shadow-lg shadow-primary/20"
                 >
                     <FiPlus className="mr-2" /> Add New Track
                 </button>
@@ -161,13 +161,13 @@ export default function AdminTracks() {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {tracks.map((track) => (
-                    <div key={track._id} className="glass p-6 rounded-2xl border border-white/5 relative overflow-hidden group hover:border-primary/50 transition-all">
+                    <div key={track._id} className="glass-panel p-6 rounded-2xl border border-blue-500/20 relative overflow-hidden group hover:border-primary/50 transition-all">
                         <div className="flex justify-between items-start mb-4">
                             <h3 className="text-xl font-bold text-white">{track.title}</h3>
                             <div className="flex space-x-2">
                                 <button
                                     onClick={() => handleEditTrack(track)}
-                                    className="p-2 bg-white/5 hover:bg-white/10 rounded-lg text-gray-400 hover:text-white transition-all"
+                                    className="p-2 bg-slate-900 border border-blue-500/20 hover:bg-slate-800 rounded-lg text-gray-400 hover:text-white transition-all"
                                 >
                                     <FiEdit />
                                 </button>
@@ -181,9 +181,9 @@ export default function AdminTracks() {
                         </div>
                         <p className="text-gray-400 mb-4 line-clamp-2 text-sm">{track.description}</p>
                         <div className="flex flex-wrap gap-2 text-xs">
-                            <span className="px-3 py-1 bg-primary/20 text-primary rounded-full font-bold">{track.level}</span>
-                            <span className="px-3 py-1 bg-white/5 text-gray-300 rounded-full font-bold">{track.duration}</span>
-                            <span className="px-3 py-1 bg-accent/20 text-accent rounded-full font-bold">{track.lessons.length} Lessons</span>
+                            <span className="px-3 py-1 bg-blue-600/20 text-blue-500 rounded-full font-bold">{track.level}</span>
+                            <span className="px-3 py-1 bg-slate-900 border border-blue-500/20 text-gray-300 rounded-full font-bold">{track.duration}</span>
+                            <span className="px-3 py-1 bg-gold/20 text-gold rounded-full font-bold">{track.lessons.length} Lessons</span>
                         </div>
                     </div>
                 ))}
@@ -197,7 +197,7 @@ export default function AdminTracks() {
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.9 }}
-                            className="bg-dark-light w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-3xl p-8 border border-white/10"
+                            className="bg-slate-900 w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-3xl p-8 border border-blue-500/30"
                         >
                             <div className="flex justify-between items-center mb-8">
                                 <h2 className="text-2xl font-bold text-white">Add New Training Track</h2>
@@ -212,7 +212,7 @@ export default function AdminTracks() {
                                         <label className="text-gray-400 block">Track Title</label>
                                         <input
                                             type="text"
-                                            className="w-full bg-dark/50 border border-white/10 rounded-xl p-3 text-white focus:border-primary outline-none"
+                                            className="w-full bg-[#07111F]/50 border border-blue-500/30 rounded-xl p-3 text-white focus:border-primary outline-none"
                                             placeholder="e.g. Python Fundmentals"
                                             value={formData.title}
                                             onChange={(e) => setFormData({ ...formData, title: e.target.value })}
@@ -223,7 +223,7 @@ export default function AdminTracks() {
                                         <label className="text-gray-400 block">Duration</label>
                                         <input
                                             type="text"
-                                            className="w-full bg-dark/50 border border-white/10 rounded-xl p-3 text-white focus:border-primary outline-none"
+                                            className="w-full bg-[#07111F]/50 border border-blue-500/30 rounded-xl p-3 text-white focus:border-primary outline-none"
                                             placeholder="e.g. 4 Weeks"
                                             value={formData.duration}
                                             onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
@@ -235,7 +235,7 @@ export default function AdminTracks() {
                                 <div className="space-y-2">
                                     <label className="text-gray-400 block">Description</label>
                                     <textarea
-                                        className="w-full bg-dark/50 border border-white/10 rounded-xl p-3 text-white focus:border-primary outline-none h-32 resize-none"
+                                        className="w-full bg-[#07111F]/50 border border-blue-500/30 rounded-xl p-3 text-white focus:border-primary outline-none h-32 resize-none"
                                         placeholder="Describe what students will learn..."
                                         value={formData.description}
                                         onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -246,12 +246,12 @@ export default function AdminTracks() {
                                 <div className="space-y-4">
                                     <div className="flex justify-between items-center">
                                         <h3 className="text-xl font-bold text-white flex items-center">
-                                            <FiVideo className="mr-2 text-accent" /> Track Content (Lessons)
+                                            <FiVideo className="mr-2 text-gold" /> Track Content (Lessons)
                                         </h3>
                                         <button
                                             type="button"
                                             onClick={handleAddLesson}
-                                            className="text-accent hover:text-accent/80 flex items-center text-sm font-bold"
+                                            className="text-gold hover:text-gold/80 flex items-center text-sm font-bold"
                                         >
                                             <FiPlus className="mr-1" /> ADD LESSON
                                         </button>
@@ -259,7 +259,7 @@ export default function AdminTracks() {
 
                                     <div className="space-y-4">
                                         {formData.lessons.map((lesson, index) => (
-                                            <div key={index} className="bg-dark/40 border border-white/5 p-6 rounded-2xl space-y-4 relative">
+                                            <div key={index} className="bg-[#07111F]/40 border border-blue-500/20 p-6 rounded-2xl space-y-4 relative">
                                                 <button
                                                     type="button"
                                                     onClick={() => removeLesson(index)}
@@ -271,7 +271,7 @@ export default function AdminTracks() {
                                                     <input
                                                         type="text"
                                                         placeholder="Lesson Title"
-                                                        className="bg-dark/60 border border-white/10 rounded-lg p-2 text-white outline-none"
+                                                        className="bg-[#07111F]/60 border border-blue-500/30 rounded-lg p-2 text-white outline-none"
                                                         value={lesson.title}
                                                         onChange={(e) => updateLesson(index, 'title', e.target.value)}
                                                         required
@@ -279,7 +279,7 @@ export default function AdminTracks() {
                                                     <input
                                                         type="text"
                                                         placeholder="Dailymotion Video URL or ID"
-                                                        className="bg-dark/60 border border-white/10 rounded-lg p-2 text-white outline-none"
+                                                        className="bg-[#07111F]/60 border border-blue-500/30 rounded-lg p-2 text-white outline-none"
                                                         value={lesson.videoUrl}
                                                         onChange={(e) => updateLesson(index, 'videoUrl', e.target.value)}
                                                         required
@@ -287,14 +287,14 @@ export default function AdminTracks() {
                                                 </div>
                                                 <textarea
                                                     placeholder="Short lesson description"
-                                                    className="w-full bg-dark/60 border border-white/10 rounded-lg p-2 text-white outline-none h-20 resize-none"
+                                                    className="w-full bg-[#07111F]/60 border border-blue-500/30 rounded-lg p-2 text-white outline-none h-20 resize-none"
                                                     value={lesson.description}
                                                     onChange={(e) => updateLesson(index, 'description', e.target.value)}
                                                 />
                                             </div>
                                         ))}
                                         {formData.lessons.length === 0 && (
-                                            <div className="text-center py-8 border-2 border-dashed border-white/5 rounded-2xl text-gray-500">
+                                            <div className="text-center py-8 border-2 border-dashed border-blue-500/20 rounded-2xl text-gray-500">
                                                 No lessons added yet.
                                             </div>
                                         )}

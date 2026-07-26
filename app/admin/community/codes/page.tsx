@@ -121,7 +121,7 @@ export default function AccessCodesPage() {
                     <p className="text-gray-400 text-sm">Generate onboarding invites dictating users' roles and permissions.</p>
                 </div>
                 <button onClick={() => { generateRandomCode(); setShowModal(true); }}
-                    className="flex items-center bg-accent text-black px-5 py-2.5 rounded-xl font-bold transition-all hover:scale-105">
+                    className="flex items-center btn-primary-blue px-5 py-2.5 rounded-xl font-bold transition-all hover:scale-105">
                     <FiPlus className="mr-2" /> Generate Code
                 </button>
             </div>
@@ -132,8 +132,8 @@ export default function AccessCodesPage() {
                     { icon: FiCheckCircle, val: codes.filter(c => c.status === 'active').length, label: 'Active Codes' },
                     { icon: FiUsers, val: codes.reduce((acc, c) => acc + c.usedCount, 0), label: 'Total Redeemed' },
                 ].map((s, i) => (
-                    <div key={i} className="glass border border-white/5 p-5 rounded-2xl flex items-center gap-4">
-                        <div className="p-3 bg-white/5 rounded-xl text-accent"><s.icon className="w-5 h-5" /></div>
+                    <div key={i} className="glass-panel border border-blue-500/20 p-5 rounded-2xl flex items-center gap-4">
+                        <div className="p-3 bg-slate-900 border border-blue-500/20 rounded-xl text-gold"><s.icon className="w-5 h-5" /></div>
                         <div>
                             <p className="text-[10px] uppercase font-bold text-gray-500">{s.label}</p>
                             <p className="text-xl font-extrabold text-white">{s.val}</p>
@@ -142,10 +142,10 @@ export default function AccessCodesPage() {
                 ))}
             </div>
 
-            <div className="glass border border-white/5 rounded-3xl overflow-hidden">
+            <div className="glass-panel border border-blue-500/20 rounded-3xl overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left whitespace-nowrap">
-                        <thead className="bg-white/5 border-b border-white/5 text-[10px] uppercase font-bold text-gray-400">
+                        <thead className="bg-slate-900 border border-blue-500/20 border-b border-blue-500/20 text-[10px] uppercase font-bold text-gray-400">
                             <tr>
                                 <th className="p-4">Code</th>
                                 <th className="p-4">Role & Position</th>
@@ -159,7 +159,7 @@ export default function AccessCodesPage() {
                             {codes.map(c => (
                                 <tr key={c._id} className="hover:bg-white/[0.02]">
                                     <td className="p-4">
-                                        <span className="font-mono text-accent bg-accent/10 px-2 py-1 rounded-md cursor-pointer inline-flex items-center gap-2" onClick={() => copyToClipboard(c.code)}>
+                                        <span className="font-mono text-gold bg-gold/10 px-2 py-1 rounded-md cursor-pointer inline-flex items-center gap-2" onClick={() => copyToClipboard(c.code)}>
                                             {c.code} <FiCopy className="w-3 h-3" />
                                         </span>
                                     </td>
@@ -179,7 +179,7 @@ export default function AccessCodesPage() {
                                         </button>
                                     </td>
                                     <td className="p-4 text-right">
-                                        <button className="p-1.5 hover:bg-white/5 rounded text-gray-400"><FiTrash2 /></button>
+                                        <button className="p-1.5 hover:bg-slate-900 border border-blue-500/20 rounded text-gray-400"><FiTrash2 /></button>
                                     </td>
                                 </tr>
                             ))}
@@ -190,7 +190,7 @@ export default function AccessCodesPage() {
 
             {showModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-                    <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="glass w-full max-w-lg rounded-3xl p-8 space-y-6">
+                    <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="glass-panel w-full max-w-lg rounded-3xl p-8 space-y-6">
                         <h2 className="text-2xl font-bold text-white mb-2">Create Access Code</h2>
                         <form onSubmit={handleSubmit} className="space-y-4">
 
@@ -198,8 +198,8 @@ export default function AccessCodesPage() {
                                 <label className="text-xs font-semibold text-gray-400">Invite Code</label>
                                 <div className="flex gap-2">
                                     <input type="text" value={codeValue} onChange={(e) => setCodeValue(e.target.value.toUpperCase())} required
-                                        className="flex-1 p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent font-mono uppercase" />
-                                    <button type="button" onClick={generateRandomCode} className="px-4 bg-white/5 rounded-xl hover:bg-white/10 text-xs font-bold text-white">Generate</button>
+                                        className="flex-1 p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold font-mono uppercase" />
+                                    <button type="button" onClick={generateRandomCode} className="px-4 bg-slate-900 border border-blue-500/20 rounded-xl hover:bg-slate-800 text-xs font-bold text-white">Generate</button>
                                 </div>
                             </div>
 
@@ -207,14 +207,14 @@ export default function AccessCodesPage() {
                                 <div className="space-y-1">
                                     <label className="text-xs font-semibold text-gray-400">System Role</label>
                                     <select value={role} onChange={(e) => setRole(e.target.value)} required
-                                        className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent">
+                                        className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold">
                                         {ALL_ROLES.map(r => <option key={r} value={r}>{r.toUpperCase().replace('_', ' ')}</option>)}
                                     </select>
                                 </div>
                                 <div className="space-y-1">
                                     <label className="text-xs font-semibold text-gray-400">Committee (Optional)</label>
                                     <select value={committeeId} onChange={(e) => setCommitteeId(e.target.value)}
-                                        className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent">
+                                        className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold">
                                         <option value="">None / Global</option>
                                         {committees.map(c => <option key={c._id} value={c._id}>{c.name}</option>)}
                                     </select>
@@ -225,18 +225,18 @@ export default function AccessCodesPage() {
                                 <div className="space-y-1">
                                     <label className="text-xs font-semibold text-gray-400">Position Title (Optional)</label>
                                     <input type="text" value={position} onChange={(e) => setPosition(e.target.value)} placeholder="e.g. HR Member"
-                                        className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent" />
+                                        className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold" />
                                 </div>
                                 <div className="space-y-1">
                                     <label className="text-xs font-semibold text-gray-400">Maximum Uses</label>
                                     <input type="number" min="1" value={maxUses} onChange={(e) => setMaxUses(parseInt(e.target.value))} required
-                                        className="w-full p-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent" />
+                                        className="w-full p-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold" />
                                 </div>
                             </div>
 
                             <div className="flex justify-end gap-3 pt-4">
-                                <button type="button" onClick={() => setShowModal(false)} className="px-5 py-2.5 bg-white/5 rounded-xl font-semibold text-gray-300">Cancel</button>
-                                <button type="submit" className="px-5 py-2.5 bg-accent hover:bg-accent-dark text-black rounded-xl font-bold">Create Code</button>
+                                <button type="button" onClick={() => setShowModal(false)} className="px-5 py-2.5 bg-slate-900 border border-blue-500/20 rounded-xl font-semibold text-gray-300">Cancel</button>
+                                <button type="submit" className="btn-primary-blue px-5 py-2.5 rounded-xl font-bold">Create Code</button>
                             </div>
                         </form>
                     </motion.div>

@@ -119,7 +119,7 @@ export default function CommitteesPage() {
                 </div>
                 <button
                     onClick={() => { resetForm(); setShowModal(true); }}
-                    className="flex items-center bg-accent hover:bg-accent-dark text-black px-5 py-3 rounded-xl font-bold transition-all"
+                    className="flex items-center btn-primary-blue px-5 py-3 rounded-xl font-bold transition-all"
                 >
                     <FiPlus className="mr-2" /> Add Committee
                 </button>
@@ -127,7 +127,7 @@ export default function CommitteesPage() {
 
             {loading ? (
                 <div className="flex items-center justify-center min-h-[40vh]">
-                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-accent"></div>
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gold"></div>
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -137,7 +137,7 @@ export default function CommitteesPage() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: idx * 0.05 }}
-                            className="glass rounded-2xl p-6 relative overflow-hidden group flex flex-col justify-between"
+                            className="glass-panel rounded-2xl p-6 relative overflow-hidden group flex flex-col justify-between"
                             style={{ borderTop: `4px solid ${c.color}` }}
                         >
                             <div>
@@ -148,13 +148,13 @@ export default function CommitteesPage() {
                                     <div className="flex items-center space-x-2">
                                         <button
                                             onClick={() => handleEdit(c)}
-                                            className="p-2 hover:bg-white/5 rounded-lg text-gray-400 hover:text-white transition-all"
+                                            className="p-2 hover:bg-slate-900 border border-blue-500/20 rounded-lg text-gray-400 hover:text-white transition-all"
                                         >
                                             <FiEdit2 className="w-4 h-4" />
                                         </button>
                                         <button
                                             onClick={() => handleDelete(c._id)}
-                                            className="p-2 hover:bg-white/5 rounded-lg text-red-400 hover:text-red-500 transition-all"
+                                            className="p-2 hover:bg-slate-900 border border-blue-500/20 rounded-lg text-red-400 hover:text-red-500 transition-all"
                                         >
                                             <FiTrash2 className="w-4 h-4" />
                                         </button>
@@ -162,7 +162,7 @@ export default function CommitteesPage() {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <h3 className="text-xl font-bold text-white group-hover:text-accent transition-colors">
+                                    <h3 className="text-xl font-bold text-white group-hover:text-gold transition-colors">
                                         {c.name}
                                     </h3>
                                     <p className="text-gray-400 text-sm line-clamp-3 leading-relaxed">
@@ -171,13 +171,13 @@ export default function CommitteesPage() {
                                 </div>
                             </div>
 
-                            <div className="mt-6 pt-4 border-t border-white/5 flex items-center justify-between">
-                                <span className="flex items-center text-xs text-gray-400 bg-white/5 px-3 py-1 rounded-full">
+                            <div className="mt-6 pt-4 border-t border-blue-500/20 flex items-center justify-between">
+                                <span className="flex items-center text-xs text-gray-400 bg-slate-900 border border-blue-500/20 px-3 py-1 rounded-full">
                                     <FiTag className="mr-1" /> {c.type === 'technical' ? 'Technical' : 'Non Technical'}
                                 </span>
                                 <Link
                                     href={`/admin/community/committees/${c._id}`}
-                                    className="text-xs text-accent font-bold hover:underline"
+                                    className="text-xs text-gold font-bold hover:underline"
                                 >
                                     View Details &rarr;
                                 </Link>
@@ -193,7 +193,7 @@ export default function CommitteesPage() {
                     <motion.div
                         initial={{ scale: 0.95, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
-                        className="glass w-full max-w-lg rounded-3xl p-8 space-y-6"
+                        className="glass-panel w-full max-w-lg rounded-3xl p-8 space-y-6"
                     >
                         <h2 className="text-2xl font-bold text-white mb-2">
                             {editingId ? 'Edit Committee' : 'Add New Committee'}
@@ -208,7 +208,7 @@ export default function CommitteesPage() {
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
                                     placeholder="e.g. Technical Department"
-                                    className="w-full p-4 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent"
+                                    className="w-full p-4 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold"
                                 />
                             </div>
 
@@ -220,7 +220,7 @@ export default function CommitteesPage() {
                                     value={description}
                                     onChange={(e) => setDescription(e.target.value)}
                                     placeholder="Insert committee objectives and descriptions..."
-                                    className="w-full p-4 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent resize-none"
+                                    className="w-full p-4 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold resize-none"
                                 />
                             </div>
 
@@ -230,7 +230,7 @@ export default function CommitteesPage() {
                                     <select
                                         value={type}
                                         onChange={(e) => setType(e.target.value as 'technical' | 'non_technical')}
-                                        className="w-full p-4 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent"
+                                        className="w-full p-4 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold"
                                     >
                                         <option value="technical">Technical</option>
                                         <option value="non_technical">Non Technical</option>
@@ -243,7 +243,7 @@ export default function CommitteesPage() {
                                         type="color"
                                         value={color}
                                         onChange={(e) => setColor(e.target.value)}
-                                        className="w-full h-[58px] p-2 bg-dark-light border border-white/10 rounded-xl outline-none cursor-pointer"
+                                        className="w-full h-[58px] p-2 bg-slate-900 border border-blue-500/30 rounded-xl outline-none cursor-pointer"
                                     />
                                 </div>
                             </div>
@@ -252,13 +252,13 @@ export default function CommitteesPage() {
                                 <button
                                     type="button"
                                     onClick={() => setShowModal(false)}
-                                    className="px-6 py-3 bg-white/5 text-white rounded-xl hover:bg-white/10 transition-all font-semibold"
+                                    className="px-6 py-3 bg-slate-900 border border-blue-500/20 text-white rounded-xl hover:bg-slate-800 transition-all font-semibold"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-6 py-3 bg-accent hover:bg-accent-dark text-black rounded-xl transition-all font-bold"
+                                    className="btn-primary-blue px-6 py-3 rounded-xl font-bold"
                                 >
                                     Save Changes
                                 </button>

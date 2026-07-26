@@ -19,15 +19,20 @@ export interface IEvent extends Document {
     location?: string;
     googleMapsUrl?: string;
     date: Date;
+    time?: string;
     endDate?: Date;
     seats?: number;
     registrationDeadline?: Date;
     registrationOpen: boolean;
+    hasWaitingList?: boolean;
+    speakerName?: string;
+    organizer?: string;
     agenda: IAgendaItem[];
     speakers: ISpeaker[];
     sponsors: string[];
     requirements: string[];
     certificatesEnabled: boolean;
+    pinned?: boolean;
     committeeId?: Types.ObjectId;
     createdBy: Types.ObjectId;
     createdAt: Date;
@@ -54,20 +59,29 @@ const EventSchema: Schema = new Schema(
         location: { type: String },
         googleMapsUrl: { type: String },
         date: { type: Date, required: true },
+        time: { type: String },
         endDate: { type: Date },
-        seats: { type: Number },
+        seats: { type: Number, default: 50 },
         registrationDeadline: { type: Date },
         registrationOpen: { type: Boolean, default: true },
+        hasWaitingList: { type: Boolean, default: true },
+        speakerName: { type: String },
+        organizer: { type: String, default: 'Witch Code Platform' },
         agenda: [AgendaItemSchema],
         speakers: [SpeakerSchema],
         sponsors: [{ type: String }],
         requirements: [{ type: String }],
-        certificatesEnabled: { type: Boolean, default: false },
+        certificatesEnabled: { type: Boolean, default: true },
+        pinned: { type: Boolean, default: false },
         committeeId: { type: Schema.Types.ObjectId, ref: 'Committee' },
         createdBy: { type: Schema.Types.ObjectId, ref: 'User' },
     },
     { timestamps: true }
 );
+
+if (mongoose.models.Event) {
+    delete (mongoose.models as any).Event;
+}
 
 export default mongoose.models.Event ||
     mongoose.model<IEvent>('Event', EventSchema);

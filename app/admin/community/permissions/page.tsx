@@ -95,7 +95,7 @@ export default function PermissionsManagerPage() {
                 <p className="text-gray-400">Search members and granularly assign specific access rights.</p>
             </div>
 
-            <div className="glass p-6 rounded-3xl space-y-6">
+            <div className="glass-panel p-6 rounded-3xl space-y-6">
                 <div className="flex flex-col md:flex-row gap-4">
                     <div className="flex-1 relative">
                         <FiSearch className="absolute left-4 top-4 text-gray-500" />
@@ -104,7 +104,7 @@ export default function PermissionsManagerPage() {
                             placeholder="Search user by name or email..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full pl-12 pr-4 py-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent text-sm"
+                            className="w-full pl-12 pr-4 py-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold text-sm"
                         />
                     </div>
                     <div className="relative">
@@ -112,7 +112,7 @@ export default function PermissionsManagerPage() {
                         <select
                             value={roleFilter}
                             onChange={(e) => setRoleFilter(e.target.value)}
-                            className="w-full md:w-64 pl-12 pr-4 py-3 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent text-sm appearance-none">
+                            className="w-full md:w-64 pl-12 pr-4 py-3 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold text-sm appearance-none">
                             <option value="">All Roles</option>
                             {rolesList.map(r => <option key={r} value={r}>{r.replace(/_/g, ' ').toUpperCase()}</option>)}
                         </select>
@@ -121,18 +121,18 @@ export default function PermissionsManagerPage() {
 
                 <div className="space-y-2">
                     {loading ? (
-                        <div className="text-center py-10 text-accent"><div className="animate-spin rounded-full h-8 w-8 border-t-2 border-accent mx-auto"></div></div>
+                        <div className="text-center py-10 text-gold"><div className="animate-spin rounded-full h-8 w-8 border-t-2 border-gold mx-auto"></div></div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                             {filteredUsers.map((u) => (
                                 <button
                                     key={u._id}
                                     onClick={() => setTargetUser(u)}
-                                    className="p-4 hover:bg-white/10 text-left rounded-xl transition-all flex flex-col gap-2 bg-white/5 border border-white/5"
+                                    className="p-4 hover:bg-slate-800 text-left rounded-xl transition-all flex flex-col gap-2 bg-slate-900 border border-blue-500/20 border border-blue-500/20"
                                 >
                                     <div className="flex justify-between items-start w-full">
                                         <span className="text-white block font-bold text-sm">{u.name}</span>
-                                        <span className="text-[10px] bg-accent/20 text-accent px-2 py-0.5 rounded uppercase font-bold">{u.role.replace(/_/g, ' ')}</span>
+                                        <span className="text-[10px] bg-gold/20 text-gold px-2 py-0.5 rounded uppercase font-bold">{u.role.replace(/_/g, ' ')}</span>
                                     </div>
                                     <span className="text-gray-500 text-xs block">{u.committeeId?.name || 'Global User'} {u.position && `• ${u.position}`}</span>
                                 </button>
@@ -145,8 +145,8 @@ export default function PermissionsManagerPage() {
             {/* Target Modal */}
             {targetUser && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-                    <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="glass w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl p-8 space-y-6 custom-scrollbar-thin relative">
-                        <button onClick={() => setTargetUser(null)} className="absolute top-6 right-6 p-2 bg-white/5 hover:bg-white/10 rounded-full text-white"><FiX /></button>
+                    <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="glass-panel w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl p-8 space-y-6 custom-scrollbar-thin relative">
+                        <button onClick={() => setTargetUser(null)} className="absolute top-6 right-6 p-2 bg-slate-900 border border-blue-500/20 hover:bg-slate-800 rounded-full text-white"><FiX /></button>
 
                         <div>
                             <h2 className="text-2xl font-bold text-white leading-tight">{targetUser.name}</h2>
@@ -158,14 +158,14 @@ export default function PermissionsManagerPage() {
                             <select
                                 value={targetUser.role}
                                 onChange={(e) => handleRoleChange(e.target.value)}
-                                className="w-full p-4 bg-dark border border-white/10 rounded-xl text-white outline-none focus:border-accent text-sm"
+                                className="w-full p-4 bg-[#07111F] border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold text-sm"
                             >
                                 {rolesList.map(r => <option key={r} value={r}>{r.toUpperCase().replace(/_/g, ' ')}</option>)}
                             </select>
                         </div>
 
                         <div className="space-y-4">
-                            <label className="text-sm font-semibold text-gray-400 block pb-2 border-b border-white/10">Granular Permissions (Auto-Saves on Click)</label>
+                            <label className="text-sm font-semibold text-gray-400 block pb-2 border-b border-blue-500/30">Granular Permissions (Auto-Saves on Click)</label>
                             <div className="grid sm:grid-cols-2 gap-4">
                                 {permissionsList.map((perm) => {
                                     const isGranted = (targetUser.permissions || []).includes(perm.value);
@@ -173,13 +173,13 @@ export default function PermissionsManagerPage() {
                                         <button
                                             key={perm.value}
                                             onClick={() => handleTogglePermission(perm.value)}
-                                            className={`flex items-start text-left p-4 rounded-xl border transition-all ${isGranted ? 'border-accent/50 bg-accent/10' : 'border-white/5 bg-white/5 hover:bg-white/10'}`}
+                                            className={`flex items-start text-left p-4 rounded-xl border transition-all ${isGranted ? 'border-gold/50 bg-gold/10' : 'border-blue-500/20 bg-slate-900 border border-blue-500/20 hover:bg-slate-800'}`}
                                         >
-                                            <div className={`mt-0.5 mr-3 flex-shrink-0 ${isGranted ? 'text-accent' : 'text-gray-500'}`}>
+                                            <div className={`mt-0.5 mr-3 flex-shrink-0 ${isGranted ? 'text-gold' : 'text-gray-500'}`}>
                                                 <FiCheckSquare className="w-5 h-5" />
                                             </div>
                                             <div>
-                                                <p className={`text-sm font-bold ${isGranted ? 'text-accent' : 'text-gray-400'}`}>{perm.label.split(' (')[0]}</p>
+                                                <p className={`text-sm font-bold ${isGranted ? 'text-gold' : 'text-gray-400'}`}>{perm.label.split(' (')[0]}</p>
                                                 <p className="text-[10px] text-gray-500 mt-1">{perm.label}</p>
                                             </div>
                                         </button>

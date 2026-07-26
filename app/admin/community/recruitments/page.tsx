@@ -192,7 +192,7 @@ export default function RecruitmentsPage() {
                 </div>
                 <button
                     onClick={() => { resetForm(); setShowModal(true); }}
-                    className="flex items-center bg-accent hover:bg-accent-dark text-black px-5 py-3 rounded-xl font-bold transition-all"
+                    className="flex items-center btn-primary-blue px-5 py-3 rounded-xl font-bold transition-all"
                 >
                     <FiPlus className="mr-2" /> Start Recruitment
                 </button>
@@ -200,7 +200,7 @@ export default function RecruitmentsPage() {
 
             {loading ? (
                 <div className="flex items-center justify-center min-h-[40vh]">
-                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-accent"></div>
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gold"></div>
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -210,22 +210,22 @@ export default function RecruitmentsPage() {
                             initial={{ opacity: 0, y: 15 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: idx * 0.05 }}
-                            className="glass p-6 rounded-2xl flex flex-col justify-between"
+                            className="glass-panel p-6 rounded-2xl flex flex-col justify-between"
                         >
                             <div>
                                 <div className="flex justify-between items-start mb-4">
                                     <div className="flex items-center space-x-2">
                                         <span className={`text-xs px-2.5 py-1 rounded-full font-bold uppercase ${r.status === 'open' ? 'bg-green-500/10 text-green-400' :
-                                                r.status === 'closed' ? 'bg-red-500/10 text-red-400' : 'bg-yellow-500/10 text-yellow-400'
+                                            r.status === 'closed' ? 'bg-red-500/10 text-red-400' : 'bg-yellow-500/10 text-yellow-400'
                                             }`}>
                                             {r.status}
                                         </span>
                                     </div>
                                     <div className="flex space-x-2">
-                                        <button onClick={() => handleEdit(r)} className="p-2 hover:bg-white/5 rounded-lg text-gray-400 hover:text-white">
+                                        <button onClick={() => handleEdit(r)} className="p-2 hover:bg-slate-900 border border-blue-500/20 rounded-lg text-gray-400 hover:text-white">
                                             <FiEdit2 className="w-4 h-4" />
                                         </button>
-                                        <button onClick={() => handleDelete(r._id)} className="p-2 hover:bg-white/5 rounded-lg text-red-400 hover:text-red-500">
+                                        <button onClick={() => handleDelete(r._id)} className="p-2 hover:bg-slate-900 border border-blue-500/20 rounded-lg text-red-400 hover:text-red-500">
                                             <FiTrash2 className="w-4 h-4" />
                                         </button>
                                     </div>
@@ -234,21 +234,21 @@ export default function RecruitmentsPage() {
                                 <h3 className="text-xl font-bold text-white mb-2">{r.name}</h3>
                                 <p className="text-gray-400 text-sm mb-4">{r.description || 'No description provided'}</p>
 
-                                <div className="space-y-2 border-t border-white/5 pt-4 text-xs text-gray-400">
+                                <div className="space-y-2 border-t border-blue-500/20 pt-4 text-xs text-gray-400">
                                     <div className="flex items-center">
-                                        <FiCalendar className="mr-2 text-accent" />
+                                        <FiCalendar className="mr-2 text-gold" />
                                         <span>Start: {new Date(r.startDate).toLocaleDateString()}</span>
                                     </div>
                                     <div className="flex items-center">
-                                        <FiCalendar className="mr-2 text-accent" />
+                                        <FiCalendar className="mr-2 text-gold" />
                                         <span>End: {new Date(r.endDate).toLocaleDateString()}</span>
                                     </div>
                                     <div className="flex items-center">
-                                        <FiFolder className="mr-2 text-accent" />
+                                        <FiFolder className="mr-2 text-gold" />
                                         <span>Committees: {r.committees?.length || 0} required</span>
                                     </div>
                                     <div className="flex items-center">
-                                        <FiCheckSquare className="mr-2 text-accent" />
+                                        <FiCheckSquare className="mr-2 text-gold" />
                                         <span>Form Fields: {r.formFields?.length || 0} customized</span>
                                     </div>
                                 </div>
@@ -264,7 +264,7 @@ export default function RecruitmentsPage() {
                     <motion.div
                         initial={{ scale: 0.95, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
-                        className="glass w-full max-w-3xl rounded-3xl p-8 space-y-6 my-8"
+                        className="glass-panel w-full max-w-3xl rounded-3xl p-8 space-y-6 my-8"
                     >
                         <h2 className="text-2xl font-bold text-white">
                             {editingId ? 'Edit Recruitment' : 'Launch Recruitment Cycle'}
@@ -280,7 +280,7 @@ export default function RecruitmentsPage() {
                                         value={name}
                                         onChange={(e) => setName(e.target.value)}
                                         placeholder="e.g. Summer Recruitment 2027"
-                                        className="w-full p-4 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent"
+                                        className="w-full p-4 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold"
                                     />
                                 </div>
                                 <div className="space-y-1">
@@ -288,7 +288,7 @@ export default function RecruitmentsPage() {
                                     <select
                                         value={status}
                                         onChange={(e) => setStatus(e.target.value as 'open' | 'closed' | 'draft')}
-                                        className="w-full p-4 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent"
+                                        className="w-full p-4 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold"
                                     >
                                         <option value="draft">Draft</option>
                                         <option value="open">Open (Publicly visible)</option>
@@ -304,7 +304,7 @@ export default function RecruitmentsPage() {
                                     onChange={(e) => setDescription(e.target.value)}
                                     placeholder="Cycle announcements or eligibility guidelines..."
                                     rows={2}
-                                    className="w-full p-4 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent resize-none"
+                                    className="w-full p-4 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold resize-none"
                                 />
                             </div>
 
@@ -316,7 +316,7 @@ export default function RecruitmentsPage() {
                                         required
                                         value={startDate}
                                         onChange={(e) => setStartDate(e.target.value)}
-                                        className="w-full p-4 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent"
+                                        className="w-full p-4 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold"
                                     />
                                 </div>
                                 <div className="space-y-1">
@@ -326,7 +326,7 @@ export default function RecruitmentsPage() {
                                         required
                                         value={endDate}
                                         onChange={(e) => setEndDate(e.target.value)}
-                                        className="w-full p-4 bg-dark-light border border-white/10 rounded-xl text-white outline-none focus:border-accent"
+                                        className="w-full p-4 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold"
                                     />
                                 </div>
                             </div>
@@ -334,14 +334,14 @@ export default function RecruitmentsPage() {
                             {/* Committees checklist */}
                             <div className="space-y-2">
                                 <label className="text-sm text-gray-300 font-semibold block">Committees Open for Applications</label>
-                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 bg-white/5 p-4 rounded-xl max-h-32 overflow-y-auto">
+                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 bg-slate-900 border border-blue-500/20 p-4 rounded-xl max-h-32 overflow-y-auto">
                                     {committees.map((c) => (
                                         <label key={c._id} className="flex items-center space-x-2 text-sm text-gray-300 cursor-pointer">
                                             <input
                                                 type="checkbox"
                                                 checked={reqCommittees.includes(c._id)}
                                                 onChange={() => handleToggleCommittee(c._id)}
-                                                className="rounded border-white/10 accent-accent cursor-pointer"
+                                                className="rounded border-blue-500/30 accent-accent cursor-pointer"
                                             />
                                             <span>{c.name}</span>
                                         </label>
@@ -350,7 +350,7 @@ export default function RecruitmentsPage() {
                             </div>
 
                             {/* Dynamic Field Builder */}
-                            <div className="space-y-4 border-t border-white/5 pt-4">
+                            <div className="space-y-4 border-t border-blue-500/20 pt-4">
                                 <h3 className="font-bold text-white text-md">Dynamic Recruitment Form Fields</h3>
 
                                 {/* Visual Added Fields list */}
@@ -359,11 +359,11 @@ export default function RecruitmentsPage() {
                                         <p className="text-gray-500 text-xs italic">No custom fields added yet. Add questions below.</p>
                                     ) : (
                                         formFields.map((f, idx) => (
-                                            <div key={f.id} className="bg-white/5 p-3 rounded-xl flex items-center justify-between text-xs">
+                                            <div key={f.id} className="bg-slate-900 border border-blue-500/20 p-3 rounded-xl flex items-center justify-between text-xs">
                                                 <div className="flex items-center space-x-2 text-gray-300">
                                                     <FiMove className="text-gray-500 cursor-pointer" />
                                                     <span className="font-bold text-white">{idx + 1}. {f.label}</span>
-                                                    <span className="bg-accent/10 text-accent px-2 py-0.5 rounded-full uppercase tracking-wider scale-90">{f.type}</span>
+                                                    <span className="bg-gold/10 text-gold px-2 py-0.5 rounded-full uppercase tracking-wider scale-90">{f.type}</span>
                                                     {f.required && <span className="text-red-400">*Required</span>}
                                                 </div>
                                                 <button
@@ -379,19 +379,19 @@ export default function RecruitmentsPage() {
                                 </div>
 
                                 {/* Subform to append a single field */}
-                                <div className="bg-white/5 p-4 rounded-xl space-y-3">
+                                <div className="bg-slate-900 border border-blue-500/20 p-4 rounded-xl space-y-3">
                                     <div className="grid sm:grid-cols-2 gap-3">
                                         <input
                                             type="text"
                                             placeholder="Field Label / Question (e.g. Why Join?)"
                                             value={fieldLabel}
                                             onChange={(e) => setFieldLabel(e.target.value)}
-                                            className="p-3 bg-dark text-xs border border-white/5 rounded-lg text-white outline-none focus:border-accent"
+                                            className="p-3 bg-slate-900 text-xs border border-blue-500/20 rounded-lg text-white outline-none focus:border-gold"
                                         />
                                         <select
                                             value={fieldType}
                                             onChange={(e) => setFieldType(e.target.value as FormField['type'])}
-                                            className="p-3 bg-dark text-xs border border-white/5 rounded-lg text-white outline-none"
+                                            className="p-3 bg-slate-900 text-xs border border-blue-500/20 rounded-lg text-white outline-none"
                                         >
                                             <option value="text">Single Text</option>
                                             <option value="textarea">Paragraph Area</option>
@@ -413,7 +413,7 @@ export default function RecruitmentsPage() {
                                             placeholder="Options (For dropdown/checkbox, comma separated)"
                                             value={fieldOptions}
                                             onChange={(e) => setFieldOptions(e.target.value)}
-                                            className="p-3 bg-dark text-xs border border-white/5 rounded-lg text-white outline-none"
+                                            className="p-3 bg-slate-900 text-xs border border-blue-500/20 rounded-lg text-white outline-none"
                                         />
                                         <div className="flex items-center space-x-2 text-xs text-gray-300">
                                             <input
@@ -428,24 +428,24 @@ export default function RecruitmentsPage() {
                                     <button
                                         type="button"
                                         onClick={handleAddCustomField}
-                                        className="w-full py-2 bg-primary/25 hover:bg-primary/30 text-primary-light border border-primary/30 rounded-lg text-xs font-bold transition-all"
+                                        className="w-full py-2 bg-blue-600/25 hover:bg-blue-600/30 text-blue-400 border border-blue-500/30 rounded-lg text-xs font-bold transition-all"
                                     >
                                         + Append Question to Form
                                     </button>
                                 </div>
                             </div>
 
-                            <div className="flex justify-end space-x-3 pt-4 border-t border-white/5">
+                            <div className="flex justify-end space-x-3 pt-4 border-t border-blue-500/20">
                                 <button
                                     type="button"
                                     onClick={() => setShowModal(false)}
-                                    className="px-6 py-3 bg-white/5 text-white rounded-xl hover:bg-white/10 transition-all font-semibold"
+                                    className="px-6 py-3 bg-slate-900 border border-blue-500/20 text-white rounded-xl hover:bg-slate-800 transition-all font-semibold"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-6 py-3 bg-accent hover:bg-accent-dark text-black rounded-xl transition-all font-bold"
+                                    className="btn-primary-blue px-6 py-3 rounded-xl font-bold"
                                 >
                                     Save Cycle
                                 </button>

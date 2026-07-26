@@ -46,7 +46,7 @@ export default function MarketingDashboard() {
     };
 
     return (
-        <div className="min-h-screen bg-dark text-white py-10 px-4 md:px-8">
+        <div className="min-h-screen bg-[#07111F] text-white py-10 px-4 md:px-8">
             <div className="max-w-6xl mx-auto space-y-8">
                 {/* Header */}
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -64,12 +64,12 @@ export default function MarketingDashboard() {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {[
                         { label: 'Total Reach', val: totalReach.toLocaleString(), icon: FiTrendingUp, color: 'text-orange-400' },
-                        { label: 'Registrations', val: totalReg.toLocaleString(), icon: FiUsers, color: 'text-accent' },
+                        { label: 'Registrations', val: totalReg.toLocaleString(), icon: FiUsers, color: 'text-gold' },
                         { label: 'Active Campaigns', val: activeCount, icon: FiTarget, color: 'text-green-400' },
-                        { label: 'Conversion Rate', val: `${totalReach ? Math.round((totalReg / totalReach) * 100) : 0}%`, icon: FiBarChart2, color: 'text-primary' },
+                        { label: 'Conversion Rate', val: `${totalReach ? Math.round((totalReg / totalReach) * 100) : 0}%`, icon: FiBarChart2, color: 'text-blue-500' },
                     ].map(s => (
-                        <div key={s.label} className="glass p-5 rounded-2xl border border-white/5 flex items-center gap-3">
-                            <div className={`p-3 bg-white/5 rounded-xl ${s.color}`}><s.icon className="w-5 h-5" /></div>
+                        <div key={s.label} className="glass-panel p-5 rounded-2xl border border-blue-500/20 flex items-center gap-3">
+                            <div className={`p-3 bg-slate-900 border border-blue-500/20 rounded-xl ${s.color}`}><s.icon className="w-5 h-5" /></div>
                             <div>
                                 <span className="text-[10px] text-gray-500 uppercase font-bold block">{s.label}</span>
                                 <span className={`text-xl font-extrabold ${s.color}`}>{s.val}</span>
@@ -79,16 +79,16 @@ export default function MarketingDashboard() {
                 </div>
 
                 {/* Campaigns Table */}
-                <div className="glass rounded-3xl border border-white/5 overflow-hidden">
-                    <div className="p-6 border-b border-white/5 flex justify-between items-center">
+                <div className="glass-panel rounded-3xl border border-blue-500/20 overflow-hidden">
+                    <div className="p-6 border-b border-blue-500/20 flex justify-between items-center">
                         <h3 className="font-bold text-white flex items-center gap-2"><FiTarget className="text-orange-400" /> Campaigns</h3>
-                        <button className="flex items-center gap-2 bg-accent hover:bg-accent-dark text-black px-4 py-2.5 rounded-xl text-sm font-bold">
+                        <button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white transition-colors hover:bg-blue-600 hover:bg-blue-500 text-white transition-colors-dark text-black px-4 py-2.5 rounded-xl text-sm font-bold">
                             <FiPlus /> New Campaign
                         </button>
                     </div>
                     <div className="overflow-x-auto">
                         <table className="w-full text-left min-w-[700px]">
-                            <thead className="border-b border-white/5">
+                            <thead className="border-b border-blue-500/20">
                                 <tr className="text-gray-400 text-[10px] font-bold uppercase">
                                     <th className="p-4">Campaign Name</th>
                                     <th className="p-4">Status</th>
@@ -108,13 +108,13 @@ export default function MarketingDashboard() {
                                             <span className={`text-[10px] px-2.5 py-1 rounded-full font-bold uppercase ${STATUS_BADGE[c.status]}`}>{c.status}</span>
                                         </td>
                                         <td className="p-4 text-gray-300">{c.reach.toLocaleString()}</td>
-                                        <td className="p-4 text-accent font-bold">{c.registrations}</td>
+                                        <td className="p-4 text-gold font-bold">{c.registrations}</td>
                                         <td className="p-4 text-gray-400">{c.budget ? `${c.budget.toLocaleString()} EGP` : '—'}</td>
                                         <td className="p-4 text-gray-500 text-xs">
                                             {new Date(c.startDate).toLocaleDateString()} → {new Date(c.endDate).toLocaleDateString()}
                                         </td>
                                         <td className="p-4 text-right">
-                                            <button className="p-2 bg-white/5 hover:bg-white/10 rounded-lg text-gray-400" title="View Report">
+                                            <button className="p-2 bg-slate-900 border border-blue-500/20 hover:bg-slate-800 rounded-lg text-gray-400" title="View Report">
                                                 <FiEye className="w-4 h-4" />
                                             </button>
                                         </td>
@@ -126,14 +126,14 @@ export default function MarketingDashboard() {
                 </div>
 
                 {/* Sponsors section */}
-                <div className="glass p-8 rounded-3xl border border-white/5 space-y-4">
+                <div className="glass-panel p-8 rounded-3xl border border-blue-500/20 space-y-4">
                     <h3 className="font-bold text-white flex items-center gap-2"><FiDollarSign className="text-orange-400" /> Sponsors & Partners</h3>
                     <p className="text-gray-500 text-sm">Track partnership inquiries and manage sponsor agreements here.</p>
                     <div className="grid md:grid-cols-3 gap-4">
                         {['Platinum Sponsor', 'Gold Partner', 'Community Partner'].map(tier => (
-                            <div key={tier} className="p-4 bg-white/5 border border-white/5 rounded-2xl text-center">
+                            <div key={tier} className="p-4 bg-slate-900 border border-blue-500/20 border border-blue-500/20 rounded-2xl text-center">
                                 <span className="text-xs text-gray-500 block font-bold uppercase mb-1">{tier}</span>
-                                <button className="text-xs text-accent hover:underline mt-1">+ Add Sponsor</button>
+                                <button className="text-xs text-gold hover:underline mt-1">+ Add Sponsor</button>
                             </div>
                         ))}
                     </div>
