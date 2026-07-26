@@ -8,6 +8,8 @@ import Warning from '@/models/Warning';
 import Award from '@/models/Award';
 import { authenticateRequest } from '@/lib/auth';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: NextRequest) {
     try {
         const authUser = await authenticateRequest(req);

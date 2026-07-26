@@ -10,6 +10,8 @@ import Committee from '@/models/Committee';
 import CommunityTeam from '@/models/CommunityTeam';
 import { authenticateRequest } from '@/lib/auth';
 
+export const dynamic = 'force-dynamic';
+
 const LEADER_ROLES = ['committee_leader', 'vice_committee_leader', 'admin', 'super_admin', 'president', 'vice_president', 'hr'];
 
 export async function GET(request: NextRequest) {

@@ -5,6 +5,8 @@ import Track from '@/models/Track';
 import User from '@/models/User';
 import { authenticateRequest } from '@/lib/auth';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
     try {
         const userToken = await authenticateRequest(request);

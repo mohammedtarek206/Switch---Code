@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { FiUsers, FiShield, FiCheckSquare, FiCalendar, FiAlertTriangle, FiAward, FiPieChart, FiUserCheck, FiPhone, FiMail } from 'react-icons/fi';
 import { useSearchParams } from 'next/navigation';
 
-export default function TeamDashboardPage() {
+function TeamDashboardContent() {
     const searchParams = useSearchParams();
     const teamIdParam = searchParams.get('teamId');
 
@@ -264,5 +264,13 @@ export default function TeamDashboardPage() {
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function TeamDashboardPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen bg-dark text-accent flex items-center justify-center font-bold">Syncing Team Dashboard...</div>}>
+            <TeamDashboardContent />
+        </Suspense>
     );
 }
