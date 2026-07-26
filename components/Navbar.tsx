@@ -50,9 +50,11 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-3 group">
-            <div className="w-11 h-11 bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl border border-blue-400/30 flex items-center justify-center shadow-lg shadow-blue-600/30 group-hover:scale-105 transition-transform">
-              <span className="text-gold font-black text-xl tracking-tighter">SC</span>
-            </div>
+            <img
+              src="/Copilot_20250808_194655.png"
+              alt="Switch Code Logo"
+              className="h-12 w-auto object-contain group-hover:scale-105 transition-transform"
+            />
             <div className="flex flex-col">
               <span className="text-xl font-black text-white tracking-tight group-hover:text-gold transition-colors">Switch Code</span>
               <span className="text-[10px] text-blue-400 font-bold uppercase tracking-widest -mt-1">Tech Platform</span>
