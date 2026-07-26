@@ -5,6 +5,7 @@ export interface TokenPayload {
   userId: string;
   role: string;
   email?: string;
+  committeeId?: string;
 }
 
 export function generateToken(payload: TokenPayload): string {

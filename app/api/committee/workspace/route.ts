@@ -21,7 +21,12 @@ export async function GET(request: NextRequest) {
         const _c = Committee; const _t = CommunityTeam;
 
         const { searchParams } = new URL(request.url);
-        const committeeId = searchParams.get('committeeId') || user.committeeId;
+        let committeeId = searchParams.get('committeeId') || user.committeeId;
+
+        if (!committeeId) {
+            const dbUser = await User.findById(user.userId).select('committeeId');
+            committeeId = dbUser?.committeeId?.toString();
+        }
 
         if (!committeeId) return NextResponse.json({ error: 'No committee found' }, { status: 400 });
 
