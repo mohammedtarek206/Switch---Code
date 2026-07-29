@@ -81,7 +81,7 @@ export async function GET(req: NextRequest) {
                         pipeline: [{ $project: { title: 1 } }],
                     },
                 },
-                { $unwind: { path: '$event', preserveNullAndEmpty: true } },
+                { $unwind: { path: '$event', preserveNullAndEmptyArrays: true } },
                 { $project: { _id: 0, title: '$event.title', registrations: '$count' } },
             ]),
         ]);
