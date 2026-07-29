@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Event from '@/models/Event';
+import EventQuestion from '@/models/EventQuestion';
 import { authenticateRequest } from '@/lib/auth';
 import { hasPermission, PERMISSIONS } from '@/lib/permissions';
 import { logActivity } from '@/lib/activityLog';
@@ -66,6 +67,14 @@ export async function POST(req: NextRequest) {
 
         const event = await Event.create({ ...body, createdBy: user.userId });
         await logActivity(user.userId, 'CREATE_EVENT', 'Event', event._id.toString(), { title });
+
+        if (body.questions && Array.isArray(body.questions)) {
+            const qs = body.questions.map((q: any) => ({
+                ...q,
+                eventId: event._id,
+            }));
+            await EventQuestion.insertMany(qs);
+        }
 
         // Return only the fields needed by the list so the UI can optimistically insert
         const populatedEvent = await Event.findById(event._id)

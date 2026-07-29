@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Event from '@/models/Event';
+import EventQuestion from '@/models/EventQuestion';
 import { authenticateRequest } from '@/lib/auth';
 import { hasPermission, PERMISSIONS } from '@/lib/permissions';
 import { logActivity } from '@/lib/activityLog';
@@ -30,6 +31,19 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 
         await connectDB();
         const body = await req.json();
+
+        // Sync questions if provided
+        if (body.questions && Array.isArray(body.questions)) {
+            // Re-create the questions array for simplicity
+            await EventQuestion.deleteMany({ eventId: params.id });
+            const qs = body.questions.map((q: any) => ({
+                ...q,
+                eventId: params.id,
+            }));
+            await EventQuestion.insertMany(qs);
+        }
+        delete body.questions; // remove from event fields
+
         const event = await Event.findByIdAndUpdate(params.id, body, { new: true });
         if (!event) return NextResponse.json({ error: 'Not found' }, { status: 404 });
 

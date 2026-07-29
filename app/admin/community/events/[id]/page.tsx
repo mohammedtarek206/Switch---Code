@@ -5,8 +5,9 @@ import { useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import {
     FiCalendar, FiUsers, FiCheckCircle, FiXCircle, FiClock,
-    FiDownload, FiSearch, FiFilter, FiMail, FiCheckSquare, FiLogOut
+    FiDownload, FiSearch, FiFilter, FiMail, FiCheckSquare, FiLogOut, FiEye, FiX
 } from 'react-icons/fi';
+import { AnimatePresence } from 'framer-motion';
 
 export default function EventApplicationsDashboard() {
     const params = useParams();
@@ -18,6 +19,7 @@ export default function EventApplicationsDashboard() {
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
     const [filterStatus, setFilterStatus] = useState('all');
+    const [selectedApplicant, setSelectedApplicant] = useState<any>(null);
 
     useEffect(() => {
         if (eventId) fetchApplications();
@@ -229,6 +231,9 @@ export default function EventApplicationsDashboard() {
                                         ) : null}
                                     </td>
                                     <td className="p-5 text-right space-x-2">
+                                        <button onClick={() => setSelectedApplicant(app)} className="p-2 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border border-blue-500/30 rounded-xl transition-colors mr-2">
+                                            <FiEye className="w-3.5 h-3.5" />
+                                        </button>
                                         <button onClick={() => updateStatus(app._id, 'accepted')} className="px-3 py-1.5 text-[10px] uppercase font-black tracking-widest bg-green-500/10 hover:bg-green-500/20 text-green-400 border border-green-500/30 rounded-xl transition-colors">Accept</button>
                                         <button onClick={() => updateStatus(app._id, 'waitlist')} className="px-3 py-1.5 text-[10px] uppercase font-black tracking-widest bg-yellow-500/10 hover:bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 rounded-xl transition-colors">Waitlist</button>
                                         <button onClick={() => updateStatus(app._id, 'rejected')} className="px-3 py-1.5 text-[10px] uppercase font-black tracking-widest bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 rounded-xl transition-colors">Reject</button>
@@ -239,6 +244,63 @@ export default function EventApplicationsDashboard() {
                     </table>
                 </div>
             </div>
+
+            <AnimatePresence>
+                {selectedApplicant && (
+                    <motion.div
+                        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#07111F]/90 backdrop-blur-xl"
+                        onClick={e => { if (e.target === e.currentTarget) setSelectedApplicant(null); }}
+                    >
+                        <motion.div
+                            initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }}
+                            className="glass-panel w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-[2.5rem] p-8 space-y-6 border border-blue-500/30 custom-scrollbar-thin"
+                        >
+                            <div className="flex justify-between items-start border-b border-blue-500/20 pb-4">
+                                <div>
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-gold mb-1 block">Applicant Profile</span>
+                                    <h2 className="text-2xl font-black text-white">{selectedApplicant.name}</h2>
+                                    <p className="text-slate-400 text-sm mt-1">{selectedApplicant.email} • {selectedApplicant.phone || 'No Phone'}</p>
+                                </div>
+                                <button onClick={() => setSelectedApplicant(null)} className="p-2 bg-slate-800 rounded-full hover:bg-slate-700 text-slate-300 transition-colors">
+                                    <FiX className="w-5 h-5" />
+                                </button>
+                            </div>
+
+                            <div className="space-y-4">
+                                <div>
+                                    <h3 className="text-sm font-bold text-blue-400 mb-2">Academic Info</h3>
+                                    <div className="bg-slate-900/50 p-4 rounded-2xl border border-blue-500/20 text-sm">
+                                        <p><span className="text-slate-500 w-24 inline-block">University:</span> <span className="text-white font-medium">{selectedApplicant.university || 'N/A'}</span></p>
+                                        <p className="mt-2"><span className="text-slate-500 w-24 inline-block">Faculty/Major:</span> <span className="text-white font-medium">{selectedApplicant.faculty || 'N/A'}</span></p>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 className="text-sm font-bold text-pink-400 mb-2">Registration Questions</h3>
+                                    {selectedApplicant.answers && selectedApplicant.answers.length > 0 ? (
+                                        <div className="space-y-3">
+                                            {selectedApplicant.answers.map((ans: any, idx: number) => (
+                                                <div key={idx} className="bg-slate-900/50 p-4 rounded-2xl border border-blue-500/20">
+                                                    <p className="text-xs text-slate-400 font-bold mb-1">{ans.question}</p>
+                                                    <p className="text-sm text-white font-medium flex items-center gap-2">
+                                                        <FiCheckCircle className="text-green-400 w-4 h-4" /> {ans.answer}
+                                                    </p>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <div className="bg-slate-900/50 p-6 rounded-2xl border border-blue-500/20 text-center text-slate-500 text-sm">
+                                            No custom questions answered by this applicant.
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
         </div>
     );
 }

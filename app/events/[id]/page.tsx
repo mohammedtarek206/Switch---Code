@@ -18,9 +18,26 @@ export default function EventPublicPage() {
     const [regMessage, setRegMessage] = useState<any>(null);
     const [registrationData, setRegistrationData] = useState<any>(null);
 
+    const [questions, setQuestions] = useState<any[]>([]);
+    const [answers, setAnswers] = useState<Record<string, string>>({});
+
     useEffect(() => {
-        if (eventId) fetchEvent();
+        if (eventId) {
+            fetchEvent();
+            fetchQuestions();
+        }
     }, [eventId]);
+
+    async function fetchQuestions() {
+        try {
+            const res = await fetch(`/api/events/${eventId}/questions`);
+            if (res.ok) {
+                setQuestions(await res.json());
+            }
+        } catch (err) {
+            console.error('Failed to fetch questions:', err);
+        }
+    }
 
     async function fetchEvent() {
         try {
@@ -46,7 +63,7 @@ export default function EventPublicPage() {
             const res = await fetch(`/api/events/${eventId}/register`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(regForm)
+                body: JSON.stringify({ ...regForm, answers })
             });
             const resData = await res.json();
 
@@ -165,6 +182,40 @@ export default function EventPublicPage() {
                                     <input type="text" value={regForm.faculty} onChange={e => setRegForm({ ...regForm, faculty: e.target.value })} className="w-full bg-slate-900/50 border border-blue-500/30 rounded-xl px-4 py-3.5 text-sm text-white focus:outline-none focus:border-gold transition-colors" placeholder="e.g. Computer Science" />
                                 </div>
                             </div>
+
+                            {questions.length > 0 && (
+                                <div className="space-y-6 pt-4 border-t border-blue-500/20">
+                                    <h3 className="text-xl font-bold text-white">Event Questions</h3>
+                                    {questions.map((q: any) => (
+                                        <div key={q._id} className="bg-slate-900/40 p-5 rounded-2xl border border-blue-500/20">
+                                            <label className="block text-sm font-semibold text-white mb-4">
+                                                {q.question} {q.required && <span className="text-red-500">*</span>}
+                                            </label>
+                                            {q.type === 'multiple_choice' && (
+                                                <div className="space-y-3">
+                                                    {q.options.map((opt: string, idx: number) => (
+                                                        <label key={idx} className="flex items-center space-x-3 cursor-pointer group">
+                                                            <div className="relative flex items-center justify-center">
+                                                                <input
+                                                                    type="radio"
+                                                                    name={q._id}
+                                                                    value={opt}
+                                                                    required={q.required}
+                                                                    checked={answers[q._id] === opt}
+                                                                    onChange={(e) => setAnswers({ ...answers, [q._id]: e.target.value })}
+                                                                    className="peer appearance-none w-5 h-5 border border-blue-500/40 rounded-full checked:border-gold checked:bg-gold/20 transition-all cursor-pointer"
+                                                                />
+                                                                <div className="absolute w-2.5 h-2.5 bg-gold rounded-full opacity-0 peer-checked:opacity-100 transition-opacity" />
+                                                            </div>
+                                                            <span className="text-sm text-slate-300 group-hover:text-white transition-colors">{opt}</span>
+                                                        </label>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
 
                             <div className="pt-4">
                                 <button type="submit" disabled={regSubmitting} className="btn-primary-blue w-full py-4 rounded-xl text-xs font-black uppercase tracking-widest transition-all disabled:opacity-50 flex justify-center items-center">
