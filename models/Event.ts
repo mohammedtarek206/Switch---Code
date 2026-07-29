@@ -33,6 +33,7 @@ export interface IEvent extends Document {
     requirements: string[];
     certificatesEnabled: boolean;
     pinned?: boolean;
+    pointsAwarded?: number;
     committeeId?: Types.ObjectId;
     createdBy: Types.ObjectId;
     createdAt: Date;
@@ -73,11 +74,17 @@ const EventSchema: Schema = new Schema(
         requirements: [{ type: String }],
         certificatesEnabled: { type: Boolean, default: true },
         pinned: { type: Boolean, default: false },
+        pointsAwarded: { type: Number, default: 0 },
         committeeId: { type: Schema.Types.ObjectId, ref: 'Committee' },
         createdBy: { type: Schema.Types.ObjectId, ref: 'User' },
     },
     { timestamps: true }
 );
+
+// Performance indexes
+EventSchema.index({ date: -1 });
+EventSchema.index({ committeeId: 1 });
+EventSchema.index({ isActive: 1, date: -1 });
 
 if (mongoose.models.Event) {
     delete (mongoose.models as any).Event;

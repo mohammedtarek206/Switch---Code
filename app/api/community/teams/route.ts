@@ -10,17 +10,17 @@ export async function GET(req: NextRequest) {
         const committeeId = url.searchParams.get('committeeId');
 
         const filter: any = {};
-        if (committeeId) {
-            filter.committeeId = committeeId;
-        }
+        if (committeeId) filter.committeeId = committeeId;
 
         const teams = await CommunityTeam.find(filter)
+            .select('_id name color icon committeeId leaderId isActive')
             .populate('committeeId', 'name type color')
-            .populate('leaderId', 'name username email avatar')
-            .populate('viceLeaderId', 'name username email avatar')
-            .sort({ createdAt: -1 });
+            .sort({ createdAt: -1 })
+            .lean();
 
-        return NextResponse.json(teams);
+        return NextResponse.json(teams, {
+            headers: { 'Cache-Control': 'private, max-age=0, stale-while-revalidate=60' }
+        });
     } catch (error: any) {
         console.error('Fetch teams error:', error);
         return NextResponse.json({ error: 'Failed to fetch teams' }, { status: 500 });

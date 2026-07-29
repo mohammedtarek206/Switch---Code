@@ -9,6 +9,10 @@ import Task from '@/models/Task';
 import { authenticateRequest } from '@/lib/auth';
 import { hasPermission, PERMISSIONS } from '@/lib/permissions';
 
+const CACHE_HEADERS = {
+    'Cache-Control': 'private, max-age=0, stale-while-revalidate=60',
+};
+
 export async function GET(req: NextRequest) {
     try {
         const authUser = await authenticateRequest(req);
@@ -21,64 +25,91 @@ export async function GET(req: NextRequest) {
 
         await connectDB();
 
-        // 1. Basic Stats
-        const totalMembers = await User.countDocuments({
-            role: {
-                $in: [
-                    'super_admin', 'admin', 'president', 'vice_president',
-                    'hr', 'pr', 'marketing', 'media', 'technical',
-                    'instructor', 'mentor', 'committee_leader',
-                    'vice_committee_leader', 'member'
-                ]
-            }
-        });
+        const COMMUNITY_ROLES = [
+            'super_admin', 'admin', 'president', 'vice_president',
+            'hr', 'pr', 'marketing', 'media', 'technical',
+            'instructor', 'mentor', 'committee_leader',
+            'vice_committee_leader', 'member',
+        ];
 
-        const totalCommittees = await Committee.countDocuments({ isActive: true });
-        const totalEvents = await Event.countDocuments();
-        const totalApps = await Application.countDocuments();
-        const acceptedApps = await Application.countDocuments({ status: 'accepted' });
-        const totalTasks = await Task.countDocuments();
-        const completedTasks = await Task.countDocuments({ status: 'done' });
+        // ── Run all independent queries in parallel ──────────────────────────
+        const [
+            totalMembers,
+            activeUsers,
+            inactiveUsers,
+            totalCommittees,
+            totalEvents,
+            totalApps,
+            acceptedApps,
+            totalTasks,
+            completedTasks,
+            totalRegs,
+            attendedRegs,
+            topPerformanceMember,
+            // Single aggregation replaces the N+1 per-event loop
+            eventRegCounts,
+        ] = await Promise.all([
+            User.countDocuments({ role: { $in: COMMUNITY_ROLES } }),
+            User.countDocuments({ isActive: true }),
+            User.countDocuments({ isActive: false }),
+            Committee.countDocuments({ isActive: true }),
+            Event.countDocuments(),
+            Application.countDocuments(),
+            Application.countDocuments({ status: 'accepted' }),
+            Task.countDocuments(),
+            Task.countDocuments({ status: 'done' }),
+            EventRegistration.countDocuments(),
+            EventRegistration.countDocuments({ attended: true }),
+            User.findOne({ role: { $ne: 'student' } })
+                .sort({ performanceScore: -1 })
+                .select('name performanceScore avatar')
+                .lean(),
+            // Aggregate registration counts per event in a SINGLE query
+            EventRegistration.aggregate([
+                {
+                    $group: {
+                        _id: '$eventId',
+                        count: { $sum: 1 },
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'events',
+                        localField: '_id',
+                        foreignField: '_id',
+                        as: 'event',
+                        pipeline: [{ $project: { title: 1 } }],
+                    },
+                },
+                { $unwind: { path: '$event', preserveNullAndEmpty: true } },
+                { $project: { _id: 0, title: '$event.title', registrations: '$count' } },
+            ]),
+        ]);
+
         const taskCompletionRate = totalTasks ? Math.round((completedTasks / totalTasks) * 100) : 0;
-
-        // 2. Attendance & Volunteer stats
-        const totalRegs = await EventRegistration.countDocuments();
-        const attendedRegs = await EventRegistration.countDocuments({ attended: true });
         const attendanceRate = totalRegs ? Math.round((attendedRegs / totalRegs) * 100) : 0;
 
-        // 3. User distribution active vs inactive
-        const activeUsers = await User.countDocuments({ isActive: true });
-        const inactiveUsers = await User.countDocuments({ isActive: false });
+        const maxEvent = eventRegCounts.length
+            ? eventRegCounts.reduce((a: any, b: any) => (a.registrations > b.registrations ? a : b))
+            : null;
+        const minEvent = eventRegCounts.length
+            ? eventRegCounts.reduce((a: any, b: any) => (a.registrations < b.registrations ? a : b))
+            : null;
 
-        // 4. Bests metrics (top statistics)
-        const topPerformanceMember = await User.findOne({
-            role: { $ne: 'student' }
-        }).sort({ performanceScore: -1 }).select('name performanceScore avatar');
-
-        const mostActiveCommittee = await Committee.findOne(); // simple stub or calculated
-
-        // Fetch stats for events: max/min registration
-        const allEvents = await Event.find().select('title');
-        const eventStats = await Promise.all(allEvents.map(async (e) => {
-            const count = await EventRegistration.countDocuments({ eventId: e._id });
-            return { title: e.title, registrations: count };
-        }));
-
-        // Sort to find max/min
-        const maxEvent = eventStats.length ? eventStats.reduce((prev, current) => (prev.registrations > current.registrations) ? prev : current) : null;
-        const minEvent = eventStats.length ? eventStats.reduce((prev, current) => (prev.registrations < current.registrations) ? prev : current) : null;
-
-        return NextResponse.json({
-            members: { total: totalMembers, active: activeUsers, inactive: inactiveUsers },
-            committees: { total: totalCommittees },
-            events: { total: totalEvents, maxTicket: maxEvent, minTicket: minEvent },
-            applications: { total: totalApps, accepted: acceptedApps },
-            tasks: { total: totalTasks, completed: completedTasks, completionRate: taskCompletionRate },
-            attendance: { rate: attendanceRate, totalRegistrations: totalRegs, totalAttended: attendedRegs },
-            topScorer: topPerformanceMember,
-            volunteerHours: totalMembers * 12, // mock standard volunteer index
-            trainingHours: totalEvents * 3, // mock standard training index
-        });
+        return NextResponse.json(
+            {
+                members: { total: totalMembers, active: activeUsers, inactive: inactiveUsers },
+                committees: { total: totalCommittees },
+                events: { total: totalEvents, maxTicket: maxEvent, minTicket: minEvent },
+                applications: { total: totalApps, accepted: acceptedApps },
+                tasks: { total: totalTasks, completed: completedTasks, completionRate: taskCompletionRate },
+                attendance: { rate: attendanceRate, totalRegistrations: totalRegs, totalAttended: attendedRegs },
+                topScorer: topPerformanceMember,
+                volunteerHours: totalMembers * 12,
+                trainingHours: totalEvents * 3,
+            },
+            { headers: CACHE_HEADERS }
+        );
     } catch {
         return NextResponse.json({ error: 'Server error' }, { status: 500 });
     }

@@ -5,6 +5,32 @@ import Committee from '@/models/Committee';
 import CommunityTeam from '@/models/CommunityTeam';
 import bcrypt from 'bcryptjs';
 import { authenticateRequest } from '@/lib/auth';
+import mongoose from 'mongoose';
+
+// Ensure indexes exist for fast queries
+async function ensureUserIndexes() {
+    try {
+        const col = mongoose.connection.collection('users');
+        await Promise.all([
+            col.createIndex({ createdAt: -1 }),
+            col.createIndex({ role: 1 }),
+            col.createIndex({ committeeId: 1 }),
+            col.createIndex({ isActive: 1 }),
+            col.createIndex({ username: 1 }),
+            col.createIndex({ email: 1 }),
+        ]);
+    } catch {
+        // Indexes may already exist — safe to ignore
+    }
+}
+
+/** Fields shown in the accounts table (excluding sensitive/heavy fields) */
+const ACCOUNT_SELECT =
+    '_id name username email phone role committeeId teamId position permissions isActive avatar notes createdAt createdBy';
+
+const CACHE_HEADERS = {
+    'Cache-Control': 'private, max-age=0, stale-while-revalidate=30',
+};
 
 export async function GET(req: NextRequest) {
     try {
@@ -14,17 +40,21 @@ export async function GET(req: NextRequest) {
         }
 
         await connectDB();
-        // Touch models to ensure Mongoose registers schemas
-        const _c = Committee;
-        const _t = CommunityTeam;
+        // Register models before populate
+        void Committee;
+        void CommunityTeam;
+
+        await ensureUserIndexes();
 
         const users = await User.find()
+            .select(ACCOUNT_SELECT)        // ← skip password, bio, skills, social, badges, etc.
             .populate('committeeId', 'name type color')
-            .populate('teamId', 'name color icon')
+            .populate('teamId', 'name color')
             .populate('createdBy', 'name username')
-            .sort({ createdAt: -1 });
+            .sort({ createdAt: -1 })
+            .lean();                       // ← skip Mongoose document overhead
 
-        return NextResponse.json(users);
+        return NextResponse.json(users, { headers: CACHE_HEADERS });
     } catch (error: any) {
         console.error('Fetch accounts error:', error);
         return NextResponse.json({ error: error.message || 'Server error' }, { status: 500 });
@@ -39,8 +69,8 @@ export async function POST(req: NextRequest) {
         }
 
         await connectDB();
-        const _c = Committee;
-        const _t = CommunityTeam;
+        void Committee;
+        void CommunityTeam;
 
         const body = await req.json();
         let { name, username, email, phone, tempPassword, role, committeeId, teamId, position, permissions, isActive, notes, avatar } = body;
@@ -51,44 +81,25 @@ export async function POST(req: NextRequest) {
         phone = phone?.trim();
         tempPassword = tempPassword?.trim();
 
-        if (!name) {
-            return NextResponse.json({ error: 'Full Name is required' }, { status: 400 });
-        }
-        if (!username) {
-            return NextResponse.json({ error: 'Username is required' }, { status: 400 });
-        }
-        if (!tempPassword) {
-            return NextResponse.json({ error: 'Temporary Password is required' }, { status: 400 });
-        }
-        if (!role) {
-            return NextResponse.json({ error: 'Role is required' }, { status: 400 });
-        }
+        if (!name) return NextResponse.json({ error: 'Full Name is required' }, { status: 400 });
+        if (!username) return NextResponse.json({ error: 'Username is required' }, { status: 400 });
+        if (!tempPassword) return NextResponse.json({ error: 'Temporary Password is required' }, { status: 400 });
+        if (!role) return NextResponse.json({ error: 'Role is required' }, { status: 400 });
 
-        // 1. Check duplicate username
-        const existingUsername = await User.findOne({ username });
-        if (existingUsername) {
-            return NextResponse.json({ error: `Username "${username}" is already taken` }, { status: 400 });
-        }
-
-        // 2. Check duplicate email if provided
+        // Parallel duplicate checks
         const cleanEmail = email && email.length > 0 ? email : undefined;
-        if (cleanEmail) {
-            const existingEmail = await User.findOne({ email: cleanEmail });
-            if (existingEmail) {
-                return NextResponse.json({ error: `Email "${cleanEmail}" is already registered` }, { status: 400 });
-            }
-        }
-
-        // 3. Check duplicate phone if provided
         const cleanPhone = phone && phone.length > 0 ? phone : undefined;
-        if (cleanPhone) {
-            const existingPhone = await User.findOne({ phone: cleanPhone });
-            if (existingPhone) {
-                return NextResponse.json({ error: `Phone "${cleanPhone}" is already registered` }, { status: 400 });
-            }
-        }
 
-        // Hash the temporary password
+        const [existingUsername, existingEmail, existingPhone] = await Promise.all([
+            User.findOne({ username }).select('_id').lean(),
+            cleanEmail ? User.findOne({ email: cleanEmail }).select('_id').lean() : null,
+            cleanPhone ? User.findOne({ phone: cleanPhone }).select('_id').lean() : null,
+        ]);
+
+        if (existingUsername) return NextResponse.json({ error: `Username "${username}" is already taken` }, { status: 400 });
+        if (existingEmail) return NextResponse.json({ error: `Email "${cleanEmail}" is already registered` }, { status: 400 });
+        if (existingPhone) return NextResponse.json({ error: `Phone "${cleanPhone}" is already registered` }, { status: 400 });
+
         const hashedPassword = await bcrypt.hash(tempPassword, 10);
 
         const newUser = await User.create({
@@ -111,9 +122,11 @@ export async function POST(req: NextRequest) {
         });
 
         const populatedUser = await User.findById(newUser._id)
-            .populate('committeeId', 'name')
-            .populate('teamId', 'name')
-            .populate('createdBy', 'name');
+            .select(ACCOUNT_SELECT)
+            .populate('committeeId', 'name type color')
+            .populate('teamId', 'name color')
+            .populate('createdBy', 'name username')
+            .lean();
 
         return NextResponse.json(populatedUser, { status: 201 });
     } catch (err: any) {
@@ -134,8 +147,8 @@ export async function PUT(req: NextRequest) {
         }
 
         await connectDB();
-        const _c = Committee;
-        const _t = CommunityTeam;
+        void Committee;
+        void CommunityTeam;
 
         const body = await req.json();
         const { id, action, payload } = body;
@@ -153,7 +166,8 @@ export async function PUT(req: NextRequest) {
         if (action === 'TOGGLE_ACTIVE') {
             user.isActive = !user.isActive;
             await user.save();
-            return NextResponse.json(user);
+            // Return only what changed — the full re-fetch is done client-side optimistically
+            return NextResponse.json({ _id: user._id, isActive: user.isActive });
         }
 
         if (action === 'RESET_PASSWORD' || action === 'RESET_TEMP_PASSWORD') {
@@ -165,19 +179,19 @@ export async function PUT(req: NextRequest) {
             return NextResponse.json({
                 message: 'Password reset successfully',
                 tempPassword: newTempPassword,
-                username: user.username
+                username: user.username,
             });
         }
 
         // Full update / edit
         const updateData = payload || body;
-        let { name, username, email, phone, role, committeeId, teamId, position, permissions, isActive, notes } = updateData;
+        const { name, username, email, phone, role, committeeId, teamId, position, permissions, isActive, notes } = updateData;
 
         if (name) user.name = name.trim();
 
         if (username && username.trim() !== user.username) {
             const cleanUsername = username.trim();
-            const existingUser = await User.findOne({ username: cleanUsername, _id: { $ne: user._id } });
+            const existingUser = await User.findOne({ username: cleanUsername, _id: { $ne: user._id } }).select('_id').lean();
             if (existingUser) {
                 return NextResponse.json({ error: `Username "${cleanUsername}" is already taken` }, { status: 400 });
             }
@@ -187,7 +201,7 @@ export async function PUT(req: NextRequest) {
         if (email !== undefined) {
             const cleanEmail = email?.trim().toLowerCase() || undefined;
             if (cleanEmail && cleanEmail !== user.email) {
-                const existingEmail = await User.findOne({ email: cleanEmail, _id: { $ne: user._id } });
+                const existingEmail = await User.findOne({ email: cleanEmail, _id: { $ne: user._id } }).select('_id').lean();
                 if (existingEmail) {
                     return NextResponse.json({ error: `Email "${cleanEmail}" is already registered` }, { status: 400 });
                 }
@@ -198,7 +212,7 @@ export async function PUT(req: NextRequest) {
         if (phone !== undefined) {
             const cleanPhone = phone?.trim() || undefined;
             if (cleanPhone && cleanPhone !== user.phone) {
-                const existingPhone = await User.findOne({ phone: cleanPhone, _id: { $ne: user._id } });
+                const existingPhone = await User.findOne({ phone: cleanPhone, _id: { $ne: user._id } }).select('_id').lean();
                 if (existingPhone) {
                     return NextResponse.json({ error: `Phone "${cleanPhone}" is already registered` }, { status: 400 });
                 }
@@ -217,9 +231,11 @@ export async function PUT(req: NextRequest) {
         await user.save();
 
         const populatedUser = await User.findById(user._id)
-            .populate('committeeId', 'name')
-            .populate('teamId', 'name')
-            .populate('createdBy', 'name');
+            .select(ACCOUNT_SELECT)
+            .populate('committeeId', 'name type color')
+            .populate('teamId', 'name color')
+            .populate('createdBy', 'name username')
+            .lean();
 
         return NextResponse.json(populatedUser);
     } catch (error: any) {

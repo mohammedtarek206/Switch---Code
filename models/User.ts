@@ -101,6 +101,13 @@ const UserSchema: Schema = new Schema(
   }
 );
 
+// Performance indexes
+UserSchema.index({ role: 1 });
+UserSchema.index({ committeeId: 1 });
+UserSchema.index({ isActive: 1 });
+UserSchema.index({ createdAt: -1 });
+
+
 // If cached User model exists without teamId or committeeId, delete cache to force fresh compilation
 if (
   mongoose.models.User &&
