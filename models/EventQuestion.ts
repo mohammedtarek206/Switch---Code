@@ -1,9 +1,13 @@
 import mongoose, { Document, Schema, Types } from 'mongoose';
 
+export type QuestionType = 'text' | 'multiple_choice' | 'checkbox' | 'dropdown' | 'yes_no' | 'number' | 'email' | 'phone' | 'date';
+
 export interface IEventQuestion extends Document {
     eventId: Types.ObjectId;
     question: string;
-    type: 'multiple_choice';
+    description?: string;
+    placeholder?: string;
+    type: QuestionType;
     options: string[];
     required: boolean;
     order: number;
@@ -16,7 +20,13 @@ const EventQuestionSchema: Schema = new Schema(
     {
         eventId: { type: Schema.Types.ObjectId, ref: 'Event', required: true, index: true },
         question: { type: String, required: true },
-        type: { type: String, enum: ['multiple_choice'], default: 'multiple_choice' },
+        description: { type: String },
+        placeholder: { type: String },
+        type: {
+            type: String,
+            enum: ['text', 'multiple_choice', 'checkbox', 'dropdown', 'yes_no', 'number', 'email', 'phone', 'date'],
+            default: 'text'
+        },
         options: [{ type: String }],
         required: { type: Boolean, default: true },
         order: { type: Number, default: 0 },

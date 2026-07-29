@@ -3,7 +3,6 @@ import connectDB from '@/lib/mongodb';
 import Event from '@/models/Event';
 import EventRegistration from '@/models/EventRegistration';
 import EventQuestion from '@/models/EventQuestion';
-import EventQuestionAnswer from '@/models/EventQuestionAnswer';
 
 export const dynamic = 'force-dynamic';
 
@@ -30,12 +29,30 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
             return NextResponse.json({ error: 'Registration deadline has passed' }, { status: 400 });
         }
 
+        // Fetch all active questions to build embedded answers and validate
+        const allQuestions = await EventQuestion.find({ eventId: params.id, active: true });
+
+        let mappedAnswers: any[] = [];
+        if (answers && typeof answers === 'object') {
+            for (const key of Object.keys(answers)) {
+                const q = allQuestions.find((qDoc) => qDoc._id.toString() === key);
+                if (q) {
+                    mappedAnswers.push({
+                        questionId: q._id.toString(),
+                        question: q.question,
+                        type: q.type,
+                        answer: answers[key]
+                    });
+                }
+            }
+        }
+
         // Validate required questions
-        const requiredQuestions = await EventQuestion.find({ eventId: params.id, active: true, required: true });
+        const requiredQuestions = allQuestions.filter(q => q.required);
         if (requiredQuestions.length > 0) {
-            const providedAnswerKeys = Object.keys(answers || {});
             for (const rq of requiredQuestions) {
-                if (!providedAnswerKeys.includes(rq._id.toString()) || !answers[rq._id.toString()]) {
+                const ansObj = mappedAnswers.find(a => a.questionId === rq._id.toString());
+                if (!ansObj || ansObj.answer === undefined || ansObj.answer === null || ansObj.answer === '' || (Array.isArray(ansObj.answer) && ansObj.answer.length === 0)) {
                     return NextResponse.json({ error: `Question '${rq.question}' is required` }, { status: 400 });
                 }
             }
@@ -59,7 +76,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
             return NextResponse.json({
                 message: 'You are already registered! Here is your barcode again.',
                 registration: existing
-            }, { status: 200 }); // Status 200 so UI treats it as success and shows barcode
+            }, { status: 200 });
         }
 
         const registration = await EventRegistration.create({
@@ -70,18 +87,9 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
             university,
             faculty,
             status,
+            answers: mappedAnswers,
             attended: false,
         });
-
-        // Save answers
-        if (answers && Object.keys(answers).length > 0) {
-            const answerDocs = Object.keys(answers).map(questionId => ({
-                applicationId: registration._id,
-                questionId,
-                selectedAnswer: answers[questionId]
-            }));
-            await EventQuestionAnswer.insertMany(answerDocs);
-        }
 
         return NextResponse.json({
             message: status === 'waitlist' ? 'Added to waiting list' : 'Successfully registered!',

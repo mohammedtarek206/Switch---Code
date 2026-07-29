@@ -10,6 +10,12 @@ export interface IEventRegistration extends Document {
     faculty?: string;
     status: 'registered' | 'accepted' | 'rejected' | 'waitlist';
     formData: Record<string, unknown>;
+    answers: Array<{
+        questionId: string;
+        question: string;
+        type: string;
+        answer: any;
+    }>;
     qrCode?: string;
     checkIn?: Date;
     checkOut?: Date;
@@ -33,6 +39,12 @@ const EventRegistrationSchema: Schema = new Schema(
             default: 'registered',
         },
         formData: { type: Schema.Types.Mixed, default: {} },
+        answers: [{
+            questionId: String,
+            question: String,
+            type: String,
+            answer: Schema.Types.Mixed
+        }],
         qrCode: { type: String },
         checkIn: { type: Date },
         checkOut: { type: Date },

@@ -188,9 +188,42 @@ export default function EventPublicPage() {
                                     <h3 className="text-xl font-bold text-white">Event Questions</h3>
                                     {questions.map((q: any) => (
                                         <div key={q._id} className="bg-slate-900/40 p-5 rounded-2xl border border-blue-500/20">
-                                            <label className="block text-sm font-semibold text-white mb-4">
+                                            <label className="block text-sm font-semibold text-white mb-2">
                                                 {q.question} {q.required && <span className="text-red-500">*</span>}
                                             </label>
+                                            {q.description && <p className="text-xs text-slate-400 mb-4">{q.description}</p>}
+
+                                            {q.type === 'text' && (
+                                                <textarea required={q.required} value={answers[q._id] || ''} onChange={e => setAnswers({ ...answers, [q._id]: e.target.value })} placeholder={q.placeholder || ''} className="w-full bg-slate-900 border border-blue-500/30 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-gold transition-colors" rows={3} />
+                                            )}
+
+                                            {(q.type === 'email' || q.type === 'number' || q.type === 'phone' || q.type === 'date') && (
+                                                <input type={q.type} required={q.required} value={answers[q._id] || ''} onChange={e => setAnswers({ ...answers, [q._id]: e.target.value })} placeholder={q.placeholder || ''} className="w-full bg-slate-900 border border-blue-500/30 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-gold transition-colors" />
+                                            )}
+
+                                            {q.type === 'dropdown' && (
+                                                <select required={q.required} value={answers[q._id] || ''} onChange={e => setAnswers({ ...answers, [q._id]: e.target.value })} className="w-full bg-slate-900 border border-blue-500/30 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-gold transition-colors">
+                                                    <option value="">Select an option...</option>
+                                                    {q.options.map((opt: string, idx: number) => (
+                                                        <option key={idx} value={opt}>{opt}</option>
+                                                    ))}
+                                                </select>
+                                            )}
+
+                                            {q.type === 'yes_no' && (
+                                                <div className="flex gap-6">
+                                                    {['Yes', 'No'].map((opt) => (
+                                                        <label key={opt} className="flex items-center space-x-3 cursor-pointer group">
+                                                            <div className="relative flex items-center justify-center">
+                                                                <input type="radio" name={q._id} value={opt} required={q.required} checked={answers[q._id] === opt} onChange={e => setAnswers({ ...answers, [q._id]: e.target.value })} className="peer appearance-none w-5 h-5 border border-blue-500/40 rounded-full checked:border-gold checked:bg-gold/20 transition-all cursor-pointer" />
+                                                                <div className="absolute w-2.5 h-2.5 bg-gold rounded-full opacity-0 peer-checked:opacity-100 transition-opacity" />
+                                                            </div>
+                                                            <span className="text-sm text-slate-300 group-hover:text-white transition-colors">{opt}</span>
+                                                        </label>
+                                                    ))}
+                                                </div>
+                                            )}
+
                                             {q.type === 'multiple_choice' && (
                                                 <div className="space-y-3">
                                                     {q.options.map((opt: string, idx: number) => (
@@ -206,6 +239,30 @@ export default function EventPublicPage() {
                                                                     className="peer appearance-none w-5 h-5 border border-blue-500/40 rounded-full checked:border-gold checked:bg-gold/20 transition-all cursor-pointer"
                                                                 />
                                                                 <div className="absolute w-2.5 h-2.5 bg-gold rounded-full opacity-0 peer-checked:opacity-100 transition-opacity" />
+                                                            </div>
+                                                            <span className="text-sm text-slate-300 group-hover:text-white transition-colors">{opt}</span>
+                                                        </label>
+                                                    ))}
+                                                </div>
+                                            )}
+
+                                            {q.type === 'checkbox' && (
+                                                <div className="space-y-3">
+                                                    {q.options.map((opt: string, idx: number) => (
+                                                        <label key={idx} className="flex items-center space-x-3 cursor-pointer group">
+                                                            <div className="relative flex items-center justify-center">
+                                                                <input
+                                                                    type="checkbox"
+                                                                    value={opt}
+                                                                    checked={Array.isArray(answers[q._id]) && (answers[q._id] as any as string[]).includes(opt)}
+                                                                    onChange={(e) => {
+                                                                        const cur: string[] = Array.isArray(answers[q._id]) ? (answers[q._id] as any) : [];
+                                                                        if (e.target.checked) setAnswers({ ...answers, [q._id]: [...cur, opt] });
+                                                                        else setAnswers({ ...answers, [q._id]: cur.filter((item: string) => item !== opt) });
+                                                                    }}
+                                                                    className="peer appearance-none w-5 h-5 border border-blue-500/40 rounded checked:border-gold checked:bg-gold/20 transition-all cursor-pointer"
+                                                                />
+                                                                <svg className="absolute w-3 h-3 text-gold opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none" viewBox="0 0 14 14" fill="none"><path d="M2.5 7.5L5.5 10.5L11.5 3.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
                                                             </div>
                                                             <span className="text-sm text-slate-300 group-hover:text-white transition-colors">{opt}</span>
                                                         </label>

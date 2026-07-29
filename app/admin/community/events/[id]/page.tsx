@@ -64,17 +64,42 @@ export default function EventApplicationsDashboard() {
 
     function exportCSV() {
         if (!applications.length) return;
-        const headers = ['Name', 'Email', 'Phone', 'University', 'Faculty', 'Status', 'Attended', 'Date'];
-        const rows = applications.map(a => [
-            `"${a.name}"`,
-            `"${a.email}"`,
-            `"${a.phone || ''}"`,
-            `"${a.university || ''}"`,
-            `"${a.faculty || ''}"`,
-            `"${a.status}"`,
-            `"${a.attended ? 'Yes' : 'No'}"`,
-            `"${new Date(a.createdAt).toLocaleDateString()}"`
-        ]);
+
+        // Find all unique custom questions across all applications
+        const customQuestionHeaders = new Set<string>();
+        applications.forEach(app => {
+            if (app.answers) {
+                app.answers.forEach((ans: any) => customQuestionHeaders.add(ans.question));
+            }
+        });
+        const customQuestionsArray = Array.from(customQuestionHeaders);
+
+        const headers = ['Name', 'Email', 'Phone', 'University', 'Faculty', 'Status', 'Attended', 'Date', ...customQuestionsArray];
+
+        const rows = applications.map(a => {
+            const row = [
+                `"${a.name}"`,
+                `"${a.email}"`,
+                `"${a.phone || ''}"`,
+                `"${a.university || ''}"`,
+                `"${a.faculty || ''}"`,
+                `"${a.status}"`,
+                `"${a.attended ? 'Yes' : 'No'}"`,
+                `"${new Date(a.createdAt).toLocaleDateString()}"`
+            ];
+
+            // Add custom answers in order
+            customQuestionsArray.forEach(qTitle => {
+                const ans = (a.answers || []).find((ans: any) => ans.question === qTitle);
+                if (ans) {
+                    row.push(`"${Array.isArray(ans.answer) ? ans.answer.join(', ') : String(ans.answer)}"`);
+                } else {
+                    row.push('""');
+                }
+            });
+
+            return row;
+        });
 
         const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
         const encodedUri = encodeURI(csvContent);
@@ -283,8 +308,9 @@ export default function EventApplicationsDashboard() {
                                             {selectedApplicant.answers.map((ans: any, idx: number) => (
                                                 <div key={idx} className="bg-slate-900/50 p-4 rounded-2xl border border-blue-500/20">
                                                     <p className="text-xs text-slate-400 font-bold mb-1">{ans.question}</p>
-                                                    <p className="text-sm text-white font-medium flex items-center gap-2">
-                                                        <FiCheckCircle className="text-green-400 w-4 h-4" /> {ans.answer}
+                                                    <p className="text-sm text-white font-medium flex items-start gap-2">
+                                                        <FiCheckCircle className="text-green-400 w-4 h-4 mt-0.5 shrink-0" />
+                                                        <span>{Array.isArray(ans.answer) ? ans.answer.join(', ') : String(ans.answer)}</span>
                                                     </p>
                                                 </div>
                                             ))}

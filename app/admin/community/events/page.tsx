@@ -14,7 +14,9 @@ interface Committee {
 interface EventQuestion {
     _id?: string;
     question: string;
-    type: 'multiple_choice';
+    description?: string;
+    placeholder?: string;
+    type: 'text' | 'multiple_choice' | 'checkbox' | 'dropdown' | 'yes_no' | 'number' | 'email' | 'phone' | 'date';
     options: string[];
     required: boolean;
     order: number;
@@ -234,7 +236,7 @@ export default function EventsPage() {
     const addQuestion = () => {
         setQuestions([
             ...questions,
-            { question: '', type: 'multiple_choice', options: ['Option 1'], required: true, order: questions.length, active: true }
+            { question: '', description: '', placeholder: '', type: 'text', options: ['Option 1'], required: true, order: questions.length, active: true }
         ]);
     };
 
@@ -468,31 +470,54 @@ export default function EventsPage() {
                                                             <button type="button" onClick={() => swapQuestions(qIdx, -1)} disabled={qIdx === 0} className="text-slate-500 hover:text-white disabled:opacity-30"><FiArrowUp className="w-3 h-3" /></button>
                                                             <button type="button" onClick={() => swapQuestions(qIdx, 1)} disabled={qIdx === questions.length - 1} className="text-slate-500 hover:text-white disabled:opacity-30"><FiArrowDown className="w-3 h-3" /></button>
                                                         </div>
-                                                        <input type="text" value={q.question} onChange={e => updateQuestion(qIdx, 'question', e.target.value)} placeholder="Question Title (e.g. Current OS?)" required className="flex-1 bg-transparent border-b border-blue-500/30 text-white outline-none focus:border-gold text-sm font-bold pb-1" />
-                                                        <button type="button" onClick={() => deleteQuestion(qIdx)} className="text-slate-500 hover:text-red-400 p-1"><FiTrash2 className="w-4 h-4 cursor-pointer" /></button>
+                                                        <div className="flex-1 space-y-2">
+                                                            <input type="text" value={q.question} onChange={e => updateQuestion(qIdx, 'question', e.target.value)} placeholder="Question Title (e.g. Current OS?)" required className="w-full bg-transparent border-b border-blue-500/30 text-white outline-none focus:border-gold text-sm font-bold pb-1" />
+                                                            <input type="text" value={q.description || ''} onChange={e => updateQuestion(qIdx, 'description', e.target.value)} placeholder="Description (Optional)" className="w-full bg-transparent border-b border-blue-500/20 text-slate-400 outline-none focus:border-gold text-xs pb-1" />
+                                                        </div>
+                                                        <button type="button" onClick={() => deleteQuestion(qIdx)} className="text-slate-500 hover:text-red-400 p-1 self-start"><FiTrash2 className="w-4 h-4 cursor-pointer" /></button>
                                                     </div>
 
-                                                    <div className="pl-6 space-y-2 mb-3">
-                                                        {q.options.map((opt, optIdx) => (
-                                                            <div key={optIdx} className="flex items-center gap-2">
-                                                                <div className="w-3 h-3 rounded-full border border-slate-500 shrink-0" />
-                                                                <input type="text" required value={opt} onChange={e => {
-                                                                    const newOpts = [...q.options];
-                                                                    newOpts[optIdx] = e.target.value;
-                                                                    updateQuestion(qIdx, 'options', newOpts);
-                                                                }} className="flex-1 bg-slate-900 border border-slate-700/50 rounded-lg px-3 py-1.5 text-xs text-white outline-none focus:border-gold" />
-                                                                <button type="button" onClick={() => {
-                                                                    const newOpts = q.options.filter((_, i) => i !== optIdx);
-                                                                    updateQuestion(qIdx, 'options', newOpts);
-                                                                }} disabled={q.options.length <= 1} className="text-slate-500 hover:text-red-400 disabled:opacity-30"><FiX className="w-3 h-3" /></button>
-                                                            </div>
-                                                        ))}
-                                                        <button type="button" onClick={() => {
-                                                            updateQuestion(qIdx, 'options', [...q.options, `Option ${q.options.length + 1}`]);
-                                                        }} className="text-[10px] text-blue-400 font-black uppercase tracking-widest bg-blue-500/10 px-2 py-1 rounded-md hover:bg-blue-500/20">
-                                                            + Add Option
-                                                        </button>
+                                                    <div className="flex flex-wrap gap-2 mb-3 pl-6">
+                                                        <select value={q.type} onChange={e => updateQuestion(qIdx, 'type', e.target.value)} className="bg-slate-900 border border-blue-500/30 rounded-lg px-2 py-1 text-xs text-white outline-none focus:border-gold">
+                                                            <option value="text">Text (Paragraph)</option>
+                                                            <option value="multiple_choice">Multiple Choice (Radio)</option>
+                                                            <option value="checkbox">Checkbox (Multiple Answers)</option>
+                                                            <option value="dropdown">Dropdown List</option>
+                                                            <option value="yes_no">Yes / No</option>
+                                                            <option value="number">Number</option>
+                                                            <option value="email">Email</option>
+                                                            <option value="phone">Phone</option>
+                                                            <option value="date">Date picker</option>
+                                                        </select>
+
+                                                        {['text', 'number', 'email', 'phone'].includes(q.type) && (
+                                                            <input type="text" value={q.placeholder || ''} onChange={e => updateQuestion(qIdx, 'placeholder', e.target.value)} placeholder="Input Placeholder..." className="bg-slate-900 border border-blue-500/30 rounded-lg px-2 py-1 text-xs text-white outline-none focus:border-gold" />
+                                                        )}
                                                     </div>
+
+                                                    {['multiple_choice', 'checkbox', 'dropdown'].includes(q.type) && (
+                                                        <div className="pl-6 space-y-2 mb-3">
+                                                            {q.options.map((opt, optIdx) => (
+                                                                <div key={optIdx} className="flex items-center gap-2">
+                                                                    <div className={`w-3 h-3 border border-slate-500 shrink-0 ${q.type === 'multiple_choice' ? 'rounded-full' : 'rounded-sm'}`} />
+                                                                    <input type="text" required value={opt} onChange={e => {
+                                                                        const newOpts = [...q.options];
+                                                                        newOpts[optIdx] = e.target.value;
+                                                                        updateQuestion(qIdx, 'options', newOpts);
+                                                                    }} className="flex-1 bg-slate-900 border border-slate-700/50 rounded-lg px-3 py-1.5 text-xs text-white outline-none focus:border-gold" />
+                                                                    <button type="button" onClick={() => {
+                                                                        const newOpts = q.options.filter((_, i) => i !== optIdx);
+                                                                        updateQuestion(qIdx, 'options', newOpts);
+                                                                    }} disabled={q.options.length <= 1} className="text-slate-500 hover:text-red-400 disabled:opacity-30"><FiX className="w-3 h-3" /></button>
+                                                                </div>
+                                                            ))}
+                                                            <button type="button" onClick={() => {
+                                                                updateQuestion(qIdx, 'options', [...q.options, `Option ${q.options.length + 1}`]);
+                                                            }} className="text-[10px] text-blue-400 font-black uppercase tracking-widest bg-blue-500/10 px-2 py-1 rounded-md hover:bg-blue-500/20">
+                                                                + Add Option
+                                                            </button>
+                                                        </div>
+                                                    )}
 
                                                     <div className="flex items-center gap-4 border-t border-blue-500/10 pt-3 pl-6">
                                                         <label className="flex items-center gap-2 text-xs text-slate-400 cursor-pointer">
