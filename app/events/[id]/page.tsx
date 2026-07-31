@@ -13,13 +13,17 @@ export default function EventPublicPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    const [regForm, setRegForm] = useState({ name: '', email: '', phone: '', university: '', faculty: '' });
+    const [regForm, setRegForm] = useState({
+        name: '', email: '', phone: '', university: '', faculty: '',
+        academicYear: '', department: '', governorate: '', gender: '',
+        age: '', linkedin: '', github: '', portfolio: '', cv: ''
+    });
     const [regSubmitting, setRegSubmitting] = useState(false);
     const [regMessage, setRegMessage] = useState<any>(null);
     const [registrationData, setRegistrationData] = useState<any>(null);
 
     const [questions, setQuestions] = useState<any[]>([]);
-    const [answers, setAnswers] = useState<Record<string, string>>({});
+    const [answers, setAnswers] = useState<Record<string, any>>({});
 
     useEffect(() => {
         if (eventId) {
@@ -70,7 +74,12 @@ export default function EventPublicPage() {
             if (res.ok) {
                 setRegMessage({ type: 'success', text: resData.message });
                 setRegistrationData(resData.registration);
-                setRegForm({ name: '', email: '', phone: '', university: '', faculty: '' });
+                setRegForm({
+                    name: '', email: '', phone: '', university: '', faculty: '',
+                    academicYear: '', department: '', governorate: '', gender: '',
+                    age: '', linkedin: '', github: '', portfolio: '', cv: ''
+                });
+                setAnswers({});
                 fetchEvent(); // refresh seats
             } else {
                 setRegMessage({ type: 'error', text: resData.error || 'Registration failed' });
@@ -167,9 +176,23 @@ export default function EventPublicPage() {
                                 </div>
                             </div>
 
-                            <div>
-                                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 block mb-1">Phone Number</label>
-                                <input type="tel" value={regForm.phone} onChange={e => setRegForm({ ...regForm, phone: e.target.value })} className="w-full bg-slate-900/50 border border-blue-500/30 rounded-xl px-4 py-3.5 text-sm text-white focus:outline-none focus:border-gold transition-colors" placeholder="01xxxxxxxxx" />
+                            <div className="grid md:grid-cols-3 gap-5">
+                                <div>
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 block mb-1">Phone Number</label>
+                                    <input type="tel" value={regForm.phone} onChange={e => setRegForm({ ...regForm, phone: e.target.value })} className="w-full bg-slate-900/50 border border-blue-500/30 rounded-xl px-4 py-3.5 text-sm text-white focus:outline-none focus:border-gold transition-colors" placeholder="01xxxxxxxxx" />
+                                </div>
+                                <div>
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 block mb-1">Gender</label>
+                                    <select value={regForm.gender} onChange={e => setRegForm({ ...regForm, gender: e.target.value })} className="w-full bg-slate-900/50 border border-blue-500/30 rounded-xl px-4 py-3.5 text-sm text-white focus:outline-none focus:border-gold transition-colors">
+                                        <option value="">Select Gender</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 block mb-1">Age</label>
+                                    <input type="number" value={regForm.age} onChange={e => setRegForm({ ...regForm, age: e.target.value })} className="w-full bg-slate-900/50 border border-blue-500/30 rounded-xl px-4 py-3.5 text-sm text-white focus:outline-none focus:border-gold transition-colors" placeholder="e.g. 21" />
+                                </div>
                             </div>
 
                             <div className="grid md:grid-cols-2 gap-5">
@@ -180,6 +203,32 @@ export default function EventPublicPage() {
                                 <div>
                                     <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 block mb-1">Faculty / Major</label>
                                     <input type="text" value={regForm.faculty} onChange={e => setRegForm({ ...regForm, faculty: e.target.value })} className="w-full bg-slate-900/50 border border-blue-500/30 rounded-xl px-4 py-3.5 text-sm text-white focus:outline-none focus:border-gold transition-colors" placeholder="e.g. Computer Science" />
+                                </div>
+                            </div>
+
+                            <div className="grid md:grid-cols-3 gap-5">
+                                <div>
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 block mb-1">Academic Year</label>
+                                    <input type="text" value={regForm.academicYear} onChange={e => setRegForm({ ...regForm, academicYear: e.target.value })} className="w-full bg-slate-900/50 border border-blue-500/30 rounded-xl px-4 py-3.5 text-sm text-white focus:outline-none focus:border-gold transition-colors" placeholder="e.g. 3rd Year" />
+                                </div>
+                                <div>
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 block mb-1">Department</label>
+                                    <input type="text" value={regForm.department} onChange={e => setRegForm({ ...regForm, department: e.target.value })} className="w-full bg-slate-900/50 border border-blue-500/30 rounded-xl px-4 py-3.5 text-sm text-white focus:outline-none focus:border-gold transition-colors" placeholder="e.g. Information Systems" />
+                                </div>
+                                <div>
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 block mb-1">Governorate</label>
+                                    <input type="text" value={regForm.governorate} onChange={e => setRegForm({ ...regForm, governorate: e.target.value })} className="w-full bg-slate-900/50 border border-blue-500/30 rounded-xl px-4 py-3.5 text-sm text-white focus:outline-none focus:border-gold transition-colors" placeholder="e.g. Cairo" />
+                                </div>
+                            </div>
+
+                            <div className="grid md:grid-cols-2 gap-5">
+                                <div>
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 block mb-1">LinkedIn Profile</label>
+                                    <input type="url" value={regForm.linkedin} onChange={e => setRegForm({ ...regForm, linkedin: e.target.value })} className="w-full bg-slate-900/50 border border-blue-500/30 rounded-xl px-4 py-3.5 text-sm text-white focus:outline-none focus:border-gold transition-colors" placeholder="https://linkedin.com/in/..." />
+                                </div>
+                                <div>
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 block mb-1">GitHub / Portfolio / CV</label>
+                                    <input type="url" value={regForm.github || regForm.cv} onChange={e => setRegForm({ ...regForm, github: e.target.value, cv: e.target.value })} className="w-full bg-slate-900/50 border border-blue-500/30 rounded-xl px-4 py-3.5 text-sm text-white focus:outline-none focus:border-gold transition-colors" placeholder="https://github.com/... or Google Drive CV" />
                                 </div>
                             </div>
 
@@ -204,7 +253,7 @@ export default function EventPublicPage() {
                                             {q.type === 'dropdown' && (
                                                 <select required={q.required} value={answers[q._id] || ''} onChange={e => setAnswers({ ...answers, [q._id]: e.target.value })} className="w-full bg-slate-900 border border-blue-500/30 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-gold transition-colors">
                                                     <option value="">Select an option...</option>
-                                                    {q.options.map((opt: string, idx: number) => (
+                                                    {(q.options || []).map((opt: string, idx: number) => (
                                                         <option key={idx} value={opt}>{opt}</option>
                                                     ))}
                                                 </select>
@@ -226,7 +275,7 @@ export default function EventPublicPage() {
 
                                             {q.type === 'multiple_choice' && (
                                                 <div className="space-y-3">
-                                                    {q.options.map((opt: string, idx: number) => (
+                                                    {(q.options || []).map((opt: string, idx: number) => (
                                                         <label key={idx} className="flex items-center space-x-3 cursor-pointer group">
                                                             <div className="relative flex items-center justify-center">
                                                                 <input
@@ -248,7 +297,7 @@ export default function EventPublicPage() {
 
                                             {q.type === 'checkbox' && (
                                                 <div className="space-y-3">
-                                                    {q.options.map((opt: string, idx: number) => (
+                                                    {(q.options || []).map((opt: string, idx: number) => (
                                                         <label key={idx} className="flex items-center space-x-3 cursor-pointer group">
                                                             <div className="relative flex items-center justify-center">
                                                                 <input

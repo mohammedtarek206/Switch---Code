@@ -47,7 +47,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
         }
 
         await connectDB();
-        const { registrationId, status, action } = await req.json();
+        const { registrationId, status, adminNotes, action } = await req.json();
 
         const reg = await EventRegistration.findById(registrationId);
         if (!reg) {
@@ -56,6 +56,10 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 
         if (status) {
             reg.status = status;
+        }
+
+        if (adminNotes !== undefined) {
+            reg.adminNotes = adminNotes;
         }
 
         if (action === 'checkin') {

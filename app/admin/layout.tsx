@@ -78,6 +78,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         { title: 'Recruitments', icon: FiFileText, href: '/admin/community/recruitments' },
         { title: 'Applications', icon: FiUsers, href: '/admin/community/applications' },
         { title: 'Events', icon: FiBook, href: '/admin/community/events' },
+        { title: 'Event Applications', icon: FiFileText, href: '/admin/community/events/applications' },
         { title: 'Tasks', icon: FiFileText, href: '/admin/community/tasks' },
         { title: 'Members', icon: FiUsers, href: '/admin/community/members' },
         { title: 'Announcements', icon: FiFileText, href: '/admin/community/announcements' },

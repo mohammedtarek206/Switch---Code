@@ -294,24 +294,49 @@ export default function EventApplicationsDashboard() {
 
                             <div className="space-y-4">
                                 <div>
-                                    <h3 className="text-sm font-bold text-blue-400 mb-2">Academic Info</h3>
-                                    <div className="bg-slate-900/50 p-4 rounded-2xl border border-blue-500/20 text-sm">
-                                        <p><span className="text-slate-500 w-24 inline-block">University:</span> <span className="text-white font-medium">{selectedApplicant.university || 'N/A'}</span></p>
-                                        <p className="mt-2"><span className="text-slate-500 w-24 inline-block">Faculty/Major:</span> <span className="text-white font-medium">{selectedApplicant.faculty || 'N/A'}</span></p>
+                                    <h3 className="text-xs font-bold uppercase text-gold mb-2">Applicant Profile Details</h3>
+                                    <div className="grid grid-cols-2 gap-3 bg-slate-900/50 p-4 rounded-2xl border border-blue-500/20 text-xs">
+                                        <p><span className="text-slate-500">University:</span> <span className="text-white font-medium block">{selectedApplicant.university || 'N/A'}</span></p>
+                                        <p><span className="text-slate-500">Faculty/Major:</span> <span className="text-white font-medium block">{selectedApplicant.faculty || 'N/A'}</span></p>
+                                        <p><span className="text-slate-500">Academic Year:</span> <span className="text-white font-medium block">{selectedApplicant.academicYear || 'N/A'}</span></p>
+                                        <p><span className="text-slate-500">Department:</span> <span className="text-white font-medium block">{selectedApplicant.department || 'N/A'}</span></p>
+                                        <p><span className="text-slate-500">Governorate:</span> <span className="text-white font-medium block">{selectedApplicant.governorate || 'N/A'}</span></p>
+                                        <p><span className="text-slate-500">Gender / Age:</span> <span className="text-white font-medium block">{selectedApplicant.gender || 'N/A'} {selectedApplicant.age ? `(${selectedApplicant.age})` : ''}</span></p>
                                     </div>
                                 </div>
 
+                                {(selectedApplicant.linkedin || selectedApplicant.github || selectedApplicant.portfolio || selectedApplicant.cv) && (
+                                    <div>
+                                        <h3 className="text-xs font-bold uppercase text-blue-400 mb-2">Links & Links</h3>
+                                        <div className="flex flex-wrap gap-2 bg-slate-900/50 p-4 rounded-2xl border border-blue-500/20 text-xs">
+                                            {selectedApplicant.linkedin && <a href={selectedApplicant.linkedin} target="_blank" rel="noreferrer" className="text-blue-400 hover:underline bg-blue-500/10 border border-blue-500/30 px-3 py-1 rounded-xl">LinkedIn ↗</a>}
+                                            {selectedApplicant.github && <a href={selectedApplicant.github} target="_blank" rel="noreferrer" className="text-purple-400 hover:underline bg-purple-500/10 border border-purple-500/30 px-3 py-1 rounded-xl">GitHub ↗</a>}
+                                            {selectedApplicant.portfolio && <a href={selectedApplicant.portfolio} target="_blank" rel="noreferrer" className="text-emerald-400 hover:underline bg-emerald-500/10 border border-emerald-500/30 px-3 py-1 rounded-xl">Portfolio ↗</a>}
+                                            {selectedApplicant.cv && <a href={selectedApplicant.cv} target="_blank" rel="noreferrer" className="text-gold hover:underline bg-gold/10 border border-gold/30 px-3 py-1 rounded-xl">CV Document ↗</a>}
+                                        </div>
+                                    </div>
+                                )}
+
                                 <div>
-                                    <h3 className="text-sm font-bold text-pink-400 mb-2">Registration Questions</h3>
+                                    <h3 className="text-xs font-bold uppercase text-green-400 mb-2">Registration Questions & Answers</h3>
                                     {selectedApplicant.answers && selectedApplicant.answers.length > 0 ? (
                                         <div className="space-y-3">
                                             {selectedApplicant.answers.map((ans: any, idx: number) => (
                                                 <div key={idx} className="bg-slate-900/50 p-4 rounded-2xl border border-blue-500/20">
                                                     <p className="text-xs text-slate-400 font-bold mb-1">{ans.question}</p>
-                                                    <p className="text-sm text-white font-medium flex items-start gap-2">
-                                                        <FiCheckCircle className="text-green-400 w-4 h-4 mt-0.5 shrink-0" />
-                                                        <span>{Array.isArray(ans.answer) ? ans.answer.join(', ') : String(ans.answer)}</span>
-                                                    </p>
+                                                    <div className="text-sm text-white font-medium">
+                                                        {Array.isArray(ans.answer) ? (
+                                                            <div className="flex flex-wrap gap-2 mt-1">
+                                                                {ans.answer.map((item: string, i: number) => (
+                                                                    <span key={i} className="bg-green-500/10 text-green-400 border border-green-500/30 px-2.5 py-0.5 rounded-lg text-xs">
+                                                                        ✔ {item}
+                                                                    </span>
+                                                                ))}
+                                                            </div>
+                                                        ) : (
+                                                            <span className="text-slate-200">{String(ans.answer)}</span>
+                                                        )}
+                                                    </div>
                                                 </div>
                                             ))}
                                         </div>

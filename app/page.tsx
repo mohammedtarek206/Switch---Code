@@ -24,6 +24,11 @@ export default function DynamicHomepage() {
   }, []);
 
   async function fetchHomepageData() {
+    // Safety timeout: Never keep the user waiting on spinner for more than 1.2 seconds
+    const timeoutTimer = setTimeout(() => {
+      setLoading(false);
+    }, 1200);
+
     try {
       const res = await fetch('/api/homepage');
       if (res.ok) {
@@ -32,6 +37,7 @@ export default function DynamicHomepage() {
     } catch (err) {
       console.error('Failed to fetch homepage data', err);
     } finally {
+      clearTimeout(timeoutTimer);
       setLoading(false);
     }
   }
