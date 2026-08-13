@@ -11,6 +11,10 @@ export const metadata: Metadata = {
   title: 'Switch Code | Tech Education Platform',
   description: 'Empowering youth through certified training in programming, cybersecurity, and AI',
   keywords: ['coding', 'cybersecurity', 'AI', 'tech education', 'programming'],
+  icons: {
+    icon: '/Copilot_20250808_194655.png',
+    apple: '/Copilot_20250808_194655.png',
+  },
 };
 
 export default function RootLayout({
