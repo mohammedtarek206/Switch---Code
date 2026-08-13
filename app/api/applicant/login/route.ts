@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
 
         const application = await Application.findOne({ applicationCode: cleanCode })
             .populate('committeeId', 'name color type')
-            .populate('recruitmentId', 'name');
+            .populate('recruitmentId', 'name') as any;
 
         if (!application) {
             return NextResponse.json(
