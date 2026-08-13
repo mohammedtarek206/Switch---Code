@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Application from '@/models/Application';
+import '@/models/Committee'; // Register Committee schema for populate
 
 export const dynamic = 'force-dynamic';
 
