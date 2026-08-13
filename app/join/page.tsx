@@ -85,6 +85,17 @@ export default function JoinCommunityPage() {
                     >
                         Apply to join our specialized committees, collaborate on production systems, and earn points and badges.
                     </motion.p>
+                    <motion.div
+                        initial={{ y: 20, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        transition={{ delay: 0.3 }}
+                        className="pt-4"
+                    >
+                        <Link href="/join/track" className="inline-flex items-center px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl text-sm font-bold text-white transition-all shadow-lg hover:shadow-accent/20 hover:border-accent/40">
+                            <FiClock className="mr-2 text-accent" />
+                            متابعة التقديم والانترفيو
+                        </Link>
+                    </motion.div>
                 </div>
 
                 {/* Campaign Info */}

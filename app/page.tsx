@@ -314,7 +314,7 @@ export default function DynamicHomepage() {
                       </div>
                     )}
                     <div className="w-20 h-20 rounded-full bg-blue-900/30 border-2 border-gold/40 mx-auto flex items-center justify-center font-black text-gold text-2xl overflow-hidden shadow-lg shadow-gold/10">
-                      {item.data.avatar ? <img src={item.data.avatar} className="w-full h-full object-cover" /> : item.data.name[0]}
+                      {item.data.avatar ? <img src={item.data.avatar} className="w-full h-full object-cover" /> : (item.data.name?.[0] || '?')}
                     </div>
                     <div>
                       <span className="text-[10px] uppercase font-black text-gold bg-gold/10 border border-gold/30 px-2.5 py-1 rounded-full">{item.label}</span>

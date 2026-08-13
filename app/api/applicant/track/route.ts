@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
                 { phone: identifier.trim() }, // phone without lowercasing
             ],
         })
-            .select('applicationCode name status adminNote committeeId createdAt updatedAt')
+            .select('applicationCode name status adminNote committeeId interview createdAt updatedAt')
             .populate('committeeId', 'name color')
             .lean();
 
@@ -45,6 +45,7 @@ export async function POST(req: NextRequest) {
             status: (application as any).status,
             adminNote: (application as any).adminNote || null,
             committee: (application as any).committeeId,
+            interview: (application as any).interview || null,
             appliedAt: (application as any).createdAt,
             lastUpdated: (application as any).updatedAt,
         });

@@ -165,14 +165,14 @@ export default function ApplyPage({ params, searchParams }: { params: { id: stri
                         )}
 
                         <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                            <a href="/applicant/login"
+                            <Link href="/join/track"
                                 className="inline-flex items-center justify-center gap-2 bg-accent hover:bg-accent-dark text-black px-6 py-3 rounded-xl font-bold transition-all text-sm">
                                 تابع طلبك الآن →
-                            </a>
-                            <a href="/"
+                            </Link>
+                            <Link href="/"
                                 className="inline-flex items-center justify-center bg-white/5 hover:bg-white/10 border border-white/10 text-white px-6 py-3 rounded-xl font-bold transition-all text-sm">
                                 الصفحة الرئيسية
-                            </a>
+                            </Link>
                         </div>
                     </motion.div>
                 ) : (
