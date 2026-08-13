@@ -41,12 +41,12 @@ export async function POST(req: NextRequest) {
 
         return NextResponse.json({
             applicationCode: application.applicationCode,
-            name: (application as { name: string }).name,
-            status: (application as { status: string }).status,
-            adminNote: (application as { adminNote?: string }).adminNote || null,
-            committee: (application as { committeeId: { name: string; color: string } }).committeeId,
-            appliedAt: (application as { createdAt: Date }).createdAt,
-            lastUpdated: (application as { updatedAt: Date }).updatedAt,
+            name: (application as any).name,
+            status: (application as any).status,
+            adminNote: (application as any).adminNote || null,
+            committee: (application as any).committeeId,
+            appliedAt: (application as any).createdAt,
+            lastUpdated: (application as any).updatedAt,
         });
     } catch {
         return NextResponse.json({ error: 'Server error' }, { status: 500 });
