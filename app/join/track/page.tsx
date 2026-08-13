@@ -176,9 +176,16 @@ export default function TrackApplicationPage() {
                                 <div className="mt-6 p-6 bg-green-500/10 border border-green-500/20 rounded-2xl text-center space-y-4">
                                     <h3 className="text-2xl font-black text-green-400">مبروك! 🎉 تم قبولك</h3>
                                     <p className="text-green-200">أهلاً بك في لجنة {data.committee?.name}. نتطلع للعمل معك!</p>
-                                    <Link href={`/dashboard/committee`} className="inline-flex items-center gap-2 px-6 py-3 bg-green-500 hover:bg-green-600 text-black font-extrabold rounded-xl transition-all shadow-lg">
+                                    <button
+                                        onClick={() => {
+                                            // Save session so committee dashboard loads immediately without re-entry
+                                            sessionStorage.setItem('applicant_cd_session', JSON.stringify({ code, identifier }));
+                                            window.location.href = '/applicant/committee-dashboard';
+                                        }}
+                                        className="inline-flex items-center gap-2 px-6 py-3 bg-green-500 hover:bg-green-600 text-black font-extrabold rounded-xl transition-all shadow-lg"
+                                    >
                                         <FiGrid /> دخول إلى لوحة تحكم اللجنة
-                                    </Link>
+                                    </button>
                                 </div>
                             )}
 
