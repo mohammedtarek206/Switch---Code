@@ -24,14 +24,21 @@ interface Recruitment {
 
 export default function JoinCommunityPage() {
     const [cycle, setCycle] = useState<Recruitment | null>(null);
+    const [committees, setCommittees] = useState<Committee[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        async function fetchActiveCycle() {
+        async function fetchData() {
             try {
-                const res = await fetch('/api/join');
-                if (res.ok) {
-                    setCycle(await res.json());
+                const [cycleRes, commsRes] = await Promise.all([
+                    fetch('/api/join', { cache: 'no-store' }),
+                    fetch('/api/community/committees?active=true', { cache: 'no-store' })
+                ]);
+                if (cycleRes.ok) {
+                    setCycle(await cycleRes.json());
+                }
+                if (commsRes.ok) {
+                    setCommittees(await commsRes.json());
                 }
             } catch (err) {
                 console.error(err);
@@ -39,7 +46,7 @@ export default function JoinCommunityPage() {
                 setLoading(false);
             }
         }
-        fetchActiveCycle();
+        fetchData();
     }, []);
 
     if (loading) {
@@ -65,7 +72,7 @@ export default function JoinCommunityPage() {
                     <motion.h1
                         initial={{ y: 20, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
-                        transition={{ delay: 0.1 }}
+                        transition={{ delay: 0.15 }}
                         className="text-4xl md:text-5xl font-extrabold tracking-tight leading-tight"
                     >
                         Empower Your Technical <span className="text-accent block sm:inline">Skills & Horizons</span>
@@ -73,7 +80,7 @@ export default function JoinCommunityPage() {
                     <motion.p
                         initial={{ y: 20, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
-                        transition={{ delay: 0.15 }}
+                        transition={{ delay: 0.2 }}
                         className="text-gray-400 text-md max-w-xl mx-auto leading-relaxed"
                     >
                         Apply to join our specialized committees, collaborate on production systems, and earn points and badges.
@@ -121,7 +128,7 @@ export default function JoinCommunityPage() {
                         <div className="space-y-4">
                             <h3 className="font-bold text-lg text-white">Select a Committee to Apply</h3>
                             <div className="grid md:grid-cols-2 gap-6">
-                                {cycle.committees?.map((c) => (
+                                {committees.map((c) => (
                                     <div
                                         key={c._id}
                                         className="glass p-6 rounded-2xl border border-white/5 flex flex-col justify-between"

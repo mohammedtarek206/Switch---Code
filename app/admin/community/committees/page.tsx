@@ -27,6 +27,7 @@ export default function CommitteesPage() {
     const [type, setType] = useState<'technical' | 'non_technical'>('technical');
     const [color, setColor] = useState('#0066FF');
     const [icon, setIcon] = useState('FiGrid');
+    const [isActive, setIsActive] = useState(true);
 
     async function fetchCommittees() {
         try {
@@ -59,7 +60,7 @@ export default function CommitteesPage() {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`
                 },
-                body: JSON.stringify({ name, description, type, color, icon })
+                body: JSON.stringify({ name, description, type, color, icon, isActive })
             });
 
             if (res.ok) {
@@ -98,6 +99,7 @@ export default function CommitteesPage() {
         setType(c.type);
         setColor(c.color);
         setIcon(c.icon);
+        setIsActive(c.isActive !== false);
         setShowModal(true);
     }
 
@@ -108,6 +110,7 @@ export default function CommitteesPage() {
         setType('technical');
         setColor('#0066FF');
         setIcon('FiGrid');
+        setIsActive(true);
     }
 
     return (
@@ -142,8 +145,15 @@ export default function CommitteesPage() {
                         >
                             <div>
                                 <div className="flex items-start justify-between mb-4">
-                                    <div className="p-3 rounded-xl" style={{ backgroundColor: `${c.color}20`, color: c.color }}>
-                                        <FiGrid className="w-6 h-6" />
+                                    <div className="flex items-center space-x-3">
+                                        <div className="p-3 rounded-xl" style={{ backgroundColor: `${c.color}20`, color: c.color }}>
+                                            <FiGrid className="w-6 h-6" />
+                                        </div>
+                                        {c.isActive === false && (
+                                            <span className="text-[10px] uppercase font-bold bg-red-500/20 text-red-400 border border-red-500/20 px-2 py-0.5 rounded-full">
+                                                Inactive
+                                            </span>
+                                        )}
                                     </div>
                                     <div className="flex items-center space-x-2">
                                         <button
@@ -246,6 +256,20 @@ export default function CommitteesPage() {
                                         className="w-full h-[58px] p-2 bg-slate-900 border border-blue-500/30 rounded-xl outline-none cursor-pointer"
                                     />
                                 </div>
+                            </div>
+
+                            <div className="flex items-center space-x-3 p-3 bg-slate-900 border border-blue-500/20 rounded-xl">
+                                <input
+                                    type="checkbox"
+                                    id="isActive"
+                                    checked={isActive}
+                                    onChange={(e) => setIsActive(e.target.checked)}
+                                    style={{ accentColor: '#0066FF' }}
+                                    className="w-5 h-5 cursor-pointer"
+                                />
+                                <label htmlFor="isActive" className="text-sm font-semibold text-gray-300 cursor-pointer select-none">
+                                    Active Committee (visible on Join page)
+                                </label>
                             </div>
 
                             <div className="flex justify-end space-x-3 pt-4">

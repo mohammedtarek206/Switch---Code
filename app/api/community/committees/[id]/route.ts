@@ -4,6 +4,7 @@ import Committee from '@/models/Committee';
 import { authenticateRequest } from '@/lib/auth';
 import { hasPermission, PERMISSIONS } from '@/lib/permissions';
 import { logActivity } from '@/lib/activityLog';
+import { revalidatePath } from 'next/cache';
 
 export async function GET(_req: NextRequest, { params }: { params: { id: string } }) {
     try {
@@ -30,10 +31,25 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 
         await connectDB();
         const body = await req.json();
+        if (body.name && !body.slug) {
+            body.slug = body.name
+                .trim()
+                .toLowerCase()
+                .replace(/[^a-z0-9\u0600-\u06FF\s-]/g, '')
+                .replace(/\s+/g, '-')
+                .replace(/-+/g, '-');
+        }
+
         const committee = await Committee.findByIdAndUpdate(params.id, body, { new: true });
         if (!committee) return NextResponse.json({ error: 'Not found' }, { status: 404 });
 
         await logActivity(user.userId, 'EDIT_COMMITTEE', 'Committee', params.id, body);
+
+        try {
+            revalidatePath('/join');
+        } catch (e) {
+            console.error('Error revalidating path:', e);
+        }
 
         return NextResponse.json(committee);
     } catch {
@@ -56,6 +72,12 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
         if (!committee) return NextResponse.json({ error: 'Not found' }, { status: 404 });
 
         await logActivity(user.userId, 'DELETE_COMMITTEE', 'Committee', params.id);
+
+        try {
+            revalidatePath('/join');
+        } catch (e) {
+            console.error('Error revalidating path:', e);
+        }
 
         return NextResponse.json({ message: 'Deleted' });
     } catch {

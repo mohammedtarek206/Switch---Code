@@ -1,11 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Application from '@/models/Application';
+import User from '@/models/User';
+import Notification from '@/models/Notification';
 import { authenticateRequest } from '@/lib/auth';
 import { hasPermission, PERMISSIONS } from '@/lib/permissions';
 import { logActivity } from '@/lib/activityLog';
 
-// POST or PUT interview data for an application
+export const dynamic = 'force-dynamic';
+
+// POST / PUT interview data for an application
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
     try {
         const user = await authenticateRequest(req);
@@ -18,35 +22,90 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
 
         await connectDB();
         const body = await req.json();
-        const { date, interviewerId, technicalScore, hrScore, communication, problemSolving, notes, decision } = body;
+        const {
+            date,
+            interviewerId,
+            interviewStatus,
+            technicalScore,
+            hrScore,
+            communication,
+            problemSolving,
+            notes,
+            recommendation,
+            decision
+        } = body;
 
-        const interview: Record<string, unknown> = {};
-        if (date !== undefined) interview['interview.date'] = date;
-        if (interviewerId !== undefined) interview['interview.interviewerId'] = interviewerId;
-        if (technicalScore !== undefined) interview['interview.technicalScore'] = technicalScore;
-        if (hrScore !== undefined) interview['interview.hrScore'] = hrScore;
-        if (communication !== undefined) interview['interview.communication'] = communication;
-        if (problemSolving !== undefined) interview['interview.problemSolving'] = problemSolving;
-        if (notes !== undefined) interview['interview.notes'] = notes;
+        const update: Record<string, unknown> = {};
+        if (date !== undefined) update['interview.date'] = date;
+        if (interviewStatus !== undefined) update['interview.interviewStatus'] = interviewStatus;
+        if (notes !== undefined) update['interview.notes'] = notes;
+        if (recommendation !== undefined) update['interview.recommendation'] = recommendation;
+        if (technicalScore !== undefined) update['interview.technicalScore'] = technicalScore;
+        if (hrScore !== undefined) update['interview.hrScore'] = hrScore;
+        if (communication !== undefined) update['interview.communication'] = communication;
+        if (problemSolving !== undefined) update['interview.problemSolving'] = problemSolving;
+
+        // Handle interviewer assignment with denormalization
+        if (interviewerId !== undefined) {
+            update['interview.interviewerId'] = interviewerId || null;
+            if (interviewerId) {
+                // Denormalize name/email for fast reads
+                const interviewer = await User.findById(interviewerId).select('name email').lean() as { name?: string; email?: string } | null;
+                if (interviewer) {
+                    update['interview.interviewerName'] = interviewer.name || '';
+                    update['interview.interviewerEmail'] = interviewer.email || '';
+                }
+                update['interview.assignedAt'] = new Date();
+                update['interview.assignedBy'] = user.userId;
+                // Auto-upgrade interviewStatus to "Assigned" if still unassigned
+                if (!interviewStatus || interviewStatus === 'Not Assigned') {
+                    update['interview.interviewStatus'] = 'Assigned';
+                }
+            } else {
+                // Clearing the interviewer
+                update['interview.interviewerName'] = '';
+                update['interview.interviewerEmail'] = '';
+                update['interview.assignedAt'] = null;
+                if (!interviewStatus) {
+                    update['interview.interviewStatus'] = 'Not Assigned';
+                }
+            }
+        }
+
+        // Handle final decision — also updates top-level status
         if (decision !== undefined) {
-            interview['interview.decision'] = decision;
-            // Update top-level status based on decision
-            if (decision === 'accepted') interview.status = 'accepted';
-            else if (decision === 'rejected') interview.status = 'rejected';
-            else if (decision === 'waiting') interview.status = 'waiting';
+            update['interview.decision'] = decision || null;
+            if (decision === 'accepted') { update.status = 'accepted'; update['interview.interviewStatus'] = 'Passed'; }
+            else if (decision === 'rejected') { update.status = 'rejected'; update['interview.interviewStatus'] = 'Failed'; }
+            else if (decision === 'waiting') { update.status = 'waiting'; }
         }
 
         const application = await Application.findByIdAndUpdate(
             params.id,
-            { $set: interview },
+            { $set: update },
             { new: true }
-        );
+        ).select('-applicantPassword').populate('committeeId', 'name').lean();
 
         if (!application) return NextResponse.json({ error: 'Not found' }, { status: 404 });
 
+        // Send notification if interviewer assigned and applicant has a linked userId
+        if (interviewerId && (application as any).userId) {
+            try {
+                const committeeName = (application as any).committeeId?.name || 'اللجنة';
+                await Notification.create({
+                    userId: (application as any).userId,
+                    title: 'تم تحديد موعد المقابلة',
+                    message: `تم تحديد مقابلتك في ${committeeName}. سيتم التواصل معك قريباً.`,
+                    type: 'info',
+                    link: '/applicant/dashboard',
+                });
+            } catch { /* Non-blocking */ }
+        }
+
         await logActivity(user.userId, 'UPDATE_INTERVIEW', 'Application', params.id, body);
         return NextResponse.json(application);
-    } catch {
+    } catch (err) {
+        console.error('Interview update error:', err);
         return NextResponse.json({ error: 'Server error' }, { status: 500 });
     }
 }

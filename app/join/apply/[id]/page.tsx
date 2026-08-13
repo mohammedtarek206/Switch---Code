@@ -24,6 +24,8 @@ export default function ApplyPage({ params, searchParams }: { params: { id: stri
     const [cycle, setCycle] = useState<Recruitment | null>(null);
     const [loading, setLoading] = useState(true);
     const [success, setSuccess] = useState(false);
+    const [applicationCode, setApplicationCode] = useState('');
+    const [tempPassword, setTempPassword] = useState('');
     const [errorMsg, setErrorMsg] = useState('');
 
     // Primary Contact Info states
@@ -94,6 +96,9 @@ export default function ApplyPage({ params, searchParams }: { params: { id: stri
             });
 
             if (res.ok) {
+                const data = await res.json();
+                setApplicationCode(data.applicationCode || '');
+                setTempPassword(data.temporaryPassword || '');
                 setSuccess(true);
             } else {
                 const data = await res.json();
@@ -136,13 +141,39 @@ export default function ApplyPage({ params, searchParams }: { params: { id: stri
                         className="glass p-12 text-center rounded-3xl space-y-6"
                     >
                         <FiCheckCircle className="w-16 h-16 mx-auto text-green-400 animate-bounce" />
-                        <h2 className="text-3xl font-extrabold">Application Submitted!</h2>
-                        <p className="text-gray-400 text-sm max-w-sm mx-auto leading-relaxed">
-                            We have successfully received your volunteer registration. Our HR team will reach out via email details to coordinate next steps.
+                        <h2 className="text-3xl font-extrabold">تم التسجيل بنجاح! 🎉</h2>
+                        <p className="text-gray-400 text-sm max-w-sm mx-auto">
+                            تم استقبال طلبك. احتفظ بالبيانات التالية لمتابعة حالة طلبك.
                         </p>
-                        <Link href="/" className="inline-block bg-accent hover:bg-accent-dark text-black px-6 py-3 rounded-xl font-bold transition-all text-sm">
-                            Return to Homepage
-                        </Link>
+
+                        {applicationCode && (
+                            <div className="bg-dark-light border border-accent/30 rounded-2xl p-6 space-y-4 text-left">
+                                <div>
+                                    <div className="text-xs text-gray-400 uppercase font-bold mb-1">Application Code</div>
+                                    <div className="font-mono text-accent text-2xl font-extrabold tracking-wider">{applicationCode}</div>
+                                </div>
+                                {tempPassword && (
+                                    <div>
+                                        <div className="text-xs text-gray-400 uppercase font-bold mb-1">Temporary Password</div>
+                                        <div className="font-mono text-white text-xl font-bold">{tempPassword}</div>
+                                    </div>
+                                )}
+                                <div className="text-xs text-yellow-400 bg-yellow-500/10 border border-yellow-500/20 rounded-xl p-3">
+                                    ⚠️ احتفظ بهذه البيانات. ستحتاجها لتسجيل الدخول لمتابعة طلبك.
+                                </div>
+                            </div>
+                        )}
+
+                        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                            <a href="/applicant/login"
+                                className="inline-flex items-center justify-center gap-2 bg-accent hover:bg-accent-dark text-black px-6 py-3 rounded-xl font-bold transition-all text-sm">
+                                تابع طلبك الآن →
+                            </a>
+                            <a href="/"
+                                className="inline-flex items-center justify-center bg-white/5 hover:bg-white/10 border border-white/10 text-white px-6 py-3 rounded-xl font-bold transition-all text-sm">
+                                الصفحة الرئيسية
+                            </a>
+                        </div>
                     </motion.div>
                 ) : (
                     <div className="glass p-8 md:p-10 rounded-3xl border border-white/5 space-y-8">
