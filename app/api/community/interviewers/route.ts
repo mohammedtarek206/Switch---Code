@@ -112,7 +112,7 @@ export async function POST(req: NextRequest) {
             isActive: isActive !== false
         });
 
-        await logActivity(user.userId, 'ADD_INTERVIEWER', 'Interviewer', interviewer._id.toString(), {
+        await logActivity(user.userId, 'ADD_INTERVIEWER', 'Interviewer', String((interviewer as any)._id), {
             userId,
             committees
         });
