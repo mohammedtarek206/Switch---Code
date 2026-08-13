@@ -19,13 +19,14 @@ export async function POST(req: NextRequest) {
 
         const cleanCode = String(applicationCode).trim().toUpperCase();
         const cleanIdentifier = String(identifier).trim().toLowerCase();
+        const rawIdentifier = String(identifier).trim();
 
         const application = await Application.findOne({
             applicationCode: cleanCode,
             $or: [
                 { email: cleanIdentifier },
                 { phone: cleanIdentifier },
-                { phone: identifier.trim() }, // phone without lowercasing
+                { phone: rawIdentifier },
             ],
         })
             .select('applicationCode name status adminNote committeeId interview createdAt updatedAt')
@@ -40,7 +41,7 @@ export async function POST(req: NextRequest) {
         }
 
         return NextResponse.json({
-            applicationCode: application.applicationCode,
+            applicationCode: (application as any).applicationCode,
             name: (application as any).name,
             status: (application as any).status,
             adminNote: (application as any).adminNote || null,
@@ -49,7 +50,9 @@ export async function POST(req: NextRequest) {
             appliedAt: (application as any).createdAt,
             lastUpdated: (application as any).updatedAt,
         });
-    } catch {
-        return NextResponse.json({ error: 'Server error' }, { status: 500 });
+    } catch (err: any) {
+        console.error('Track route error:', err);
+        return NextResponse.json({ error: 'حدث خطأ في الخادم: ' + (err?.message || 'Unknown error') }, { status: 500 });
     }
 }
+
