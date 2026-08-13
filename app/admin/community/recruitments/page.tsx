@@ -58,8 +58,8 @@ export default function RecruitmentsPage() {
         try {
             const token = localStorage.getItem('token');
             const [recRes, comRes] = await Promise.all([
-                fetch('/api/community/recruitments', { headers: { Authorization: `Bearer ${token}` } }),
-                fetch('/api/community/committees')
+                fetch('/api/community/recruitments', { headers: { Authorization: `Bearer ${token}` }, cache: 'no-store' }),
+                fetch('/api/community/committees', { cache: 'no-store' })
             ]);
 
             if (recRes.ok) setRecruitments(await recRes.json());

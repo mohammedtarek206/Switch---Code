@@ -5,6 +5,8 @@ import { authenticateRequest } from '@/lib/auth';
 import { hasPermission, PERMISSIONS } from '@/lib/permissions';
 import { logActivity } from '@/lib/activityLog';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(_req: NextRequest, { params }: { params: { id: string } }) {
     try {
         await connectDB();
