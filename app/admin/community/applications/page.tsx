@@ -45,6 +45,7 @@ export default function ApplicationsPage() {
     const [pagination, setPagination] = useState<PaginationInfo>({ total: 0, page: 1, totalPages: 1 });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [counts, setCounts] = useState<Record<string, number>>({});
     const [actionLoading, setActionLoading] = useState<string | null>(null);
     const [toast, setToast] = useState<{ msg: string; type: 'success' | 'error' } | null>(null);
     const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
@@ -96,14 +97,27 @@ export default function ApplicationsPage() {
                 if (data.total !== undefined) {
                     setPagination({ total: data.total, page: data.page, totalPages: data.totalPages });
                 }
+                if (data.stats) {
+                    setCounts(data.stats);
+                }
             } else {
-                throw new Error('Failed to fetch applications');
+                let errorMsg = 'حدث خطأ في الخادم أثناء تحميل طلبات التقديم.';
+                if (appsRes.status === 401) {
+                    errorMsg = 'انتهت جلسة تسجيل الدخول، يرجى تسجيل الدخول مرة أخرى.';
+                } else if (appsRes.status === 403) {
+                    errorMsg = 'ليس لديك صلاحية للوصول إلى طلبات التقديم.';
+                } else if (appsRes.status === 404) {
+                    errorMsg = 'لم يتم العثور على Applications API.';
+                } else if (appsRes.status === 500) {
+                    errorMsg = 'حدث خطأ في الخادم أثناء تحميل طلبات التقديم.';
+                }
+                throw new Error(errorMsg);
             }
             if (commsRes.ok) setCommittees(await commsRes.json());
         } catch (err: any) {
             if (err.name === 'AbortError') return;
-            console.error(err);
-            setError('حدث خطأ أثناء تحميل طلبات التقديم');
+            console.error('Applications Fetch Error:', err);
+            setError(err.message || 'حدث خطأ أثناء تحميل طلبات التقديم');
             showToast('Failed to load applications', 'error');
         } finally {
             if (!abortController.signal.aborted) {
@@ -191,10 +205,6 @@ export default function ApplicationsPage() {
     }
 
     const statusKeys = Object.keys(STATUS_CONFIG) as Array<keyof typeof STATUS_CONFIG>;
-    const counts = statusKeys.reduce<Record<string, number>>((acc, k) => {
-        acc[k] = apps.filter(a => a.status === k).length;
-        return acc;
-    }, {});
 
     return (
         <div className="space-y-8 pb-12">

@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import connectDB from '@/lib/mongodb';
 import Application from '@/models/Application';
+import '@/models/Committee';
+import '@/models/Recruitment';
 import { authenticateRequest } from '@/lib/auth';
 import { hasPermission, PERMISSIONS } from '@/lib/permissions';
 import { logActivity } from '@/lib/activityLog';
@@ -65,7 +67,10 @@ export async function GET(req: NextRequest) {
             if (to) (filter.createdAt as Record<string, unknown>).$lte = new Date(to);
         }
 
-        const [applications, total] = await Promise.all([
+        const statusList = ['pending', 'reviewing', 'interview', 'accepted', 'rejected', 'waiting'];
+        const statsPromises = statusList.map(st => Application.countDocuments({ ...filter, status: st }));
+
+        const [applications, total, ...statsCounts] = await Promise.all([
             Application.find(filter)
                 .select('-applicantPassword')
                 .populate('committeeId', 'name type color')
@@ -75,16 +80,24 @@ export async function GET(req: NextRequest) {
                 .limit(limit)
                 .lean(),
             Application.countDocuments(filter),
+            ...statsPromises
         ]);
+
+        const stats = statusList.reduce((acc, st, i) => {
+            acc[st] = (statsCounts[i] as number) || 0;
+            return acc;
+        }, {} as Record<string, number>);
 
         return NextResponse.json({
             applications,
             total,
+            stats,
             page,
             totalPages: Math.ceil(total / limit),
         });
-    } catch {
-        return NextResponse.json({ error: 'Server error' }, { status: 500 });
+    } catch (error: any) {
+        console.error("Applications API Error:", error);
+        return NextResponse.json({ error: error.message || 'Server error' }, { status: 500 });
     }
 }
 
