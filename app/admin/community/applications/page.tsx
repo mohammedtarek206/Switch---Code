@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     FiDownload, FiSearch, FiEye, FiClock, FiTrash2, FiRefreshCw,
@@ -44,6 +44,7 @@ export default function ApplicationsPage() {
     const [committees, setCommittees] = useState<Committee[]>([]);
     const [pagination, setPagination] = useState<PaginationInfo>({ total: 0, page: 1, totalPages: 1 });
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     const [actionLoading, setActionLoading] = useState<string | null>(null);
     const [toast, setToast] = useState<{ msg: string; type: 'success' | 'error' } | null>(null);
     const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
@@ -54,13 +55,22 @@ export default function ApplicationsPage() {
     const [status, setStatus] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
 
+    const abortControllerRef = useRef<AbortController | null>(null);
+
     const showToast = (msg: string, type: 'success' | 'error') => {
         setToast({ msg, type });
         setTimeout(() => setToast(null), 3500);
     };
 
     const fetchApps = useCallback(async (page = 1) => {
+        if (abortControllerRef.current) {
+            abortControllerRef.current.abort();
+        }
+        const abortController = new AbortController();
+        abortControllerRef.current = abortController;
+
         setLoading(true);
+        setError(null);
         try {
             const token = localStorage.getItem('token');
             const query = new URLSearchParams({ page: String(page), limit: '20' });
@@ -72,8 +82,12 @@ export default function ApplicationsPage() {
                 fetch(`/api/community/applications?${query}`, {
                     headers: { Authorization: `Bearer ${token}` },
                     cache: 'no-store',
+                    signal: abortController.signal
                 }),
-                fetch('/api/community/committees', { cache: 'no-store' }),
+                fetch('/api/community/committees', {
+                    cache: 'no-store',
+                    signal: abortController.signal
+                }),
             ]);
 
             if (appsRes.ok) {
@@ -82,19 +96,31 @@ export default function ApplicationsPage() {
                 if (data.total !== undefined) {
                     setPagination({ total: data.total, page: data.page, totalPages: data.totalPages });
                 }
+            } else {
+                throw new Error('Failed to fetch applications');
             }
             if (commsRes.ok) setCommittees(await commsRes.json());
-        } catch (err) {
+        } catch (err: any) {
+            if (err.name === 'AbortError') return;
             console.error(err);
+            setError('حدث خطأ أثناء تحميل طلبات التقديم');
             showToast('Failed to load applications', 'error');
         } finally {
-            setLoading(false);
+            if (!abortController.signal.aborted) {
+                setLoading(false);
+            }
         }
     }, [search, committeeId, status]);
 
     useEffect(() => {
         fetchApps(currentPage);
     }, [committeeId, status, currentPage]);
+
+    useEffect(() => {
+        const onFocus = () => fetchApps(currentPage);
+        window.addEventListener('focus', onFocus);
+        return () => window.removeEventListener('focus', onFocus);
+    }, [fetchApps, currentPage]);
 
     async function handleStatusChange(id: string, newStatus: string) {
         setActionLoading(id + newStatus);
@@ -270,10 +296,18 @@ export default function ApplicationsPage() {
                         </div>
                     ))}
                 </div>
+            ) : error ? (
+                <div className="glass-panel p-16 text-center rounded-2xl">
+                    <FiAlertCircle className="w-12 h-12 mx-auto text-red-500 mb-4" />
+                    <p className="text-gray-400 mb-4">{error}</p>
+                    <button onClick={() => fetchApps(currentPage)} className="px-6 py-2 rounded-xl font-bold transition-all text-sm border-blue-500 bg-blue-600/20 hover:bg-blue-600/40 border text-white">
+                        إعادة المحاولة Retry
+                    </button>
+                </div>
             ) : apps.length === 0 ? (
                 <div className="glass-panel p-16 text-center rounded-2xl">
                     <FiFilter className="w-12 h-12 mx-auto text-gray-600 mb-4" />
-                    <p className="text-gray-400">No applications found matching the current filters.</p>
+                    <p className="text-gray-400">لا توجد طلبات تقديم حاليًا</p>
                     {(search || committeeId || status) && (
                         <button onClick={() => { setSearch(''); setCommitteeId(''); setStatus(''); }} className="mt-4 text-gold text-sm underline">
                             Clear filters
