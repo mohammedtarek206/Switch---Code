@@ -12,10 +12,10 @@ interface Committee {
 interface Announcement {
     _id: string;
     title: string;
-    content: string;
-    tag: string;
-    targetCommitteeId?: Committee;
-    authorId: {
+    body: string;
+    section: string;
+    targetCommittee?: Committee;
+    createdBy: {
         name: string;
     };
     createdAt: string;
@@ -29,9 +29,9 @@ export default function AnnouncementsPage() {
 
     // Form States
     const [title, setTitle] = useState('');
-    const [content, setContent] = useState('');
-    const [tag, setTag] = useState('general');
-    const [targetCommitteeId, setTargetCommitteeId] = useState('');
+    const [body, setBody] = useState('');
+    const [section, setSection] = useState('general');
+    const [targetCommittee, setTargetCommittee] = useState('');
 
     async function fetchAnnouncements() {
         try {
@@ -56,12 +56,18 @@ export default function AnnouncementsPage() {
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
+
+        if (!title.trim() || !body.trim()) {
+            alert('title and body required');
+            return;
+        }
+
         const token = localStorage.getItem('token');
         const payload = {
-            title,
-            content,
-            tag,
-            targetCommitteeId: targetCommitteeId || undefined
+            title: title.trim(),
+            body: body.trim(),
+            section,
+            targetCommittee: targetCommittee || undefined
         };
 
         try {
@@ -107,9 +113,9 @@ export default function AnnouncementsPage() {
 
     function resetForm() {
         setTitle('');
-        setContent('');
-        setTag('general');
-        setTargetCommitteeId('');
+        setBody('');
+        setSection('general');
+        setTargetCommittee('');
     }
 
     return (
@@ -149,11 +155,11 @@ export default function AnnouncementsPage() {
                             <div className="flex justify-between items-start mb-4">
                                 <div className="flex flex-wrap gap-2 items-center">
                                     <span className="bg-blue-500/20 text-blue-400 px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider">
-                                        {a.tag}
+                                        {a.section}
                                     </span>
-                                    {a.targetCommitteeId && (
+                                    {a.targetCommittee && (
                                         <span className="bg-gold/20 text-gold px-2.5 py-0.5 rounded-full text-xs font-bold">
-                                            {a.targetCommitteeId.name}
+                                            {a.targetCommittee.name}
                                         </span>
                                     )}
                                 </div>
@@ -166,11 +172,11 @@ export default function AnnouncementsPage() {
                             </div>
 
                             <h3 className="text-xl font-bold text-white mb-2">{a.title}</h3>
-                            <p className="text-gray-300 text-sm leading-relaxed mb-6 whitespace-pre-wrap">{a.content}</p>
+                            <p className="text-gray-300 text-sm leading-relaxed mb-6 whitespace-pre-wrap">{a.body}</p>
 
                             <div className="flex items-center space-x-6 text-xs text-gray-500 border-t border-blue-500/20 pt-4">
                                 <span className="flex items-center">
-                                    <FiUser className="mr-1.5" /> Post By: {a.authorId?.name || 'Admin'}
+                                    <FiUser className="mr-1.5" /> Post By: {a.createdBy?.name || 'Admin'}
                                 </span>
                                 <span className="flex items-center">
                                     <FiClock className="mr-1.5" /> {new Date(a.createdAt).toLocaleString()}
@@ -209,8 +215,8 @@ export default function AnnouncementsPage() {
                                 <textarea
                                     required
                                     rows={5}
-                                    value={content}
-                                    onChange={(e) => setContent(e.target.value)}
+                                    value={body}
+                                    onChange={(e) => setBody(e.target.value)}
                                     placeholder="Write clear announcements..."
                                     className="w-full p-4 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold resize-none text-sm"
                                 />
@@ -220,8 +226,8 @@ export default function AnnouncementsPage() {
                                 <div className="space-y-1">
                                     <label className="text-sm font-semibold text-gray-300">Section Tag</label>
                                     <select
-                                        value={tag}
-                                        onChange={(e) => setTag(e.target.value)}
+                                        value={section}
+                                        onChange={(e) => setSection(e.target.value)}
                                         className="w-full p-4 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold text-sm"
                                     >
                                         <option value="general">General</option>
@@ -234,8 +240,8 @@ export default function AnnouncementsPage() {
                                 <div className="space-y-1">
                                     <label className="text-sm font-semibold text-gray-300">Target Committee</label>
                                     <select
-                                        value={targetCommitteeId}
-                                        onChange={(e) => setTargetCommitteeId(e.target.value)}
+                                        value={targetCommittee}
+                                        onChange={(e) => setTargetCommittee(e.target.value)}
                                         className="w-full p-4 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold text-sm"
                                     >
                                         <option value="">Public / All Committees</option>

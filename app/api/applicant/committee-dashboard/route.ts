@@ -74,7 +74,7 @@ export async function POST(req: NextRequest) {
 
         // Get recent announcements (public ones)
         const announcements = await Announcement.find({
-            targetType: 'all',
+            targetCommittee: { $exists: false },
         })
             .sort({ createdAt: -1 })
             .limit(5)

@@ -8,8 +8,8 @@ import Link from 'next/link';
 interface Announcement {
     _id: string;
     title: string;
-    content: string;
-    targetAudience: string;
+    body: string;
+    section: string;
     createdAt: string;
 }
 
@@ -18,8 +18,8 @@ export default function PRDashboard() {
     const [loading, setLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
     const [title, setTitle] = useState('');
-    const [content, setContent] = useState('');
-    const [target, setTarget] = useState('all');
+    const [body, setBody] = useState('');
+    const [section, setSection] = useState('all');
     const [tab, setTab] = useState<'announcements' | 'gallery' | 'social'>('announcements');
 
     useEffect(() => {
@@ -49,10 +49,10 @@ export default function PRDashboard() {
         const res = await fetch('/api/community/announcements', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-            body: JSON.stringify({ title, content, targetAudience: target })
+            body: JSON.stringify({ title, body, section })
         });
         if (res.ok) {
-            setShowForm(false); setTitle(''); setContent(''); setTarget('all');
+            setShowForm(false); setTitle(''); setBody(''); setSection('all');
             fetchAnnouncements();
         }
     }
@@ -92,7 +92,7 @@ export default function PRDashboard() {
                 <div className="grid grid-cols-3 gap-4">
                     {[
                         { label: 'Published', val: announcements.length, color: 'text-purple-400' },
-                        { label: 'Targeted All', val: announcements.filter(a => a.targetAudience === 'all').length, color: 'text-white' },
+                        { label: 'Targeted All', val: announcements.filter(a => a.section === 'all' || a.section === 'general').length, color: 'text-white' },
                         { label: 'This Week', val: announcements.filter(a => new Date(a.createdAt) > new Date(Date.now() - 7 * 86400000)).length, color: 'text-gold' },
                     ].map(s => (
                         <div key={s.label} className="glass-panel p-4 rounded-2xl text-center border border-blue-500/20">
@@ -137,13 +137,14 @@ export default function PRDashboard() {
                                     className="w-full p-3 bg-[#07111F] border border-blue-500/30 rounded-xl text-white text-sm outline-none focus:border-gold"
                                 />
                                 <textarea
-                                    rows={4} value={content} onChange={e => setContent(e.target.value)}
+                                    rows={4} value={body} onChange={e => setBody(e.target.value)}
                                     placeholder="Announcement body content..."
                                     className="w-full p-3 bg-[#07111F] border border-blue-500/30 rounded-xl text-white text-sm outline-none focus:border-gold resize-none"
                                 />
                                 <div className="flex gap-3">
-                                    <select value={target} onChange={e => setTarget(e.target.value)} className="bg-[#07111F] border border-blue-500/30 rounded-xl px-4 py-2.5 text-white text-sm outline-none flex-1">
+                                    <select value={section} onChange={e => setSection(e.target.value)} className="bg-[#07111F] border border-blue-500/30 rounded-xl px-4 py-2.5 text-white text-sm outline-none flex-1">
                                         <option value="all">Everyone</option>
+                                        <option value="general">General</option>
                                         <option value="members">Members Only</option>
                                         <option value="leaders">Leaders</option>
                                         <option value="technical">Technical Committee</option>
@@ -163,9 +164,9 @@ export default function PRDashboard() {
                                         <div>
                                             <div className="flex items-center gap-2 mb-1">
                                                 <h4 className="font-bold text-white text-sm">{a.title}</h4>
-                                                <span className="text-[9px] font-bold uppercase bg-slate-900 border border-blue-500/20 text-gray-400 px-2 py-0.5 rounded-full">{a.targetAudience}</span>
+                                                <span className="text-[9px] font-bold uppercase bg-slate-900 border border-blue-500/20 text-gray-400 px-2 py-0.5 rounded-full">{a.section}</span>
                                             </div>
-                                            <p className="text-gray-400 text-xs leading-relaxed line-clamp-2">{a.content}</p>
+                                            <p className="text-gray-400 text-xs leading-relaxed line-clamp-2">{a.body}</p>
                                             <span className="text-[10px] text-gray-600 mt-2 block">{new Date(a.createdAt).toLocaleString()}</span>
                                         </div>
                                         <button onClick={() => handleDelete(a._id)} className="text-red-400 hover:bg-red-500/10 p-2 rounded-lg"><FiTrash2 className="w-4 h-4" /></button>

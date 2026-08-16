@@ -13,6 +13,7 @@ export async function GET(req: NextRequest) {
         await connectDB();
         const announcements = await Announcement.find()
             .populate('createdBy', 'name')
+            .populate('targetCommittee', 'name')
             .sort({ createdAt: -1 })
             .limit(50);
         return NextResponse.json(announcements);
@@ -32,15 +33,16 @@ export async function POST(req: NextRequest) {
         }
 
         await connectDB();
-        const { title, body, targetType, targetId } = await req.json();
-        if (!title || !body) {
+        const { title, body, section, targetCommittee } = await req.json();
+        if (!title?.trim() || !body?.trim()) {
             return NextResponse.json({ error: 'title and body required' }, { status: 400 });
         }
 
         const announcement = await Announcement.create({
-            title, body,
-            targetType: targetType || 'all',
-            targetId,
+            title: title.trim(),
+            body: body.trim(),
+            section: section || 'general',
+            targetCommittee: targetCommittee || undefined,
             createdBy: user.userId,
         });
 

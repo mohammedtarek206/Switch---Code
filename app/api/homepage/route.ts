@@ -111,10 +111,10 @@ export async function GET() {
         };
 
         // 6. Announcements / News
-        const news = await Announcement.find({ target: { $in: ['all', 'public'] } })
+        const news = await Announcement.find({ targetCommittee: { $exists: false } })
             .sort({ createdAt: -1 })
             .limit(6)
-            .populate('authorId', 'name avatar')
+            .populate('createdBy', 'name avatar')
             .lean();
 
         // 7. Featured Committees
