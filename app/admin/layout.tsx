@@ -15,7 +15,12 @@ import {
     FiFileText,
     FiImage,
     FiGrid,
-    FiAward
+    FiAward,
+    FiYoutube,
+    FiCheckSquare,
+    FiClipboard,
+    FiTrendingUp,
+    FiMonitor
 } from 'react-icons/fi';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -88,6 +93,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         { title: 'Permissions', icon: FiKey, href: '/admin/community/permissions' },
     ];
 
+    const lmsItems = [
+        { title: 'LMS Overview', icon: FiMonitor, href: '/admin/lms' },
+        { title: 'Tracks', icon: FiBook, href: '/admin/lms/tracks' },
+        { title: 'Videos', icon: FiYoutube, href: '/admin/lms/videos' },
+        { title: 'Materials', icon: FiFileText, href: '/admin/lms/materials' },
+        { title: 'Quizzes', icon: FiCheckSquare, href: '/admin/lms/quizzes' },
+        { title: 'Assignments', icon: FiClipboard, href: '/admin/lms/assignments' },
+        { title: 'Student Progress', icon: FiTrendingUp, href: '/admin/lms/progress' },
+    ];
+
     return (
         <div className="min-h-screen bg-[#07111F] text-white flex">
             {/* Sidebar */}
@@ -152,6 +167,37 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                                     `}
                                 >
                                     <item.icon className={`w-5 h-5 min-w-[20px] ${isActive ? 'text-gold' : 'text-slate-500'}`} />
+                                    <span className={`ml-4 ${!sidebarOpen && 'md:hidden'}`}>
+                                        {item.title}
+                                    </span>
+                                </Link>
+                            );
+                        })}
+                    </div>
+
+                    {/* LMS Section */}
+                    <div className="pt-6 border-t border-blue-500/20 mt-6 space-y-1.5">
+                        {sidebarOpen && (
+                            <p className="px-3 text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+                                <span className="w-2 h-2 rounded-full bg-cyan-500"></span> Learning
+                            </p>
+                        )}
+                        {lmsItems.map((item) => {
+                            const isActive = item.href === '/admin/lms'
+                                ? pathname === '/admin/lms'
+                                : pathname.startsWith(item.href);
+                            return (
+                                <Link
+                                    key={item.href}
+                                    href={item.href}
+                                    className={`
+                                        flex items-center p-3.5 rounded-2xl transition-all font-bold text-sm
+                                        ${isActive
+                                            ? 'bg-cyan-500/10 text-cyan-400 shadow-glow-cyan border border-cyan-500/30'
+                                            : 'text-slate-400 hover:bg-slate-800 hover:text-white border border-transparent'}
+                                    `}
+                                >
+                                    <item.icon className={`w-5 h-5 min-w-[20px] ${isActive ? 'text-cyan-400' : 'text-slate-500'}`} />
                                     <span className={`ml-4 ${!sidebarOpen && 'md:hidden'}`}>
                                         {item.title}
                                     </span>
