@@ -1,4 +1,6 @@
 import mongoose, { Document, Schema, Types } from 'mongoose';
+import './LMSQuiz';
+import './User';
 
 export interface IQuizAttempt extends Document {
     userId: Types.ObjectId;

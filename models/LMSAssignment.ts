@@ -1,4 +1,6 @@
 import mongoose, { Document, Schema, Types } from 'mongoose';
+import './LMSTrack';
+import './User';
 
 export interface ILMSAssignment extends Document {
     title: string;

@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
+import mongoose from 'mongoose';
 import connectDB from '@/lib/mongodb';
+import LMSTrack from '@/models/LMSTrack';
 import LMSEnrollment from '@/models/LMSEnrollment';
 import LMSVideo from '@/models/LMSVideo';
 import LMSMaterial from '@/models/LMSMaterial';
@@ -24,11 +26,13 @@ export async function GET(request: NextRequest) {
         // Get enrollment
         const enrollment = await LMSEnrollment.findOne({ userId: user.userId, status: 'active' }).populate('trackId');
 
-        if (!enrollment) {
+        if (!enrollment || !enrollment.trackId) {
             return NextResponse.json({ enrolled: false, progress: null });
         }
 
-        const trackId = enrollment.trackId._id || enrollment.trackId;
+        const trackId = typeof enrollment.trackId === 'object' && enrollment.trackId !== null
+            ? (enrollment.trackId as any)._id
+            : enrollment.trackId;
 
         // Parallel data fetching for performance
         const [
@@ -92,6 +96,6 @@ export async function GET(request: NextRequest) {
         });
     } catch (error: any) {
         console.error('LMS Progress error:', error);
-        return NextResponse.json({ error: 'Failed to fetch progress' }, { status: 500 });
+        return NextResponse.json({ error: error.message || 'Failed to fetch progress' }, { status: 500 });
     }
 }

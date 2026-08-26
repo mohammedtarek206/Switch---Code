@@ -54,6 +54,11 @@ export default function LearnPage() {
         setError('');
         try {
             const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = '/login';
+                return;
+            }
+
             const res = await fetch('/api/lms/progress', {
                 headers: { Authorization: `Bearer ${token}` },
                 cache: 'no-store',
@@ -64,16 +69,19 @@ export default function LearnPage() {
                 return;
             }
 
-            if (!res.ok) throw new Error('Failed to fetch');
-
             const data = await res.json();
-            setEnrolled(data.enrolled);
+
+            if (!res.ok) {
+                throw new Error(data.error || 'فشل في تحميل تقدم التراك');
+            }
+
+            setEnrolled(!!data.enrolled);
             if (data.enrolled) {
                 setTrack(data.track);
                 setProgress(data.progress);
             }
         } catch (err: any) {
-            setError('حدث خطأ أثناء تحميل البيانات');
+            setError(err.message || 'حدث خطأ أثناء تحميل البيانات');
         } finally {
             setLoading(false);
         }
@@ -348,8 +356,8 @@ export default function LearnPage() {
                                             onClick={() => enrollInTrack(t._id)}
                                             disabled={enrolling === t._id}
                                             className={`text-left p-6 rounded-2xl border transition-all ${track?._id === t._id
-                                                    ? 'border-cyan-500/50 bg-cyan-500/10'
-                                                    : 'border-white/10 bg-white/[0.02] hover:border-cyan-500/30 hover:bg-cyan-500/5'
+                                                ? 'border-cyan-500/50 bg-cyan-500/10'
+                                                : 'border-white/10 bg-white/[0.02] hover:border-cyan-500/30 hover:bg-cyan-500/5'
                                                 } ${enrolling === t._id ? 'opacity-70' : ''}`}
                                         >
                                             {t.thumbnail && (

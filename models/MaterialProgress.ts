@@ -1,4 +1,6 @@
 import mongoose, { Document, Schema, Types } from 'mongoose';
+import './LMSMaterial';
+import './User';
 
 export interface IMaterialProgress extends Document {
     userId: Types.ObjectId;

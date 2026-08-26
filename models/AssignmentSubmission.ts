@@ -1,4 +1,6 @@
 import mongoose, { Document, Schema, Types } from 'mongoose';
+import './LMSAssignment';
+import './User';
 
 export interface IAssignmentSubmission extends Document {
     userId: Types.ObjectId;
