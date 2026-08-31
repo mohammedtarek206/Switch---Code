@@ -53,7 +53,7 @@ export default function AdminLMSAssignments() {
     const openEdit = (a: Assignment) => {
         setModalError(null);
         setEditing(a);
-        setFormData({ title: a.title, description: '', instructions: '', trackId: typeof a.trackId === 'object' ? a.trackId._id : a.trackId, deadline: a.deadline ? new Date(a.deadline).toISOString().split('T')[0] : '', attachmentUrl: '', maxScore: a.maxScore, published: a.published, order: a.order });
+        setFormData({ title: a.title, description: '', instructions: '', trackId: a.trackId && typeof a.trackId === 'object' ? a.trackId._id : a.trackId || '', deadline: a.deadline ? new Date(a.deadline).toISOString().split('T')[0] : '', attachmentUrl: '', maxScore: a.maxScore, published: a.published, order: a.order });
         setShowModal(true);
     };
 
@@ -142,7 +142,7 @@ export default function AdminLMSAssignments() {
                             assignments.map(a => (
                                 <tr key={a._id} className="hover:bg-white/[0.02]">
                                     <td className="px-4 py-4 font-bold text-white text-sm">{a.title}</td>
-                                    <td className="px-4 py-4 text-sm text-gray-400">{typeof a.trackId === 'object' ? a.trackId.name : '-'}</td>
+                                    <td className="px-4 py-4 text-sm text-gray-400">{a.trackId && typeof a.trackId === 'object' ? a.trackId.name : '-'}</td>
                                     <td className="px-4 py-4 text-sm text-gray-400">{a.deadline ? new Date(a.deadline).toLocaleDateString() : '-'}</td>
                                     <td className="px-4 py-4 text-sm text-yellow-400 font-bold">{a.maxScore}</td>
                                     <td className="px-4 py-4">

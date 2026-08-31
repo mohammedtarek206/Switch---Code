@@ -52,7 +52,7 @@ export default function AdminLMSQuizzes() {
     const openEdit = (q: Quiz) => {
         setModalError(null);
         setEditing(q);
-        setFormData({ title: q.title, description: '', trackId: typeof q.trackId === 'object' ? q.trackId._id : q.trackId, duration: q.duration, passingScore: q.passingScore, attemptsAllowed: q.attemptsAllowed, status: q.status, order: 0, questions: q.questions || [] });
+        setFormData({ title: q.title, description: '', trackId: q.trackId && typeof q.trackId === 'object' ? q.trackId._id : q.trackId || '', duration: q.duration, passingScore: q.passingScore, attemptsAllowed: q.attemptsAllowed, status: q.status, order: 0, questions: q.questions || [] });
         setShowModal(true);
     };
 
@@ -134,7 +134,7 @@ export default function AdminLMSQuizzes() {
                                         <p className="font-bold text-white text-sm">{q.title}</p>
                                         <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${q.status === 'published' ? 'bg-green-500/10 text-green-400' : 'bg-gray-500/10 text-gray-400'}`}>{q.status}</span>
                                     </td>
-                                    <td className="px-4 py-4 text-sm text-gray-400">{typeof q.trackId === 'object' ? q.trackId.name : '-'}</td>
+                                    <td className="px-4 py-4 text-sm text-gray-400">{q.trackId && typeof q.trackId === 'object' ? q.trackId.name : '-'}</td>
                                     <td className="px-4 py-4 text-sm text-white font-bold">{q.questions.length}</td>
                                     <td className="px-4 py-4 text-sm text-yellow-400 font-bold">{q.passingScore}%</td>
                                     <td className="px-4 py-4 text-sm text-gray-400">{q.attemptsAllowed}x</td>

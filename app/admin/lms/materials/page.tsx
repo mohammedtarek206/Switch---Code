@@ -51,7 +51,7 @@ export default function AdminLMSMaterials() {
     const openEdit = (m: Material) => {
         setModalError(null);
         setEditing(m);
-        setFormData({ title: m.title, description: '', trackId: typeof m.trackId === 'object' ? m.trackId._id : m.trackId, materialType: m.materialType, fileUrl: m.fileUrl, thumbnail: '', order: m.order, published: m.published, allowDownload: m.allowDownload });
+        setFormData({ title: m.title, description: '', trackId: m.trackId && typeof m.trackId === 'object' ? m.trackId._id : m.trackId || '', materialType: m.materialType, fileUrl: m.fileUrl, thumbnail: '', order: m.order, published: m.published, allowDownload: m.allowDownload });
         setShowModal(true);
     };
 
@@ -119,7 +119,7 @@ export default function AdminLMSMaterials() {
                                         <p className="font-bold text-white text-sm line-clamp-1">{m.title}</p>
                                         <a href={m.fileUrl} target="_blank" className="text-xs text-blue-400 hover:underline line-clamp-1 mt-0.5">{m.fileUrl}</a>
                                     </td>
-                                    <td className="px-5 py-4 text-sm text-gray-400">{typeof m.trackId === 'object' ? m.trackId.name : '-'}</td>
+                                    <td className="px-5 py-4 text-sm text-gray-400">{m.trackId && typeof m.trackId === 'object' ? m.trackId.name : '-'}</td>
                                     <td className="px-5 py-4">
                                         <span className={`text-xs px-2.5 py-1 rounded-full font-bold ${typeColors[m.materialType] || typeColors.other}`}>{m.materialType}</span>
                                     </td>
