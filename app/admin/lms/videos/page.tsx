@@ -55,7 +55,7 @@ export default function AdminLMSVideos() {
     const openEdit = (v: Video) => {
         setModalError(null);
         setEditing(v);
-        setFormData({ title: v.title, description: '', trackId: typeof v.trackId === 'object' ? v.trackId._id : v.trackId, instructor: v.instructor, videoUrl: v.videoUrl, thumbnail: v.thumbnail || '', duration: v.duration, order: v.order, published: v.published });
+        setFormData({ title: v.title, description: '', trackId: v.trackId && typeof v.trackId === 'object' ? v.trackId._id : v.trackId || '', instructor: v.instructor, videoUrl: v.videoUrl, thumbnail: v.thumbnail || '', duration: v.duration, order: v.order, published: v.published });
         setShowModal(true);
     };
 
@@ -106,7 +106,7 @@ export default function AdminLMSVideos() {
         fetchAll();
     };
 
-    const filtered = videos.filter(v => !filterTrack || (typeof v.trackId === 'object' ? v.trackId._id : v.trackId) === filterTrack);
+    const filtered = videos.filter(v => !filterTrack || (v.trackId && typeof v.trackId === 'object' ? v.trackId._id : v.trackId) === filterTrack);
 
     return (
         <div className="space-y-6">
@@ -172,7 +172,7 @@ export default function AdminLMSVideos() {
                                             <p className="font-bold text-white text-sm line-clamp-2 max-w-[200px]">{v.title}</p>
                                         </div>
                                     </td>
-                                    <td className="px-5 py-4 text-sm text-gray-400">{typeof v.trackId === 'object' ? v.trackId.name : '-'}</td>
+                                    <td className="px-5 py-4 text-sm text-gray-400">{v.trackId && typeof v.trackId === 'object' ? v.trackId.name : '-'}</td>
                                     <td className="px-5 py-4 text-sm text-gray-400">{v.instructor}</td>
                                     <td className="px-5 py-4 text-sm text-gray-500">{v.duration || '-'}</td>
                                     <td className="px-5 py-4">
