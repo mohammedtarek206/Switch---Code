@@ -24,6 +24,9 @@ export interface IEvent extends Document {
     seats?: number;
     registrationDeadline?: Date;
     registrationOpen: boolean;
+    status: 'draft' | 'upcoming' | 'registration_open' | 'registration_closed' | 'ongoing' | 'completed' | 'cancelled';
+    whatsAppGroupLink?: string;
+    isOnline?: boolean;
     hasWaitingList?: boolean;
     speakerName?: string;
     organizer?: string;
@@ -65,6 +68,13 @@ const EventSchema: Schema = new Schema(
         seats: { type: Number, default: 50 },
         registrationDeadline: { type: Date },
         registrationOpen: { type: Boolean, default: true },
+        status: {
+            type: String,
+            enum: ['draft', 'upcoming', 'registration_open', 'registration_closed', 'ongoing', 'completed', 'cancelled'],
+            default: 'upcoming',
+        },
+        whatsAppGroupLink: { type: String },
+        isOnline: { type: Boolean, default: false },
         hasWaitingList: { type: Boolean, default: true },
         speakerName: { type: String },
         organizer: { type: String, default: 'Witch Code Platform' },

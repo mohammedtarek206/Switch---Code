@@ -12,6 +12,14 @@ export default function EventPublicPage() {
     const [event, setEvent] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [user, setUser] = useState<any>(null);
+
+    useEffect(() => {
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+            try { setUser(JSON.parse(storedUser)); } catch { }
+        }
+    }, []);
 
     const [regForm, setRegForm] = useState({
         name: '', email: '', phone: '', university: '', faculty: '',
@@ -67,7 +75,7 @@ export default function EventPublicPage() {
             const res = await fetch(`/api/events/${eventId}/register`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ...regForm, answers })
+                body: JSON.stringify({ ...regForm, answers, userId: user?._id || user?.id })
             });
             const resData = await res.json();
 
@@ -116,7 +124,7 @@ export default function EventPublicPage() {
             <div className="max-w-4xl mx-auto space-y-8">
 
                 {/* Event Header Banner */}
-                <div className="glass-panel p-8 md:p-12 rounded-[2.5rem] border border-blue-500/20 relative overflow-hidden bg-gradient-to-tr from-blue-900/20 via-slate-900/60 to-gold/5">
+                <div className="glass-panel p-8 md:p-12 rounded-[2.5rem] border border-blue-500/20 relative overflow-hidden bg-gradient-to-tr from-blue-900/20 via-slate-900/60 to-[#07111F]">
                     <div className="absolute top-0 right-0 w-80 h-80 bg-blue-600/10 blur-3xl rounded-full pointer-events-none" />
 
                     <div className="relative z-10 flex flex-col space-y-6">
@@ -336,18 +344,29 @@ export default function EventPublicPage() {
 
                     {registrationData && (
                         <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="mt-8 p-8 bg-slate-900 border border-blue-500/30 rounded-[2rem] flex flex-col items-center text-center space-y-4">
-                            <h3 className="text-xl font-black text-gold">Entrance Barcode</h3>
-                            <p className="text-sm text-slate-300">Please save this QR Code to scan for event check-in.</p>
-                            <div className="bg-white p-4 rounded-2xl w-48 h-48 flex justify-center items-center">
-                                { /* we encode the registration _id into the QR Code */}
+                            <h3 className="text-xl font-black text-gold">Registration Successful</h3>
+                            <p className="text-sm text-slate-300">Your Tracking Code: <span className="font-bold text-white text-lg ml-2">{registrationData.trackingCode || registrationData._id}</span></p>
+
+                            {event.whatsAppGroupLink && (
+                                <div className="mt-6 p-6 border border-green-500/30 bg-green-500/5 rounded-2xl w-full max-w-md flex flex-col items-center gap-4">
+                                    <h4 className="text-green-400 font-bold">Event WhatsApp Group</h4>
+                                    <p className="text-xs text-slate-400">انضم إلى جروب WhatsApp الخاص بالإيفنت لمتابعة جميع التحديثات والمواعيد والتعليمات.</p>
+                                    <a href={event.whatsAppGroupLink} target="_blank" rel="noopener noreferrer" className="bg-green-600 hover:bg-green-500 text-white px-6 py-3 rounded-xl font-bold transition-all w-full text-center">
+                                        Join WhatsApp Group
+                                    </a>
+                                </div>
+                            )}
+
+                            <div className="bg-white p-4 rounded-2xl w-48 h-48 flex justify-center items-center mt-4">
+                                {/* QR Code fallback */}
                                 <img
-                                    src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${registrationData._id}`}
+                                    src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${registrationData.trackingCode || registrationData._id}`}
                                     alt="Registration Check-in Barcode"
                                     className="w-full h-full object-contain"
                                 />
                             </div>
                             <div className="text-xs font-bold text-slate-400 mt-2 tracking-wider uppercase">
-                                ID: {registrationData._id}
+                                ID: {registrationData.trackingCode || registrationData._id}
                             </div>
                         </motion.div>
                     )}

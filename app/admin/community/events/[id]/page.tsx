@@ -162,11 +162,11 @@ export default function EventApplicationsDashboard() {
                 {[
                     { label: 'Total', value: stats?.total || 0, color: 'text-white' },
                     { label: 'Accepted', value: stats?.accepted || 0, color: 'text-green-400' },
-                    { label: 'Waitlist', value: stats?.waitlist || 0, color: 'text-yellow-400' },
+                    { label: 'Under Review', value: stats?.under_review || 0, color: 'text-yellow-400' },
                     { label: 'Rejected', value: stats?.rejected || 0, color: 'text-red-400' },
-                    { label: 'Registered', value: stats?.registered || 0, color: 'text-blue-500' },
+                    { label: 'Pending', value: stats?.pending || 0, color: 'text-blue-500' },
+                    { label: 'Cancelled', value: stats?.cancelled || 0, color: 'text-gray-500' },
                     { label: 'Check-In', value: stats?.checkedIn || 0, color: 'text-gold' },
-                    { label: 'Check-Out', value: stats?.checkedOut || 0, color: 'text-purple-400' },
                 ].map((s, i) => (
                     <div key={i} className="glass-card p-5 rounded-2xl border border-blue-500/20 text-center shadow-md">
                         <span className={`text-3xl font-black block ${s.color}`}>{s.value}</span>
@@ -189,13 +189,13 @@ export default function EventApplicationsDashboard() {
                 </div>
 
                 <div className="flex gap-2 w-full md:w-auto overflow-x-auto pb-2 md:pb-0 hide-scrollbar">
-                    {['all', 'registered', 'accepted', 'waitlist', 'rejected'].map(st => (
+                    {['all', 'pending', 'under_review', 'accepted', 'rejected', 'cancelled'].map(st => (
                         <button
                             key={st}
                             onClick={() => setFilterStatus(st)}
                             className={`px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest border transition-all shrink-0 ${filterStatus === st ? 'bg-gold/10 text-gold border-gold/40 shadow-glow-gold' : 'bg-slate-900 text-slate-400 border-blue-500/20 hover:border-gold/30 hover:text-gold'}`}
                         >
-                            {st}
+                            {st.replace('_', ' ')}
                         </button>
                     ))}
                 </div>
@@ -208,10 +208,10 @@ export default function EventApplicationsDashboard() {
                         <thead className="bg-slate-900/70 border-b border-blue-500/20 text-[10px] uppercase font-black tracking-widest text-slate-400">
                             <tr>
                                 <th className="p-5">Applicant</th>
+                                <th className="p-5">Tracking Code</th>
                                 <th className="p-5">Contact</th>
                                 <th className="p-5">Education</th>
                                 <th className="p-5">Status</th>
-                                <th className="p-5">Check-In / Out</th>
                                 <th className="p-5 text-right">Actions</th>
                             </tr>
                         </thead>
@@ -226,6 +226,9 @@ export default function EventApplicationsDashboard() {
                                     <td className="p-5 font-black text-white">
                                         {app.name}
                                     </td>
+                                    <td className="p-5 text-xs font-bold text-slate-300">
+                                        {app.trackingCode || app._id}
+                                    </td>
                                     <td className="p-5 text-xs font-medium space-y-1">
                                         <span className="text-gold block">{app.email}</span>
                                         <span className="text-slate-400 block">{app.phone || 'N/A'}</span>
@@ -237,31 +240,20 @@ export default function EventApplicationsDashboard() {
                                     <td className="p-5">
                                         <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full border ${app.status === 'accepted' ? 'bg-green-500/10 text-green-400 border-green-500/30' :
                                             app.status === 'rejected' ? 'bg-red-500/10 text-red-400 border-red-500/30' :
-                                                app.status === 'waitlist' ? 'bg-yellow-500/10 text-yellow-400 border-yellow-500/30' :
+                                                app.status === 'under_review' ? 'bg-yellow-500/10 text-yellow-400 border-yellow-500/30' :
                                                     'bg-blue-500/10 text-blue-400 border-blue-500/30'
                                             }`}>
-                                            {app.status}
+                                            {app.status.replace('_', ' ')}
                                         </span>
-                                    </td>
-                                    <td className="p-5 text-xs font-bold">
-                                        {app.checkIn ? (
-                                            <span className="text-green-400 block mb-1">✓ In: {new Date(app.checkIn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                                        ) : (
-                                            <button onClick={() => updateStatus(app._id, undefined, 'checkin')} className="text-[10px] uppercase tracking-wider bg-slate-900 border border-blue-500/20 hover:border-gold hover:text-gold px-3 py-1.5 rounded-lg text-slate-400 transition-all block mb-1">Check In</button>
-                                        )}
-                                        {app.checkOut ? (
-                                            <span className="text-purple-400 block">✓ Out: {new Date(app.checkOut).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                                        ) : app.checkIn ? (
-                                            <button onClick={() => updateStatus(app._id, undefined, 'checkout')} className="text-[10px] uppercase tracking-wider bg-slate-900 border border-blue-500/20 hover:border-purple-400 hover:text-purple-400 px-3 py-1.5 rounded-lg text-slate-400 transition-all block">Check Out</button>
-                                        ) : null}
                                     </td>
                                     <td className="p-5 text-right space-x-2">
                                         <button onClick={() => setSelectedApplicant(app)} className="p-2 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border border-blue-500/30 rounded-xl transition-colors mr-2">
                                             <FiEye className="w-3.5 h-3.5" />
                                         </button>
                                         <button onClick={() => updateStatus(app._id, 'accepted')} className="px-3 py-1.5 text-[10px] uppercase font-black tracking-widest bg-green-500/10 hover:bg-green-500/20 text-green-400 border border-green-500/30 rounded-xl transition-colors">Accept</button>
-                                        <button onClick={() => updateStatus(app._id, 'waitlist')} className="px-3 py-1.5 text-[10px] uppercase font-black tracking-widest bg-yellow-500/10 hover:bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 rounded-xl transition-colors">Waitlist</button>
+                                        <button onClick={() => updateStatus(app._id, 'under_review')} className="px-3 py-1.5 text-[10px] uppercase font-black tracking-widest bg-yellow-500/10 hover:bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 rounded-xl transition-colors">Review</button>
                                         <button onClick={() => updateStatus(app._id, 'rejected')} className="px-3 py-1.5 text-[10px] uppercase font-black tracking-widest bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 rounded-xl transition-colors">Reject</button>
+                                        <button onClick={() => updateStatus(app._id, 'cancelled')} className="px-3 py-1.5 text-[10px] uppercase font-black tracking-widest bg-slate-500/10 hover:bg-slate-500/20 text-slate-400 border border-slate-500/30 rounded-xl transition-colors mt-2">Cancel</button>
                                     </td>
                                 </tr>
                             ))}

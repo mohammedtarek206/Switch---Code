@@ -32,6 +32,11 @@ interface Event {
     pointsAwarded: number;
     committeeId?: Committee;
     isActive: boolean;
+    status?: string;
+    whatsAppGroupLink?: string;
+    isOnline?: boolean;
+    seats?: number;
+    registrationOpen?: boolean;
 }
 
 // ─── Skeleton Card ──────────────────────────────────────────────────────────
@@ -159,6 +164,11 @@ export default function EventsPage() {
     const [location, setLocation] = useState('');
     const [pointsAwarded, setPointsAwarded] = useState(15);
     const [committeeId, setCommitteeId] = useState('');
+    const [status, setStatus] = useState('upcoming');
+    const [whatsAppGroupLink, setWhatsAppGroupLink] = useState('');
+    const [isOnline, setIsOnline] = useState(false);
+    const [seats, setSeats] = useState<number | ''>('');
+    const [registrationOpen, setRegistrationOpen] = useState(true);
 
     // Questions state
     const [questions, setQuestions] = useState<EventQuestion[]>([]);
@@ -206,6 +216,11 @@ export default function EventsPage() {
         setLocation(ev.location || '');
         setPointsAwarded(ev.pointsAwarded || 0);
         setCommitteeId(ev.committeeId?._id || '');
+        setStatus(ev.status || 'upcoming');
+        setWhatsAppGroupLink(ev.whatsAppGroupLink || '');
+        setIsOnline(ev.isOnline || false);
+        setSeats(ev.seats ?? '');
+        setRegistrationOpen(ev.registrationOpen ?? true);
         setShowModal(true);
 
         // Fetch questions
@@ -268,6 +283,7 @@ export default function EventsPage() {
             location,
             pointsAwarded: Number(pointsAwarded),
             committeeId: committeeId || undefined,
+            status, whatsAppGroupLink, isOnline, seats: seats === '' ? undefined : Number(seats), registrationOpen,
             questions: questions.map((q, i) => ({ ...q, order: i }))
         };
 
@@ -299,7 +315,7 @@ export default function EventsPage() {
         } finally {
             setSubmitting(false);
         }
-    }, [editId, title, description, date, location, pointsAwarded, committeeId, questions]);
+    }, [editId, title, description, date, location, pointsAwarded, committeeId, status, whatsAppGroupLink, isOnline, seats, registrationOpen, questions]);
 
     const handleDelete = useCallback(async (id: string) => {
         if (!confirm('Are you sure you want to delete this event?')) return;
@@ -320,6 +336,8 @@ export default function EventsPage() {
     function resetForm() {
         setTitle(''); setDescription(''); setDate('');
         setLocation(''); setPointsAwarded(15); setCommitteeId('');
+        setStatus('upcoming'); setWhatsAppGroupLink(''); setIsOnline(false);
+        setSeats(''); setRegistrationOpen(true);
         setQuestions([]);
     }
 
@@ -446,6 +464,38 @@ export default function EventsPage() {
                                                     {committees.map(c => <option key={c._id} value={c._id}>{c.name}</option>)}
                                                 </select>
                                             </div>
+                                        </div>
+                                        <div className="space-y-1.5 pt-2">
+                                            <label className="text-xs font-black uppercase tracking-wider text-slate-300">WhatsApp Group Link</label>
+                                            <input type="url" value={whatsAppGroupLink} onChange={e => setWhatsAppGroupLink(e.target.value)} placeholder="https://chat.whatsapp.com/..." className="w-full p-4 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-green-500 font-medium text-sm transition-colors" />
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div className="space-y-1.5">
+                                                <label className="text-xs font-black uppercase tracking-wider text-slate-300">Event Status</label>
+                                                <select value={status} onChange={e => setStatus(e.target.value)} className="w-full p-4 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold font-medium text-sm transition-colors">
+                                                    <option value="draft">Draft</option>
+                                                    <option value="upcoming">Upcoming</option>
+                                                    <option value="registration_open">Registration Open</option>
+                                                    <option value="registration_closed">Registration Closed</option>
+                                                    <option value="ongoing">Ongoing</option>
+                                                    <option value="completed">Completed</option>
+                                                    <option value="cancelled">Cancelled</option>
+                                                </select>
+                                            </div>
+                                            <div className="space-y-1.5">
+                                                <label className="text-xs font-black uppercase tracking-wider text-slate-300">Seats (Empty = Unlimited)</label>
+                                                <input type="number" value={seats} onChange={e => setSeats(e.target.value === '' ? '' : Number(e.target.value))} placeholder="e.g. 50" className="w-full p-4 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold font-medium text-sm transition-colors" />
+                                            </div>
+                                        </div>
+                                        <div className="flex gap-6 pt-2">
+                                            <label className="flex items-center gap-3 text-sm text-slate-300 cursor-pointer">
+                                                <input type="checkbox" checked={isOnline} onChange={e => setIsOnline(e.target.checked)} className="accent-blue-500 w-4 h-4 cursor-pointer" />
+                                                Is Online Event
+                                            </label>
+                                            <label className="flex items-center gap-3 text-sm text-slate-300 cursor-pointer">
+                                                <input type="checkbox" checked={registrationOpen} onChange={e => setRegistrationOpen(e.target.checked)} className="accent-gold w-4 h-4 cursor-pointer" />
+                                                Registration Open
+                                            </label>
                                         </div>
                                     </div>
 

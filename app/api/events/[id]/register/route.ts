@@ -101,15 +101,27 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
         }
 
         // Check duplicate registration
-        const existing = await EventRegistration.findOne({ eventId: params.id, email: email.toLowerCase() });
+        let existing;
+        if (userId) {
+            existing = await EventRegistration.findOne({ eventId: params.id, userId });
+        } else if (email) {
+            existing = await EventRegistration.findOne({ eventId: params.id, email: email.toLowerCase() });
+        }
+
         if (existing) {
             return NextResponse.json(
                 {
-                    message: 'You are already registered! Here is your entry barcode.',
+                    error: 'You have already registered for this event.',
                     registration: existing,
                 },
-                { status: 200 }
+                { status: 400 }
             );
+        }
+
+        const generateTrackingCode = () => `EVT-${Math.floor(100000 + Math.random() * 900000).toString()}`;
+        let trackingCode = generateTrackingCode();
+        while (await EventRegistration.findOne({ trackingCode })) {
+            trackingCode = generateTrackingCode();
         }
 
         const registration = await EventRegistration.create({
@@ -129,7 +141,8 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
             github: github || '',
             portfolio: portfolio || '',
             cv: cv || '',
-            status,
+            status: status === 'waitlist' ? 'waitlist' : 'pending',
+            trackingCode,
             answers: mappedAnswers,
             attended: false,
         });
@@ -137,6 +150,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
         return NextResponse.json(
             {
                 message: status === 'waitlist' ? 'Added to waiting list' : 'Registration completed successfully!',
+                trackingCode,
                 registration,
             },
             { status: 201 }

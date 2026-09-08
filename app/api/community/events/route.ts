@@ -35,7 +35,7 @@ export async function GET(req: NextRequest) {
         // Only select the fields actually used in the admin events list
         const events = await Event.find()
             .select(
-                '_id title description date location pointsAwarded committeeId isActive createdAt registrationOpen seats'
+                '_id title description date location pointsAwarded committeeId isActive createdAt registrationOpen seats status whatsAppGroupLink isOnline banner'
             )
             .populate('committeeId', 'name color')
             .sort({ date: -1 })
@@ -78,7 +78,7 @@ export async function POST(req: NextRequest) {
 
         // Return only the fields needed by the list so the UI can optimistically insert
         const populatedEvent = await Event.findById(event._id)
-            .select('_id title description date location pointsAwarded committeeId isActive createdAt registrationOpen seats')
+            .select('_id title description date location pointsAwarded committeeId isActive createdAt registrationOpen seats status whatsAppGroupLink isOnline banner')
             .populate('committeeId', 'name color')
             .lean();
 

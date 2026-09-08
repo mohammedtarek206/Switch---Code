@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
     FiBookOpen, FiYoutube, FiFileText, FiCheckSquare, FiClipboard,
     FiTrendingUp, FiClock, FiAward, FiChevronRight, FiRefreshCw,
-    FiTarget, FiAlertCircle, FiX
+    FiTarget, FiAlertCircle, FiX, FiCalendar, FiMapPin
 } from 'react-icons/fi';
 import Link from 'next/link';
 
@@ -40,6 +40,7 @@ export default function LearnPage() {
     const [tracksLoading, setTracksLoading] = useState(false);
     const [enrolling, setEnrolling] = useState<string | null>(null);
     const [user, setUser] = useState<any>(null);
+    const [myEvents, setMyEvents] = useState<any[]>([]);
 
     useEffect(() => {
         const userStr = localStorage.getItem('user');
@@ -80,6 +81,19 @@ export default function LearnPage() {
                 setTrack(data.track);
                 setProgress(data.progress);
             }
+
+            // Fetch My Events
+            try {
+                const evRes = await fetch('/api/my-events', {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                if (evRes.ok) {
+                    setMyEvents(await evRes.json());
+                }
+            } catch (err) {
+                console.error("Failed to load events", err);
+            }
+
         } catch (err: any) {
             setError(err.message || 'حدث خطأ أثناء تحميل البيانات');
         } finally {
@@ -311,6 +325,66 @@ export default function LearnPage() {
                         </div>
                     </motion.div>
                 )}
+
+                {/* My Events Section */}
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="pt-8">
+                    <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                        <FiCalendar className="text-gold" /> My Registered Events
+                    </h2>
+
+                    {myEvents.length === 0 ? (
+                        <div className="bg-white/[0.02] rounded-3xl border border-white/5 p-8 text-center text-gray-400">
+                            You haven't registered for any events yet. <Link href="/events" className="text-cyan-400 hover:underline">Browse Upcoming Events</Link>
+                        </div>
+                    ) : (
+                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {myEvents.map(reg => {
+                                const event = reg.eventId;
+                                if (!event) return null;
+                                return (
+                                    <div key={reg._id} className="bg-white/[0.02] hover:bg-white/[0.04] p-5 rounded-2xl border border-white/5 transition-colors group flex flex-col justify-between">
+                                        <div>
+                                            <div className="flex justify-between items-start mb-3">
+                                                <div className={`px-2 py-1 rounded-md text-[10px] font-black uppercase tracking-widest border
+                                                    ${reg.status === 'accepted' ? 'bg-green-500/10 text-green-400 border-green-500/30' :
+                                                        reg.status === 'rejected' ? 'bg-red-500/10 text-red-400 border-red-500/30' :
+                                                            reg.status === 'under_review' ? 'bg-yellow-500/10 text-yellow-400 border-yellow-500/30' :
+                                                                reg.status === 'cancelled' ? 'bg-slate-500/10 text-slate-400 border-slate-500/30' :
+                                                                    'bg-cyan-500/10 text-cyan-400 border-cyan-500/30'}`}
+                                                >
+                                                    {reg.status.replace('_', ' ')}
+                                                </div>
+                                                {reg.trackingCode && (
+                                                    <div className="text-[10px] font-mono bg-black/50 px-2 py-1 rounded border border-white/10 text-gray-400 flex items-center gap-1" title="Tracking Code">
+                                                        <span>#</span>{reg.trackingCode.substring(0, 6)}
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <h3 className="font-bold text-white mb-1 line-clamp-1 group-hover:text-gold transition-colors">
+                                                {event.title}
+                                            </h3>
+                                            <div className="text-xs text-gray-400 space-y-1.5 mt-4">
+                                                <div className="flex items-center gap-1.5"><FiCalendar className="text-blue-400" /> {new Date(event.date).toLocaleDateString()}</div>
+                                                <div className="flex items-center gap-1.5"><FiMapPin className="text-red-400" /> {event.isOnline ? 'Online' : event.location}</div>
+                                            </div>
+                                        </div>
+
+                                        <div className="mt-5 pt-4 border-t border-white/5 flex gap-2">
+                                            <Link href={`/events/${event._id}`} className="flex-1 text-center py-2 bg-white/5 hover:bg-white/10 text-white rounded-lg text-xs font-bold transition-colors">
+                                                Details
+                                            </Link>
+                                            {reg.status === 'accepted' && event.whatsAppGroupLink && (
+                                                <a href={event.whatsAppGroupLink} target="_blank" rel="noreferrer" className="flex-1 text-center py-2 bg-green-500/20 hover:bg-green-500/30 text-green-400 border border-green-500/30 rounded-lg text-xs font-bold transition-all">
+                                                    Join Group
+                                                </a>
+                                            )}
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    )}
+                </motion.div>
             </div>
 
             {/* Track Picker Modal */}

@@ -24,7 +24,9 @@ export interface IEventRegistration extends Document {
     github?: string;
     portfolio?: string;
     cv?: string;
-    status: 'registered' | 'accepted' | 'rejected' | 'waitlist' | 'pending';
+    status: 'pending' | 'under_review' | 'accepted' | 'rejected' | 'cancelled' | 'registered' | 'waitlist';
+    interviewStatus?: 'not_scheduled' | 'scheduled' | 'completed' | 'accepted' | 'rejected';
+    trackingCode?: string;
     adminNotes?: string;
     formData?: Record<string, unknown>;
     answers: IEventRegistrationAnswer[];
@@ -78,9 +80,15 @@ const EventRegistrationSchema: Schema = new Schema(
         cv: { type: String },
         status: {
             type: String,
-            enum: ['registered', 'accepted', 'rejected', 'waitlist', 'pending'],
-            default: 'registered',
+            enum: ['pending', 'under_review', 'accepted', 'rejected', 'cancelled', 'registered', 'waitlist'],
+            default: 'pending',
         },
+        interviewStatus: {
+            type: String,
+            enum: ['not_scheduled', 'scheduled', 'completed', 'accepted', 'rejected'],
+            default: 'not_scheduled',
+        },
+        trackingCode: { type: String, unique: true, sparse: true },
         adminNotes: { type: String, default: '' },
         formData: { type: Schema.Types.Mixed, default: {} },
         answers: [AnswerSubSchema],
