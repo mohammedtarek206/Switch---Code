@@ -120,10 +120,20 @@ export async function GET() {
         // 7. Featured Committees
         const committees = await Committee.find().populate('leaderId', 'name avatar username').lean();
 
-        // 8. Partners & Sponsors (only published, homepage-visible, sorted by order)
-        const partners = await Partner.find({ isPublished: true, showOnHomepage: true })
+        // 8. Partners & Sponsors
+        // $ne: false includes legacy docs that don't have isPublished field at all
+        const partnersRaw = await Partner.find({
+            isPublished: { $ne: false },
+            showOnHomepage: { $ne: false },
+        })
             .sort({ displayOrder: 1, createdAt: -1 })
             .lean();
+
+        // Normalize: fallback to old logoUrl field for legacy data
+        const partners = partnersRaw.map((p: any) => ({
+            ...p,
+            logo: p.logo || p.logoUrl || '',
+        }));
 
         // 9. Success Stories & Projects
         const projects = await Project.find().limit(6).lean();

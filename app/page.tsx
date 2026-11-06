@@ -52,7 +52,7 @@ function InfiniteLogoCarousel({ partners }: { partners: any[] }) {
         {doubled.map((p, i) => (
           <div key={`${p._id}-${i}`} className="mx-3 flex-shrink-0">
             <div className="w-28 h-20 md:w-36 md:h-24 glass-card rounded-2xl border border-blue-500/20 hover:border-gold/40 flex items-center justify-center p-3 transition-all duration-300 hover:-translate-y-1 group">
-              <PartnerLogoImg logo={p.logo} name={p.name} />
+              <PartnerLogoImg logo={p.logo || p.logoUrl || ''} name={p.name} />
             </div>
           </div>
         ))}
@@ -465,7 +465,8 @@ export default function DynamicHomepage() {
 
       {/* ── OUR PARTNERS SECTION ── */}
       {(() => {
-        const homepagePartners = (partners || []).filter((p: any) => p.isPublished && p.showOnHomepage);
+        // partners array comes already filtered from homepage API (isPublished + showOnHomepage)
+        const homepagePartners = (partners || []).filter((p: any) => p.logo || p.logoUrl);
         if (!homepagePartners || homepagePartners.length === 0) return null;
         const useCarousel = homepagePartners.length > 6;
         return (
@@ -512,7 +513,7 @@ export default function DynamicHomepage() {
                       className="glass-card rounded-2xl border border-blue-500/20 hover:border-gold/40 p-4 flex flex-col items-center gap-3 group transition-all duration-300"
                     >
                       <div className="w-24 h-16 flex items-center justify-center">
-                        <PartnerLogoImg logo={p.logo} name={p.name} />
+                        <PartnerLogoImg logo={p.logo || p.logoUrl || ''} name={p.name} />
                       </div>
                       <p className="text-xs font-black text-slate-300 text-center truncate w-full group-hover:text-white transition-colors">{p.name}</p>
                     </motion.div>

@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
     if (status === 'featured') query.isFeatured = true;
     if (status === 'homepage') query.showOnHomepage = true;
 
-    const [partners, total] = await Promise.all([
+    const [partnersRaw, total] = await Promise.all([
       Partner.find(query)
         .sort({ displayOrder: 1, createdAt: -1 })
         .skip((page - 1) * limit)
@@ -41,12 +41,22 @@ export async function GET(request: NextRequest) {
       Partner.countDocuments(query),
     ]);
 
+    // Normalize: fallback to old logoUrl for legacy docs
+    const partners = partnersRaw.map((p: any) => ({
+      ...p,
+      logo: p.logo || p.logoUrl || '',
+      isPublished: p.isPublished ?? true,
+      showOnHomepage: p.showOnHomepage ?? true,
+      isFeatured: p.isFeatured ?? false,
+      displayOrder: p.displayOrder ?? 0,
+    }));
+
     // Stats
     const [totalCount, publishedCount, featuredCount, homepageCount] = await Promise.all([
       Partner.countDocuments(),
-      Partner.countDocuments({ isPublished: true }),
+      Partner.countDocuments({ isPublished: { $ne: false } }),
       Partner.countDocuments({ isFeatured: true }),
-      Partner.countDocuments({ showOnHomepage: true }),
+      Partner.countDocuments({ showOnHomepage: { $ne: false } }),
     ]);
 
     return NextResponse.json({

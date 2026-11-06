@@ -9,6 +9,7 @@ interface Partner {
   _id: string;
   name: string;
   logo: string;
+  logoUrl?: string; // legacy field support
   description?: string;
   websiteUrl?: string;
   partnershipType?: string;
@@ -30,9 +31,9 @@ function PartnerCard({ partner, featured = false }: { partner: Partner; featured
     >
       {/* Logo */}
       <div className={`bg-white/5 rounded-2xl border border-blue-500/20 flex items-center justify-center mx-auto overflow-hidden ${featured ? 'w-36 h-36 mb-6' : 'w-24 h-24 mb-4'}`}>
-        {!imgErr && partner.logo ? (
+        {!imgErr && (partner.logo || partner.logoUrl) ? (
           <img
-            src={partner.logo}
+            src={partner.logo || partner.logoUrl || ''}
             alt={partner.name}
             className="w-full h-full object-contain p-3"
             onError={() => setImgErr(true)}
