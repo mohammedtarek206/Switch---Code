@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
     FiBook, FiUsers, FiCalendar, FiFileText, FiAward, FiGrid,
-    FiTrendingUp, FiActivity, FiUserCheck, FiClock, FiPlusCircle
+    FiTrendingUp, FiActivity, FiUserCheck, FiClock, FiPlusCircle, FiImage
 } from 'react-icons/fi';
 import Link from 'next/link';
 
@@ -23,6 +23,8 @@ interface DashboardStats {
         teamMembersCount: number;
         committeesCount: number;
         revenueEstimate: number;
+        upcomingEventsCount?: number;
+        totalGalleryImages?: number;
     };
     recentActivities: any[];
     recentRegistrations: any[];
@@ -58,6 +60,8 @@ export default function AdminDashboard() {
         { title: 'Total Students', value: data?.stats.studentsCount ?? 0, icon: FiUsers, color: 'text-blue-400', bg: 'bg-blue-500/10 border-blue-500/20' },
         { title: 'Tracks & Courses', value: data?.stats.tracksCount ?? 0, icon: FiBook, color: 'text-gold', bg: 'bg-gold/10 border-gold/20' },
         { title: 'Total Events', value: data?.stats.eventsCount ?? 0, icon: FiCalendar, color: 'text-purple-400', bg: 'bg-purple-500/10 border-purple-500/20' },
+        { title: 'Upcoming Events', value: data?.stats.upcomingEventsCount ?? 0, icon: FiCalendar, color: 'text-indigo-400', bg: 'bg-indigo-500/10 border-indigo-500/20' },
+        { title: 'Gallery Images', value: data?.stats.totalGalleryImages ?? 0, icon: FiImage, color: 'text-pink-400', bg: 'bg-pink-500/10 border-pink-500/20' },
         { title: 'Event Registrations', value: data?.stats.eventRegistrationsCount ?? 0, icon: FiUserCheck, color: 'text-green-400', bg: 'bg-green-500/10 border-green-500/20' },
         { title: 'Job Applications', value: data?.stats.jobApplicationsCount ?? 0, icon: FiFileText, color: 'text-pink-400', bg: 'bg-pink-500/10 border-pink-500/20' },
         { title: 'Issued Certificates', value: data?.stats.certificatesCount ?? 0, icon: FiAward, color: 'text-amber-400', bg: 'bg-amber-500/10 border-amber-500/20' },

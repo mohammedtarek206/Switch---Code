@@ -120,8 +120,10 @@ export async function GET() {
         // 7. Featured Committees
         const committees = await Committee.find().populate('leaderId', 'name avatar username').lean();
 
-        // 8. Partners & Sponsors
-        const partners = await Partner.find().sort({ createdAt: -1 }).lean();
+        // 8. Partners & Sponsors (only published, homepage-visible, sorted by order)
+        const partners = await Partner.find({ isPublished: true, showOnHomepage: true })
+            .sort({ displayOrder: 1, createdAt: -1 })
+            .lean();
 
         // 9. Success Stories & Projects
         const projects = await Project.find().limit(6).lean();

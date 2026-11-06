@@ -11,6 +11,7 @@ import Project from '@/models/Project';
 import PublicTeamMember from '@/models/PublicTeamMember';
 import ActivityLog from '@/models/ActivityLog';
 import Committee from '@/models/Committee';
+import EventGalleryImage from '@/models/EventGalleryImage';
 
 export const dynamic = 'force-dynamic';
 
@@ -34,7 +35,9 @@ export async function GET() {
             recentActivities,
             recentRegistrations,
             recentJobApplications,
-            recentEvents
+            recentEvents,
+            upcomingEventsCount,
+            totalGalleryImages
         ] = await Promise.all([
             User.countDocuments(),
             User.countDocuments({ role: { $in: ['student', 'trainee', 'member'] } }),
@@ -52,6 +55,8 @@ export async function GET() {
             EventRegistration.find().sort({ createdAt: -1 }).limit(5).populate('eventId', 'title date').lean(),
             Application.find().sort({ createdAt: -1 }).limit(5).lean(),
             Event.find().sort({ date: -1 }).limit(5).lean(),
+            Event.countDocuments({ status: 'upcoming' }),
+            EventGalleryImage.countDocuments(),
         ]);
 
         // Aggregate user roles distribution
@@ -97,6 +102,8 @@ export async function GET() {
                 teamMembersCount: teamMembersCount || totalUsers,
                 committeesCount,
                 revenueEstimate: eventRegistrationsCount * 150, // Real metric calculation
+                upcomingEventsCount,
+                totalGalleryImages,
             },
             userRoles,
             monthlyRegistrations,

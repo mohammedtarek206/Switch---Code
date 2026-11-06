@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef, useMemo, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiPlus, FiCalendar, FiClock, FiMapPin, FiAward, FiTag, FiEye, FiTrash2, FiSearch, FiEdit2, FiX, FiCheck, FiArrowUp, FiArrowDown } from 'react-icons/fi';
+import { FiPlus, FiCalendar, FiClock, FiMapPin, FiAward, FiTag, FiEye, FiTrash2, FiSearch, FiEdit2, FiX, FiCheck, FiArrowUp, FiArrowDown, FiImage } from 'react-icons/fi';
 import Link from 'next/link';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
@@ -169,6 +169,7 @@ export default function EventsPage() {
     const [isOnline, setIsOnline] = useState(false);
     const [seats, setSeats] = useState<number | ''>('');
     const [registrationOpen, setRegistrationOpen] = useState(true);
+    const [bannerFile, setBannerFile] = useState<File | null>(null);
 
     // Questions state
     const [questions, setQuestions] = useState<EventQuestion[]>([]);
@@ -277,6 +278,31 @@ export default function EventsPage() {
         setSubmitting(true);
         const token = localStorage.getItem('token');
 
+        let uploadedBannerUrl = editId ? (events.find(e => e._id === editId) as any)?.banner : undefined;
+        let uploadedBannerPublicId = editId ? (events.find(e => e._id === editId) as any)?.bannerPublicId : undefined;
+        if (bannerFile) {
+            const formData = new FormData();
+            formData.append('file', bannerFile);
+            formData.append('folder', 'it-spark/events');
+
+            try {
+                const upRes = await fetch('/api/admin/upload', {
+                    method: 'POST',
+                    headers: { Authorization: `Bearer ${token}` },
+                    body: formData,
+                });
+
+                if (!upRes.ok) throw new Error('Failed to upload cover image');
+                const upData = await upRes.json();
+                uploadedBannerUrl = upData.imageUrl;
+                uploadedBannerPublicId = upData.publicId;
+            } catch (err) {
+                alert('Cloudinary upload failed. Check file type and size.');
+                setSubmitting(false);
+                return;
+            }
+        }
+
         const payload = {
             title, description,
             date: new Date(date).toISOString(),
@@ -284,6 +310,8 @@ export default function EventsPage() {
             pointsAwarded: Number(pointsAwarded),
             committeeId: committeeId || undefined,
             status, whatsAppGroupLink, isOnline, seats: seats === '' ? undefined : Number(seats), registrationOpen,
+            banner: uploadedBannerUrl,
+            bannerPublicId: uploadedBannerPublicId,
             questions: questions.map((q, i) => ({ ...q, order: i }))
         };
 
@@ -338,6 +366,7 @@ export default function EventsPage() {
         setLocation(''); setPointsAwarded(15); setCommitteeId('');
         setStatus('upcoming'); setWhatsAppGroupLink(''); setIsOnline(false);
         setSeats(''); setRegistrationOpen(true);
+        setBannerFile(null);
         setQuestions([]);
     }
 
@@ -496,6 +525,11 @@ export default function EventsPage() {
                                                 <input type="checkbox" checked={registrationOpen} onChange={e => setRegistrationOpen(e.target.checked)} className="accent-gold w-4 h-4 cursor-pointer" />
                                                 Registration Open
                                             </label>
+                                        </div>
+                                        <div className="space-y-1.5 pt-2 border-t border-blue-500/20">
+                                            <label className="text-xs font-black uppercase tracking-wider text-slate-300">Cover Image (Optional)</label>
+                                            <input type="file" accept="image/jpeg, image/png, image/webp" onChange={e => setBannerFile(e.target.files?.[0] || null)} className="w-full p-4 bg-slate-900 border border-blue-500/30 rounded-xl text-white outline-none focus:border-gold font-medium text-sm transition-colors text-slate-300 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-blue-500/10 file:text-blue-400 hover:file:bg-blue-500/20" />
+                                            {bannerFile && <p className="text-xs text-green-400 font-bold mt-1">Image selected: {bannerFile.name}</p>}
                                         </div>
                                     </div>
 

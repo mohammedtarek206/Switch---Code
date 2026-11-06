@@ -16,6 +16,7 @@ export interface IEvent extends Document {
     title: string;
     description: string;
     banner?: string;
+    bannerPublicId?: string;
     location?: string;
     googleMapsUrl?: string;
     date: Date;
@@ -60,6 +61,7 @@ const EventSchema: Schema = new Schema(
         title: { type: String, required: true },
         description: { type: String, required: true },
         banner: { type: String },
+        bannerPublicId: { type: String },
         location: { type: String },
         googleMapsUrl: { type: String },
         date: { type: Date, required: true },
@@ -87,6 +89,10 @@ const EventSchema: Schema = new Schema(
         pointsAwarded: { type: Number, default: 0 },
         committeeId: { type: Schema.Types.ObjectId, ref: 'Committee' },
         createdBy: { type: Schema.Types.ObjectId, ref: 'User' },
+        // Legacy / Backward compatibility fields
+        gallery: [{ type: String }],
+        image: { type: String },
+        imageUrl: { type: String },
     },
     { timestamps: true }
 );

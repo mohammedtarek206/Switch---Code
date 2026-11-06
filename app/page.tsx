@@ -1,15 +1,65 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import {
   FiArrowRight, FiUsers, FiCalendar, FiAward, FiCheckSquare,
   FiBookOpen, FiBriefcase, FiGrid, FiClock, FiMapPin, FiUserCheck,
   FiStar, FiChevronRight, FiX, FiCheckCircle, FiShield, FiTrendingUp,
-  FiCode, FiCpu, FiLayers, FiTerminal, FiGlobe, FiRadio
+  FiCode, FiCpu, FiLayers, FiTerminal, FiGlobe, FiRadio, FiPackage, FiExternalLink
 } from 'react-icons/fi';
 import { FaPython, FaReact, FaHtml5, FaCss3Alt, FaJsSquare, FaRobot, FaLock } from 'react-icons/fa';
+
+// ─── Partner Logo Component ───────────────────────────────────
+function PartnerLogoImg({ logo, name }: { logo: string; name: string }) {
+  const [err, setErr] = useState(false);
+  if (!logo || err) return <div className="w-full h-full flex items-center justify-center text-slate-600"><FiPackage className="w-5 h-5" /></div>;
+  return <img src={logo} alt={name} className="w-full h-full object-contain" onError={() => setErr(true)} />;
+}
+
+// ─── Infinite Logo Carousel ───────────────────────────────────
+function InfiniteLogoCarousel({ partners }: { partners: any[] }) {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [paused, setPaused] = useState(false);
+  // Duplicate for seamless loop
+  const doubled = [...partners, ...partners];
+
+  return (
+    <div
+      className="overflow-hidden w-full relative"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onTouchStart={() => setPaused(true)}
+      onTouchEnd={() => setPaused(false)}
+    >
+      <style>{`
+        @keyframes scroll-partners {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        .carousel-track {
+          animation: scroll-partners ${Math.max(18, partners.length * 4)}s linear infinite;
+          display: flex;
+          width: max-content;
+        }
+        .carousel-track.paused { animation-play-state: paused; }
+        @media (prefers-reduced-motion: reduce) {
+          .carousel-track { animation: none; }
+        }
+      `}</style>
+      <div ref={trackRef} className={`carousel-track${paused ? ' paused' : ''}`}>
+        {doubled.map((p, i) => (
+          <div key={`${p._id}-${i}`} className="mx-3 flex-shrink-0">
+            <div className="w-28 h-20 md:w-36 md:h-24 glass-card rounded-2xl border border-blue-500/20 hover:border-gold/40 flex items-center justify-center p-3 transition-all duration-300 hover:-translate-y-1 group">
+              <PartnerLogoImg logo={p.logo} name={p.name} />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export default function DynamicHomepage() {
   const [data, setData] = useState<any>(null);
@@ -412,6 +462,82 @@ export default function DynamicHomepage() {
 
         return null;
       })}
+
+      {/* ── OUR PARTNERS SECTION ── */}
+      {(() => {
+        const homepagePartners = (partners || []).filter((p: any) => p.isPublished && p.showOnHomepage);
+        if (!homepagePartners || homepagePartners.length === 0) return null;
+        const useCarousel = homepagePartners.length > 6;
+        return (
+          <section className="py-20 px-4 md:px-8 relative z-10 overflow-hidden">
+            {/* Section Background */}
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0B1220]/60 to-transparent pointer-events-none" />
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-blue-600/5 blur-[100px] rounded-full pointer-events-none" />
+
+            <div className="max-w-6xl mx-auto relative z-10">
+              {/* Header */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="text-center mb-12 space-y-4"
+              >
+                <span className="text-xs uppercase font-black text-gold tracking-widest block">🤝 Trusted By</span>
+                <h2 className="text-3xl md:text-5xl font-black text-white">Our Partners</h2>
+                <h3 className="text-xl font-bold bg-gradient-to-r from-blue-300 to-gold bg-clip-text text-transparent leading-snug">
+                  Growing Together, Building the Future
+                </h3>
+                <p className="text-slate-400 text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
+                  Together with our partners, we&apos;re creating opportunities, empowering talent, and building a stronger technology community.
+                </p>
+              </motion.div>
+
+              {/* Partners Display */}
+              {useCarousel ? (
+                <InfiniteLogoCarousel partners={homepagePartners} />
+              ) : (
+                <div className={`grid gap-4 ${
+                  homepagePartners.length <= 2 ? 'grid-cols-2 max-w-sm mx-auto' :
+                  homepagePartners.length <= 3 ? 'grid-cols-3 max-w-lg mx-auto' :
+                  homepagePartners.length <= 4 ? 'grid-cols-2 md:grid-cols-4 max-w-2xl mx-auto' :
+                  'grid-cols-2 md:grid-cols-3 lg:grid-cols-6'
+                }`}>
+                  {homepagePartners.map((p: any, i: number) => (
+                    <motion.div
+                      key={p._id}
+                      initial={{ opacity: 0, y: 16 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: i * 0.07 }}
+                      className="glass-card rounded-2xl border border-blue-500/20 hover:border-gold/40 p-4 flex flex-col items-center gap-3 group transition-all duration-300"
+                    >
+                      <div className="w-24 h-16 flex items-center justify-center">
+                        <PartnerLogoImg logo={p.logo} name={p.name} />
+                      </div>
+                      <p className="text-xs font-black text-slate-300 text-center truncate w-full group-hover:text-white transition-colors">{p.name}</p>
+                    </motion.div>
+                  ))}
+                </div>
+              )}
+
+              {/* View All Button */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                className="text-center mt-10"
+              >
+                <Link
+                  href="/partners"
+                  className="btn-secondary-navy inline-flex items-center gap-2 px-8 py-3.5 text-xs font-black uppercase tracking-wider"
+                >
+                  View All Partners <FiArrowRight />
+                </Link>
+              </motion.div>
+            </div>
+          </section>
+        );
+      })()}
 
       {/* Instant Event Registration Modal */}
       <AnimatePresence>

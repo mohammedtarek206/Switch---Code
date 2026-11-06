@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { FiCalendar, FiMapPin, FiClock, FiUser, FiCheckCircle, FiXCircle } from 'react-icons/fi';
+import { FiCalendar, FiMapPin, FiClock, FiUser, FiCheckCircle, FiXCircle, FiImage, FiChevronLeft, FiChevronRight, FiX } from 'react-icons/fi';
 import Link from 'next/link';
 export default function EventPublicPage() {
     const params = useParams();
@@ -32,6 +32,8 @@ export default function EventPublicPage() {
 
     const [questions, setQuestions] = useState<any[]>([]);
     const [answers, setAnswers] = useState<Record<string, any>>({});
+    const [gallery, setGallery] = useState<any[]>([]);
+    const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
     useEffect(() => {
         if (eventId) {
@@ -59,6 +61,14 @@ export default function EventPublicPage() {
                 return;
             }
             setEvent(await res.json());
+
+            try {
+                const galRes = await fetch('/api/events/gallery');
+                if (galRes.ok) {
+                    const allGal = await galRes.json();
+                    setGallery(allGal.filter((g: any) => g.eventId?._id === eventId));
+                }
+            } catch (e) { }
         } catch (err) {
             setError('Network error');
         } finally {
@@ -125,6 +135,12 @@ export default function EventPublicPage() {
 
                 {/* Event Header Banner */}
                 <div className="glass-panel p-8 md:p-12 rounded-[2.5rem] border border-blue-500/20 relative overflow-hidden bg-gradient-to-tr from-blue-900/20 via-slate-900/60 to-[#07111F]">
+                    {event.banner && (
+                        <div className="absolute inset-0 z-0">
+                            <img src={event.banner} alt={event.title} className="w-full h-full object-cover opacity-20" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-[#07111F] to-transparent" />
+                        </div>
+                    )}
                     <div className="absolute top-0 right-0 w-80 h-80 bg-blue-600/10 blur-3xl rounded-full pointer-events-none" />
 
                     <div className="relative z-10 flex flex-col space-y-6">
@@ -372,6 +388,77 @@ export default function EventPublicPage() {
                     )}
                 </motion.div>
             </div>
+
+            {/* Event Gallery Section */}
+            {gallery.length > 0 && (
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="max-w-4xl mx-auto mt-10 space-y-6"
+                >
+                    <div className="flex items-center gap-4 mb-6">
+                        <FiImage className="text-gold w-5 h-5 shrink-0" />
+                        <h2 className="text-xl font-black text-white">Event Gallery</h2>
+                        <div className="h-px flex-1 bg-blue-500/20" />
+                        <span className="text-xs text-slate-500 font-bold uppercase tracking-widest">{gallery.length} photos</span>
+                    </div>
+                    <div className="columns-2 md:columns-3 gap-3">
+                        {gallery.map((img: any, idx: number) => (
+                            <div
+                                key={img._id}
+                                className="break-inside-avoid mb-3 rounded-2xl overflow-hidden cursor-pointer group relative"
+                                onClick={() => setLightboxIndex(idx)}
+                            >
+                                <img
+                                    src={img.imageUrl}
+                                    alt={img.altText || img.title || event.title}
+                                    className="w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                    loading="lazy"
+                                />
+                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                    <FiImage className="w-8 h-8 text-white" />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </motion.div>
+            )}
+
+            {/* Lightbox */}
+            {lightboxIndex !== null && gallery[lightboxIndex] && (
+                <div
+                    className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-xl p-4"
+                    onClick={() => setLightboxIndex(null)}
+                >
+                    <button className="absolute top-4 right-4 z-10 p-3 bg-white/10 hover:bg-white/20 rounded-full text-white" onClick={() => setLightboxIndex(null)}>
+                        <FiX className="w-5 h-5" />
+                    </button>
+                    <div className="absolute top-4 left-4 z-10 text-white/60 text-xs font-bold bg-black/50 px-3 py-1.5 rounded-full">
+                        {(lightboxIndex as number) + 1} / {gallery.length}
+                    </div>
+                    <button className="absolute left-4 z-10 p-3 bg-white/10 hover:bg-white/20 rounded-full text-white" onClick={e => { e.stopPropagation(); setLightboxIndex(i => ((i as number) - 1 + gallery.length) % gallery.length); }}>
+                        <FiChevronLeft className="w-6 h-6" />
+                    </button>
+                    <motion.img
+                        key={lightboxIndex as number}
+                        initial={{ opacity: 0, scale: 0.96 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        src={gallery[lightboxIndex as number].imageUrl}
+                        alt={gallery[lightboxIndex as number].altText || 'Event photo'}
+                        className="max-h-[80vh] max-w-full object-contain rounded-2xl shadow-2xl"
+                        onClick={e => e.stopPropagation()}
+                    />
+                    <button className="absolute right-4 z-10 p-3 bg-white/10 hover:bg-white/20 rounded-full text-white" onClick={e => { e.stopPropagation(); setLightboxIndex(i => ((i as number) + 1) % gallery.length); }}>
+                        <FiChevronRight className="w-6 h-6" />
+                    </button>
+                    {(gallery[lightboxIndex as number].caption || gallery[lightboxIndex as number].title) && (
+                        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-center bg-black/60 backdrop-blur px-6 py-3 rounded-2xl">
+                            {gallery[lightboxIndex as number].title && <p className="text-white font-bold text-sm">{gallery[lightboxIndex as number].title}</p>}
+                            {gallery[lightboxIndex as number].caption && <p className="text-slate-400 text-xs mt-0.5">{gallery[lightboxIndex as number].caption}</p>}
+                        </div>
+                    )}
+                </div>
+            )}
         </div>
     );
 }

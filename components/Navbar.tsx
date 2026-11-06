@@ -37,6 +37,7 @@ export default function Navbar() {
     { href: '/', label: { en: 'Home', ar: 'الرئيسية' } },
     { href: '/tracks', label: { en: 'Tracks', ar: 'المسارات' } },
     { href: '/events', label: { en: 'Events', ar: 'الفعاليات' } },
+    { href: '/events/gallery', label: { en: 'Event Gallery', ar: 'صور الفعاليات' } },
     { href: '/team', label: { en: 'Team', ar: 'الفريق' } },
     { href: '/projects', label: { en: 'Projects', ar: 'المشاريع' } },
     { href: '/partners', label: { en: 'Partners', ar: 'الشركاء' } },

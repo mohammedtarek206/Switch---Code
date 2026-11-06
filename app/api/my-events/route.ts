@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
             .populate({
                 path: 'eventId',
                 model: Event,
-                select: 'title date whatsAppGroupLink status',
+                select: 'title date location isOnline whatsAppGroupLink status banner _id',
             })
             .sort({ createdAt: -1 });
 
