@@ -121,19 +121,19 @@ export async function GET() {
         const committees = await Committee.find().populate('leaderId', 'name avatar username').lean();
 
         // 8. Partners & Sponsors
-        // $ne: false includes legacy docs that don't have isPublished field at all
-        const partnersRaw = await Partner.find({
-            isPublished: { $ne: false },
-            showOnHomepage: { $ne: false },
-        })
-            .sort({ displayOrder: 1, createdAt: -1 })
-            .lean();
-
-        // Normalize: fallback to old logoUrl field for legacy data
-        const partners = partnersRaw.map((p: any) => ({
-            ...p,
-            logo: p.logo || p.logoUrl || '',
-        }));
+        // Fetch all, normalize, then filter in JS (handles legacy schema)
+        const allPartnersRaw = await Partner.find({}).lean();
+        const partners = allPartnersRaw
+            .map((p: any) => ({
+                ...p,
+                logo: p.logo || p.logoUrl || '',
+                isPublished: p.isPublished ?? true,
+                showOnHomepage: p.showOnHomepage ?? true,
+                isFeatured: p.isFeatured ?? false,
+                displayOrder: p.displayOrder ?? 0,
+            }))
+            .filter((p) => p.isPublished !== false && p.showOnHomepage !== false)
+            .sort((a, b) => (a.displayOrder - b.displayOrder) || (new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()));
 
         // 9. Success Stories & Projects
         const projects = await Project.find().limit(6).lean();
