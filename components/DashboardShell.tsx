@@ -69,6 +69,24 @@ function getNavItemsForRole(role: string): NavItem[] {
         ];
     }
 
+    if (role === 'committee_leader') {
+        return [
+            { label: 'Head Dashboard', href: '/dashboard/committee/head', icon: FiShield },
+            { label: 'Committee Workspace', href: '/dashboard/committee', icon: FiUsers },
+            { label: 'Events', href: '/events', icon: FiCalendar },
+            { label: 'Profile', href: '/profile', icon: FiUser },
+        ];
+    }
+
+    if (role === 'vice_committee_leader') {
+        return [
+            { label: 'Vice Head Dashboard', href: '/dashboard/committee/vice-head', icon: FiAward },
+            { label: 'Committee Workspace', href: '/dashboard/committee', icon: FiUsers },
+            { label: 'Events', href: '/events', icon: FiCalendar },
+            { label: 'Profile', href: '/profile', icon: FiUser },
+        ];
+    }
+
     const items: NavItem[] = [
         { label: 'Committee Workspace', href: '/dashboard/committee', icon: FiUsers },
     ];
@@ -95,6 +113,12 @@ function inferActiveRoleFromPath(pathname: string, fallbackRole: string, roles: 
     }
     if (pathname.startsWith('/dashboard/hr') && roles.includes('hr')) return 'hr';
     if (pathname.startsWith('/dashboard/pr') && roles.includes('pr')) return 'pr';
+    if (pathname.startsWith('/dashboard/committee/head') && (roles.includes('committee_leader') || roles.includes('admin') || roles.includes('super_admin'))) {
+        return 'committee_leader';
+    }
+    if (pathname.startsWith('/dashboard/committee/vice-head') && (roles.includes('vice_committee_leader') || roles.includes('admin') || roles.includes('super_admin'))) {
+        return 'vice_committee_leader';
+    }
     if (pathname.startsWith('/dashboard/committee')) {
         const commRole = roles.find((r) =>
             ['committee_leader', 'vice_committee_leader', 'member', 'hr', 'pr', 'media', 'marketing', 'technical'].includes(r)

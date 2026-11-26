@@ -11,6 +11,21 @@ export interface ICommittee extends Document {
     color?: string;
     leaderId?: Types.ObjectId;
     viceLeaderId?: Types.ObjectId;
+    viceLeaderIds?: Types.ObjectId[];
+    actingHeadId?: Types.ObjectId;
+    viceHeadPermissions: string[];
+    monthlyObjectives: {
+        title: string;
+        progress: number;
+        targetDate?: Date;
+        status: 'pending' | 'in_progress' | 'completed';
+    }[];
+    managementNotes: {
+        authorId: Types.ObjectId;
+        content: string;
+        targetMemberId?: Types.ObjectId;
+        createdAt: Date;
+    }[];
     isActive: boolean;
     registrationOpen: boolean;
     availableForRegistration: boolean;
@@ -37,6 +52,28 @@ const CommitteeSchema: Schema = new Schema(
         color: { type: String, default: '#0066FF' },
         leaderId: { type: Schema.Types.ObjectId, ref: 'User' },
         viceLeaderId: { type: Schema.Types.ObjectId, ref: 'User' },
+        viceLeaderIds: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+        actingHeadId: { type: Schema.Types.ObjectId, ref: 'User' },
+        viceHeadPermissions: {
+            type: [String],
+            default: ['create_tasks', 'assign_tasks', 'review_tasks', 'manage_attendance'],
+        },
+        monthlyObjectives: [
+            {
+                title: { type: String, required: true },
+                progress: { type: Number, min: 0, max: 100, default: 0 },
+                targetDate: { type: Date },
+                status: { type: String, enum: ['pending', 'in_progress', 'completed'], default: 'in_progress' },
+            },
+        ],
+        managementNotes: [
+            {
+                authorId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+                content: { type: String, required: true },
+                targetMemberId: { type: Schema.Types.ObjectId, ref: 'User' },
+                createdAt: { type: Date, default: Date.now },
+            },
+        ],
         isActive: { type: Boolean, default: true },
         registrationOpen: { type: Boolean, default: true },
         availableForRegistration: { type: Boolean, default: true },
