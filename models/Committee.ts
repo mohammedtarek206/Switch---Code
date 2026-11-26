@@ -11,6 +11,11 @@ export interface ICommittee extends Document {
     leaderId?: Types.ObjectId;
     viceLeaderId?: Types.ObjectId;
     isActive: boolean;
+    registrationOpen: boolean;
+    availableForRegistration: boolean;
+    maxMembers?: number;
+    currentMemberCount: number;
+    displayOrder: number;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -27,6 +32,11 @@ const CommitteeSchema: Schema = new Schema(
         leaderId: { type: Schema.Types.ObjectId, ref: 'User' },
         viceLeaderId: { type: Schema.Types.ObjectId, ref: 'User' },
         isActive: { type: Boolean, default: true },
+        registrationOpen: { type: Boolean, default: true },
+        availableForRegistration: { type: Boolean, default: true },
+        maxMembers: { type: Number, min: 1 },
+        currentMemberCount: { type: Number, default: 0 },
+        displayOrder: { type: Number, default: 0 },
     },
     { timestamps: true }
 );

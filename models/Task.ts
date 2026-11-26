@@ -21,6 +21,20 @@ export interface ITaskActivity {
     createdAt: Date;
 }
 
+export interface ITaskSubmissionItem {
+    version: number;
+    submittedBy: Types.ObjectId;
+    content?: string;
+    attachments: string[];
+    links: string[];
+    notes?: string;
+    submittedAt: Date;
+    status: 'pending_review' | 'revision_required' | 'approved';
+    feedback?: string;
+    reviewedBy?: Types.ObjectId;
+    reviewedAt?: Date;
+}
+
 export interface ITask extends Document {
     title: string;
     description?: string;
@@ -28,6 +42,7 @@ export interface ITask extends Document {
     teamId?: Types.ObjectId;
     assignees: Types.ObjectId[]; // multiple assignees
     createdBy: Types.ObjectId;
+    startDate?: Date;
     deadline?: Date;
     priority: 'low' | 'medium' | 'high' | 'critical';
     status: 'todo' | 'in_progress' | 'review' | 'revision' | 'done' | 'cancelled';
@@ -41,6 +56,7 @@ export interface ITask extends Document {
     reviewNote?: string;       // leader feedback on review
     reviewedBy?: Types.ObjectId;
     reviewedAt?: Date;
+    submissions: ITaskSubmissionItem[];
     activityLog: ITaskActivity[];
     createdAt: Date;
     updatedAt: Date;
@@ -70,6 +86,27 @@ const TaskActivitySchema = new Schema(
     { _id: true }
 );
 
+const TaskSubmissionItemSchema = new Schema(
+    {
+        version: { type: Number, required: true, default: 1 },
+        submittedBy: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+        content: { type: String },
+        attachments: [{ type: String }],
+        links: [{ type: String }],
+        notes: { type: String },
+        submittedAt: { type: Date, default: Date.now },
+        status: {
+            type: String,
+            enum: ['pending_review', 'revision_required', 'approved'],
+            default: 'pending_review',
+        },
+        feedback: { type: String },
+        reviewedBy: { type: Schema.Types.ObjectId, ref: 'User' },
+        reviewedAt: { type: Date },
+    },
+    { _id: true }
+);
+
 const TaskSchema: Schema = new Schema(
     {
         title: { type: String, required: true },
@@ -78,6 +115,7 @@ const TaskSchema: Schema = new Schema(
         teamId: { type: Schema.Types.ObjectId, ref: 'CommunityTeam' },
         assignees: [{ type: Schema.Types.ObjectId, ref: 'User' }],
         createdBy: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+        startDate: { type: Date },
         deadline: { type: Date },
         priority: { type: String, enum: ['low', 'medium', 'high', 'critical'], default: 'medium' },
         status: { type: String, enum: ['todo', 'in_progress', 'review', 'revision', 'done', 'cancelled'], default: 'todo' },
@@ -91,14 +129,15 @@ const TaskSchema: Schema = new Schema(
         reviewNote: { type: String },
         reviewedBy: { type: Schema.Types.ObjectId, ref: 'User' },
         reviewedAt: { type: Date },
+        submissions: [TaskSubmissionItemSchema],
         activityLog: [TaskActivitySchema],
     },
     { timestamps: true }
 );
 
 // Cache invalidation
-if (mongoose.models.Task && !mongoose.models.Task.schema.paths.assignees) {
-    delete (mongoose.models as any).Task;
+if (mongoose.models.Task && (!mongoose.models.Task.schema.paths.assignees || !mongoose.models.Task.schema.paths.submissions)) {
+    delete (mongoose.models as Record<string, unknown>).Task;
 }
 
 export default mongoose.models.Task || mongoose.model<ITask>('Task', TaskSchema);

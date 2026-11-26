@@ -77,6 +77,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     const communityItems = [
         { title: 'Public Team Showcase', icon: FiImage, href: '/admin/community/public-team' },
         { title: 'Accounts Management', icon: FiUsers, href: '/admin/community/accounts' },
+        { title: 'Users & Multi-Roles', icon: FiUsers, href: '/admin/community/users' },
+        { title: 'Committee Leadership', icon: FiAward, href: '/admin/community/leadership' },
         { title: 'Teams Management', icon: FiUsers, href: '/admin/community/teams' },
         { title: 'Community DB', icon: FiLayout, href: '/admin/community/dashboard' },
         { title: 'Committees', icon: FiGrid, href: '/admin/community/committees' },

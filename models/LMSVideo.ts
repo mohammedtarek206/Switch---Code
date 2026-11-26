@@ -12,6 +12,7 @@ export interface ILMSVideo extends Document {
     duration: string; // e.g. "45 min"
     order: number;
     published: boolean;
+    approvalStatus: 'draft' | 'pending_approval' | 'approved' | 'rejected';
     createdBy?: Types.ObjectId;
     createdAt: Date;
     updatedAt: Date;
@@ -28,6 +29,11 @@ const LMSVideoSchema: Schema = new Schema(
         duration: { type: String },
         order: { type: Number, default: 0 },
         published: { type: Boolean, default: true },
+        approvalStatus: {
+            type: String,
+            enum: ['draft', 'pending_approval', 'approved', 'rejected'],
+            default: 'approved',
+        },
         createdBy: { type: Schema.Types.ObjectId, ref: 'User' },
     },
     { timestamps: true }

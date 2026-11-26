@@ -11,6 +11,7 @@ export interface ILMSMaterial extends Document {
     fileUrl: string;
     order: number;
     published: boolean;
+    approvalStatus: 'draft' | 'pending_approval' | 'approved' | 'rejected';
     allowDownload: boolean;
     createdBy?: Types.ObjectId;
     createdAt: Date;
@@ -31,6 +32,11 @@ const LMSMaterialSchema: Schema = new Schema(
         fileUrl: { type: String, required: true },
         order: { type: Number, default: 0 },
         published: { type: Boolean, default: true },
+        approvalStatus: {
+            type: String,
+            enum: ['draft', 'pending_approval', 'approved', 'rejected'],
+            default: 'approved',
+        },
         allowDownload: { type: Boolean, default: true },
         createdBy: { type: Schema.Types.ObjectId, ref: 'User' },
     },

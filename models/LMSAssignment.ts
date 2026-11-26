@@ -11,6 +11,7 @@ export interface ILMSAssignment extends Document {
     attachmentUrl?: string;
     maxScore: number;
     published: boolean;
+    approvalStatus: 'draft' | 'pending_approval' | 'approved' | 'rejected';
     order: number;
     createdBy?: Types.ObjectId;
     createdAt: Date;
@@ -27,6 +28,11 @@ const LMSAssignmentSchema: Schema = new Schema(
         attachmentUrl: { type: String },
         maxScore: { type: Number, default: 100 },
         published: { type: Boolean, default: true },
+        approvalStatus: {
+            type: String,
+            enum: ['draft', 'pending_approval', 'approved', 'rejected'],
+            default: 'approved',
+        },
         order: { type: Number, default: 0 },
         createdBy: { type: Schema.Types.ObjectId, ref: 'User' },
     },

@@ -90,7 +90,7 @@ export default function MemberPublicProfilePage({ params }: { params: { id: stri
         );
     }
 
-    if (!profile) {
+    if (!profile || !profile.name) {
         return (
             <div className="min-h-screen bg-[#07111F] flex flex-col justify-center items-center text-gray-500">
                 <FiAlertCircle className="w-12 h-12 mb-4 text-gray-600" />
@@ -128,14 +128,14 @@ export default function MemberPublicProfilePage({ params }: { params: { id: stri
                         {profile.avatar ? (
                             <img src={profile.avatar} alt="Avatar" className="w-full h-full object-cover" />
                         ) : (
-                            profile.name[0].toUpperCase()
+                            (profile.name?.trim()?.[0] || 'U').toUpperCase()
                         )}
                     </div>
 
                     <div className="text-center sm:text-left space-y-2">
                         <h1 className="text-3xl font-extrabold text-white leading-tight">{profile.name}</h1>
                         <p className="text-xs text-gold font-semibold uppercase tracking-wider">
-                            {profile.committeeId?.name || 'Volunteer Core'} • {profile.position || profile.role.replace('_', ' ')}
+                            {profile.committeeId?.name || 'Volunteer Core'} • {profile.position || (profile.role || 'member').replace('_', ' ')}
                         </p>
                         <p className="text-gray-500 text-xs">{profile.email}</p>
                     </div>

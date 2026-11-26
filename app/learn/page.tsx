@@ -8,6 +8,7 @@ import {
     FiTarget, FiAlertCircle, FiX, FiCalendar, FiMapPin
 } from 'react-icons/fi';
 import Link from 'next/link';
+import DashboardShell from '@/components/DashboardShell';
 
 interface Track {
     _id: string;
@@ -173,7 +174,7 @@ export default function LearnPage() {
     ];
 
     return (
-        <div className="min-h-screen bg-[#07111F] text-white py-10 px-4 md:px-8">
+        <DashboardShell title="Student Dashboard – لوحة الطالب">
             <div className="max-w-6xl mx-auto space-y-8">
 
                 {/* Header */}
@@ -191,7 +192,19 @@ export default function LearnPage() {
                             {enrolled ? `Enrolled in: ${track?.name}` : 'Choose your learning track to get started'}
                         </p>
                     </div>
-                    <div className="relative z-10 flex gap-3">
+                    <div className="relative z-10 flex flex-wrap gap-3">
+                        <Link
+                            href="/learn/tracks"
+                            className="px-4 py-2.5 bg-blue-600/20 border border-blue-500/30 hover:bg-blue-600/30 rounded-xl font-bold text-xs text-blue-300 transition-all flex items-center gap-2"
+                        >
+                            <FiBookOpen className="w-4 h-4" /> My Tracks
+                        </Link>
+                        <Link
+                            href="/dashboard"
+                            className="px-4 py-2.5 bg-amber-500/10 border border-amber-500/30 hover:bg-amber-500/20 rounded-xl font-bold text-xs text-gold transition-all flex items-center gap-2"
+                        >
+                            Portal / Role Switcher
+                        </Link>
                         <button
                             onClick={openTrackPicker}
                             className="px-5 py-2.5 bg-cyan-500/10 border border-cyan-500/30 hover:bg-cyan-500/20 rounded-xl font-bold text-xs text-cyan-400 transition-all flex items-center gap-2"
@@ -462,6 +475,6 @@ export default function LearnPage() {
                     </div>
                 )}
             </AnimatePresence>
-        </div>
+        </DashboardShell>
     );
 }

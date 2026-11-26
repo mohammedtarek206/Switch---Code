@@ -2,10 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
 import connectDB from '@/lib/mongodb';
 import Application from '@/models/Application';
+import { authenticateRequest } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 
-function getApplicantFromRequest(req: NextRequest): { applicationId: string; type: string } | null {
+function getLegacyApplicantFromRequest(req: NextRequest): { applicationId: string; type: string } | null {
     const auth = req.headers.get('authorization');
     if (!auth || !auth.startsWith('Bearer ')) return null;
     try {
@@ -20,21 +21,32 @@ function getApplicantFromRequest(req: NextRequest): { applicationId: string; typ
     }
 }
 
-// GET: applicant views their own application
+// GET: applicant views their own application (without internal HR notes)
 export async function GET(req: NextRequest) {
     try {
-        const applicant = getApplicantFromRequest(req);
-        if (!applicant) {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-        }
-
         await connectDB();
 
-        const application = await Application.findById(applicant.applicationId)
-            .select('-applicantPassword')
-            .populate('committeeId', 'name color type')
-            .populate('recruitmentId', 'name formFields')
-            .lean();
+        const legacyApplicant = getLegacyApplicantFromRequest(req);
+        let application: unknown = null;
+
+        if (legacyApplicant) {
+            application = await Application.findById(legacyApplicant.applicationId)
+                .select('-applicantPassword -internalHrNotes -adminNote -interview.notes')
+                .populate('committeeId', 'name color type')
+                .populate('recruitmentId', 'name formFields')
+                .lean();
+        } else {
+            const authUser = await authenticateRequest(req);
+            if (!authUser) {
+                return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+            }
+            application = await Application.findOne({ userId: authUser.userId })
+                .select('-applicantPassword -internalHrNotes -adminNote -interview.notes')
+                .populate('committeeId', 'name color type')
+                .populate('recruitmentId', 'name formFields')
+                .sort({ createdAt: -1 })
+                .lean();
+        }
 
         if (!application) {
             return NextResponse.json({ error: 'Application not found' }, { status: 404 });

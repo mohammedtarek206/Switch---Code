@@ -2,7 +2,7 @@ import mongoose, { Document, Schema, Types } from 'mongoose';
 
 export interface IApplication extends Document {
     applicationCode: string;
-    recruitmentId: Types.ObjectId;
+    recruitmentId?: Types.ObjectId;
     committeeId: Types.ObjectId;
     userId?: Types.ObjectId;
     formData: Record<string, unknown>;
@@ -10,12 +10,20 @@ export interface IApplication extends Document {
     name: string;
     email: string;
     phone?: string;
+    avatar?: string;
     university?: string;
     faculty?: string;
+    skills?: string[];
+    previousExperience?: string;
+    whyJoin?: string;
+    availableTime?: string;
+    linkedin?: string;
+    portfolio?: string;
     // Applicant login credentials (hashed)
     applicantPassword?: string;
-    status: 'pending' | 'reviewing' | 'interview' | 'accepted' | 'rejected' | 'waiting';
+    status: 'pending' | 'reviewing' | 'shortlisted' | 'interview' | 'accepted' | 'rejected' | 'waiting';
     adminNote?: string;
+    internalHrNotes?: string;
     interview?: {
         date?: Date;
         interviewerId?: Types.ObjectId;
@@ -39,22 +47,30 @@ export interface IApplication extends Document {
 const ApplicationSchema: Schema = new Schema(
     {
         applicationCode: { type: String, unique: true, required: true },
-        recruitmentId: { type: Schema.Types.ObjectId, ref: 'Recruitment', required: true },
+        recruitmentId: { type: Schema.Types.ObjectId, ref: 'Recruitment' },
         committeeId: { type: Schema.Types.ObjectId, ref: 'Committee', required: true },
         userId: { type: Schema.Types.ObjectId, ref: 'User' },
         formData: { type: Schema.Types.Mixed, default: {} },
         name: { type: String, required: true },
         email: { type: String, required: true },
         phone: { type: String },
+        avatar: { type: String },
         university: { type: String },
         faculty: { type: String },
+        skills: [{ type: String }],
+        previousExperience: { type: String },
+        whyJoin: { type: String },
+        availableTime: { type: String },
+        linkedin: { type: String },
+        portfolio: { type: String },
         applicantPassword: { type: String }, // bcrypt hashed
         status: {
             type: String,
-            enum: ['pending', 'reviewing', 'interview', 'accepted', 'rejected', 'waiting'],
+            enum: ['pending', 'reviewing', 'shortlisted', 'interview', 'accepted', 'rejected', 'waiting'],
             default: 'pending',
         },
         adminNote: { type: String },
+        internalHrNotes: { type: String },
         interview: {
             date: { type: Date },
             interviewerId: { type: Schema.Types.ObjectId, ref: 'User' },

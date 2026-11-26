@@ -1,21 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verifyToken } from './auth';
+import { authenticateRequest, TokenPayload } from './auth';
 
-// ─── All available permissions ──────────────────────────────────────────────
 export const PERMISSIONS = {
-    // Committees
     CREATE_COMMITTEE: 'create_committee',
     EDIT_COMMITTEE: 'edit_committee',
     DELETE_COMMITTEE: 'delete_committee',
     ASSIGN_LEADER: 'assign_leader',
     ASSIGN_VICE_LEADER: 'assign_vice_leader',
 
-    // Events
     CREATE_EVENT: 'create_event',
     EDIT_EVENT: 'edit_event',
     DELETE_EVENT: 'delete_event',
 
-    // Management
+    MANAGE_TRACKS: 'manage_tracks',
+    MANAGE_INSTRUCTORS: 'manage_instructors',
+    MANAGE_PARTNER_LEADS: 'manage_partner_leads',
+
     MANAGE_APPLICATIONS: 'manage_applications',
     MANAGE_MEMBERS: 'manage_members',
     MANAGE_TASKS: 'manage_tasks',
@@ -35,7 +35,6 @@ export const PERMISSIONS = {
 
 export type Permission = (typeof PERMISSIONS)[keyof typeof PERMISSIONS];
 
-// ─── Role → default permissions mapping ─────────────────────────────────────
 export const ROLE_PERMISSIONS: Record<string, Permission[]> = {
     super_admin: Object.values(PERMISSIONS) as Permission[],
     admin: [
@@ -47,6 +46,9 @@ export const ROLE_PERMISSIONS: Record<string, Permission[]> = {
         PERMISSIONS.CREATE_EVENT,
         PERMISSIONS.EDIT_EVENT,
         PERMISSIONS.DELETE_EVENT,
+        PERMISSIONS.MANAGE_TRACKS,
+        PERMISSIONS.MANAGE_INSTRUCTORS,
+        PERMISSIONS.MANAGE_PARTNER_LEADS,
         PERMISSIONS.MANAGE_APPLICATIONS,
         PERMISSIONS.MANAGE_MEMBERS,
         PERMISSIONS.MANAGE_TASKS,
@@ -66,10 +68,15 @@ export const ROLE_PERMISSIONS: Record<string, Permission[]> = {
         PERMISSIONS.MANAGE_MEMBERS,
         PERMISSIONS.MANAGE_TASKS,
         PERMISSIONS.MANAGE_ANNOUNCEMENTS,
+        PERMISSIONS.MANAGE_TRACKS,
+        PERMISSIONS.MANAGE_INSTRUCTORS,
+        PERMISSIONS.CREATE_EVENT,
+        PERMISSIONS.EDIT_EVENT,
     ],
     vice_president: [
         PERMISSIONS.MANAGE_MEMBERS,
         PERMISSIONS.MANAGE_TASKS,
+        PERMISSIONS.MANAGE_ANNOUNCEMENTS,
     ],
     committee_leader: [
         PERMISSIONS.MANAGE_TASKS,
@@ -78,54 +85,98 @@ export const ROLE_PERMISSIONS: Record<string, Permission[]> = {
     vice_committee_leader: [
         PERMISSIONS.MANAGE_TASKS,
     ],
-    hr: [PERMISSIONS.MANAGE_APPLICATIONS, PERMISSIONS.MANAGE_INTERVIEWS],
+    hr: [
+        PERMISSIONS.MANAGE_MEMBERS,
+        PERMISSIONS.MANAGE_TASKS,
+    ],
+    pr: [
+        PERMISSIONS.MANAGE_PARTNER_LEADS,
+        PERMISSIONS.MANAGE_ANNOUNCEMENTS,
+    ],
+    media: [
+        PERMISSIONS.MANAGE_GALLERY,
+    ],
+    marketing: [
+        PERMISSIONS.MANAGE_ANNOUNCEMENTS,
+    ],
+    technical: [],
+    instructor: [],
+    mentor: [],
+    committee_applicant: [],
     member: [],
     student: [],
 };
 
-// ─── Check if a user has a specific permission ───────────────────────────────
+export function userHasRole(
+    user: { role?: string; roles?: string[] } | null | undefined,
+    targetRole: string
+): boolean {
+    if (!user) return false;
+    if (user.role === targetRole) return true;
+    return Array.isArray(user.roles) && user.roles.includes(targetRole);
+}
+
+export function userHasAnyRole(
+    user: { role?: string; roles?: string[] } | null | undefined,
+    targetRoles: string[]
+): boolean {
+    return targetRoles.some((r) => userHasRole(user, r));
+}
+
 export function hasPermission(
     userRole: string,
     userPermissions: string[],
-    permission: Permission
+    permission: Permission,
+    userRoles?: string[]
 ): boolean {
-    // super_admin always has all permissions
-    if (userRole === 'super_admin') return true;
-    // Check explicit permissions array first
+    const allRoles = [userRole, ...(userRoles || [])].filter(Boolean);
+    if (allRoles.includes('super_admin')) return true;
     if (userPermissions && userPermissions.includes(permission)) return true;
-    // Fall back to role default permissions
-    const rolePerms = ROLE_PERMISSIONS[userRole] || [];
-    return rolePerms.includes(permission);
+    return allRoles.some((r) => (ROLE_PERMISSIONS[r] || []).includes(permission));
 }
 
-// ─── Middleware helper for API routes ────────────────────────────────────────
 export function withPermission(permission: Permission) {
     return async function checkPermission(
         req: NextRequest,
-        handler: (req: NextRequest, user: { userId: string; role: string; email?: string; permissions?: string[] }) => Promise<NextResponse>
+        handler: (req: NextRequest, user: TokenPayload) => Promise<NextResponse>
     ): Promise<NextResponse> {
-        const authHeader = req.headers.get('authorization');
-        const token = authHeader?.startsWith('Bearer ') ? authHeader.substring(7) : null;
-
-        if (!token) {
+        const user = await authenticateRequest(req);
+        if (!user) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const payload = verifyToken(token);
-        if (!payload) {
-            return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
-        }
-
-        const userPerms = (payload as { userId: string; role: string; email?: string; permissions?: string[] }).permissions || [];
-        if (!hasPermission(payload.role, userPerms, permission)) {
+        const userPerms = user.permissions || [];
+        if (!hasPermission(user.role, userPerms, permission, user.roles)) {
             return NextResponse.json({ error: 'Forbidden: insufficient permissions' }, { status: 403 });
         }
 
-        return handler(req, payload as { userId: string; role: string; email?: string; permissions?: string[] });
+        return handler(req, user);
     };
 }
 
-// ─── Simple admin check for non-community APIs ───────────────────────────────
-export function isAdminRole(role: string): boolean {
-    return ['super_admin', 'admin', 'president', 'vice_president'].includes(role);
+export function isAdminRole(role?: string, roles?: string[]): boolean {
+    const allRoles = [role, ...(roles || [])].filter((r): r is string => Boolean(r));
+    return allRoles.some((r) => ['super_admin', 'admin', 'president', 'vice_president'].includes(r));
 }
+
+export function canManageCommittee(user: TokenPayload, committeeId: string): boolean {
+    if (isAdminRole(user.role, user.roles)) return true;
+    if (
+        userHasAnyRole(user, ['committee_leader', 'vice_committee_leader']) &&
+        user.committeeId &&
+        user.committeeId === committeeId
+    ) {
+        return true;
+    }
+    return false;
+}
+
+export function canAccessCommittee(user: TokenPayload, committeeId: string): boolean {
+    if (isAdminRole(user.role, user.roles)) return true;
+    if (user.committeeId && user.committeeId === committeeId) {
+        return true;
+    }
+    return false;
+}
+
+export { getDashboardRouteForRole } from './roleRoutes';

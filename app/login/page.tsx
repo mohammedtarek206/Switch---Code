@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { FiLock, FiUser, FiArrowRight, FiShield, FiImage, FiPhone } from 'react-icons/fi';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function LoginPage() {
     const router = useRouter();
@@ -39,10 +40,12 @@ export default function LoginPage() {
                 if (data.mustChangePassword) {
                     console.log('[Frontend Login] Change password flag detected. Switching to Complete Profile onboarding UI.');
                     setMustSetup(true);
+                } else if (data.dashboardRoute) {
+                    router.push(data.dashboardRoute);
                 } else {
                     const adminRoles = ['admin', 'super_admin', 'president', 'vice_president'];
                     if (adminRoles.includes(data.user?.role)) {
-                        router.push('/admin/community/accounts');
+                        router.push('/admin/community/dashboard');
                     } else {
                         router.push('/dashboard');
                     }
@@ -134,9 +137,15 @@ export default function LoginPage() {
                                 </div>
                             </div>
 
-                            <div className="pt-4">
+                            <div className="flex items-center justify-end">
+                                <Link href="/forgot-password" className="text-xs text-blue-400 hover:text-gold transition-colors">
+                                    نسيت كلمة المرور؟
+                                </Link>
+                            </div>
+
+                            <div className="pt-2">
                                 <button type="submit" disabled={loading} className="w-full flex justify-center items-center py-3 px-4 rounded-xl text-sm font-bold text-black bg-accent hover:bg-accent-dark disabled:opacity-50 transition-transform hover:scale-[1.02]">
-                                    {loading ? <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-black" /> : <>Initiate Login <FiArrowRight className="ml-2" /></>}
+                                    {loading ? <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-black" /> : <>تسجيل الدخول <FiArrowRight className="ml-2" /></>}
                                 </button>
                             </div>
                         </form>
@@ -178,9 +187,13 @@ export default function LoginPage() {
                     )}
 
                     {!mustSetup && (
-                        <div className="mt-8 text-center text-xs text-gray-500 border-t border-white/5 pt-6">
-                            <p>Internal Community Portal</p>
-                            <p>Self-registration is disabled. Request credentials from your supervisor.</p>
+                        <div className="mt-8 text-center text-xs text-gray-400 border-t border-white/10 pt-6 space-y-2">
+                            <p>
+                                ليس لديك حساب؟{' '}
+                                <Link href="/register" className="text-gold hover:underline font-bold">
+                                    أنشئ حسابك الآن (طالب / محاضر / متقدم للجنة)
+                                </Link>
+                            </p>
                         </div>
                     )}
                 </div>
