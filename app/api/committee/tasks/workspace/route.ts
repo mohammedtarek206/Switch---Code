@@ -48,11 +48,12 @@ export async function GET(req: NextRequest) {
                 $or: [{ leaderId: authUser.userId }, { viceLeaderId: authUser.userId }],
             }));
 
-        const taskFilter = isLeader
-            ? { committeeId }
-            : { committeeId, assignees: authUser.userId };
+        const isAdmin = isAdminRole(authUser.role, authUser.roles);
+        const taskFilter: Record<string, unknown> = isLeader
+            ? { committeeId, isDeleted: { $ne: true } }
+            : { committeeId, assignees: authUser.userId, isDeleted: { $ne: true } };
 
-        const [committee, members, tasks, announcements] = await Promise.all([
+        const [committee, members, tasks, announcements, allCommittees] = await Promise.all([
             Committee.findById(committeeId)
                 .populate('leaderId', 'name avatar email')
                 .populate('viceLeaderId', 'name avatar email')
@@ -63,6 +64,7 @@ export async function GET(req: NextRequest) {
             Task.find(taskFilter)
                 .populate('assignees', 'name avatar email')
                 .populate('createdBy', 'name')
+                .populate('comments.authorId', 'name avatar')
                 .populate('submissions.submittedBy', 'name avatar')
                 .populate('submissions.reviewedBy', 'name')
                 .sort({ createdAt: -1 })
@@ -74,6 +76,7 @@ export async function GET(req: NextRequest) {
                 .sort({ createdAt: -1 })
                 .limit(10)
                 .lean(),
+            isAdmin ? Committee.find({ isActive: true }).select('_id name dashboardType slug').sort({ displayOrder: 1, name: 1 }).lean() : Promise.resolve([]),
         ]);
 
         if (!committee) {
@@ -92,6 +95,8 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({
             committee,
             isLeader: Boolean(isLeader),
+            isAdmin,
+            allCommittees,
             stats: {
                 totalMembers: members.length,
                 activeTasks: totalTasks - completedTasks,
@@ -301,9 +306,74 @@ export async function PATCH(req: NextRequest) {
             if (!isAssignee && !isLeader) {
                 return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
             }
+            const prevStatus = task.status;
             task.status = status;
+            if (status === 'done') task.progress = 100;
+            task.activityLog.push({
+                actorId: authUser.userId as never,
+                action: 'STATUS_CHANGED',
+                detail: `${prevStatus} -> ${status}`,
+                createdAt: new Date(),
+            });
             await task.save();
             return NextResponse.json({ task });
+        }
+
+        if (action === 'add_comment' && body.comment) {
+            if (!isAssignee && !isLeader && !isAdminRole(authUser.role, authUser.roles)) {
+                return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+            }
+            task.comments.push({
+                authorId: authUser.userId as never,
+                content: String(body.comment).trim(),
+                createdAt: new Date(),
+            });
+            await task.save();
+
+            const notifyIds = task.assignees
+                .map((a: { toString(): string }) => a.toString())
+                .filter((id: string) => id !== authUser.userId);
+            if (task.createdBy && task.createdBy.toString() !== authUser.userId) {
+                notifyIds.push(task.createdBy.toString());
+            }
+            await notifyManyUsers(notifyIds, {
+                title: 'تعليق جديد على مهمة',
+                message: `تعليق جديد على "${task.title}": ${String(body.comment).slice(0, 80)}`,
+                type: 'info',
+                link: '/dashboard/committee',
+            });
+            return NextResponse.json({ task, message: 'تمت إضافة التعليق.' });
+        }
+
+        if (action === 'add_subtask' && body.subtaskTitle) {
+            if (!isLeader && !isAssignee) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+            task.subtasks = task.subtasks || [];
+            task.subtasks.push({ title: String(body.subtaskTitle).trim(), done: false });
+            await task.save();
+            return NextResponse.json({ task });
+        }
+
+        if (action === 'toggle_subtask' && body.subtaskId) {
+            if (!isLeader && !isAssignee) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+            const st = task.subtasks?.find((s: { _id?: { toString(): string } }) => s._id?.toString() === body.subtaskId);
+            if (st) {
+                st.done = !st.done;
+                const total = task.subtasks.length;
+                const doneCount = task.subtasks.filter((s: { done: boolean }) => s.done).length;
+                if (total > 0) task.progress = Math.round((doneCount / total) * 100);
+                await task.save();
+            }
+            return NextResponse.json({ task });
+        }
+
+        if (action === 'soft_delete') {
+            if (!isLeader && !isAdminRole(authUser.role, authUser.roles)) {
+                return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+            }
+            task.isDeleted = true;
+            await task.save();
+            await logActivity(authUser.userId, 'SOFT_DELETE_TASK', 'Task', taskId, { title: task.title });
+            return NextResponse.json({ message: 'تم أرشفة/حذف المهمة بنجاح.' });
         }
 
         return NextResponse.json({ error: 'Invalid action' }, { status: 400 });

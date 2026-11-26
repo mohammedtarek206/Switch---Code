@@ -35,6 +35,12 @@ export interface ITaskSubmissionItem {
     reviewedAt?: Date;
 }
 
+export interface ITaskSubtask {
+    title: string;
+    done: boolean;
+    assignedTo?: Types.ObjectId;
+}
+
 export interface ITask extends Document {
     title: string;
     description?: string;
@@ -44,11 +50,12 @@ export interface ITask extends Document {
     createdBy: Types.ObjectId;
     startDate?: Date;
     deadline?: Date;
-    priority: 'low' | 'medium' | 'high' | 'critical';
+    priority: 'low' | 'medium' | 'high' | 'urgent' | 'critical';
     status: 'todo' | 'in_progress' | 'review' | 'revision' | 'done' | 'cancelled';
     progress: number;
     comments: ITaskComment[];
     checklist: ITaskChecklist[];
+    subtasks: ITaskSubtask[];
     attachments: string[];     // file URLs
     links: string[];
     tags: string[];
@@ -58,6 +65,7 @@ export interface ITask extends Document {
     reviewedAt?: Date;
     submissions: ITaskSubmissionItem[];
     activityLog: ITaskActivity[];
+    isDeleted?: boolean;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -107,6 +115,15 @@ const TaskSubmissionItemSchema = new Schema(
     { _id: true }
 );
 
+const TaskSubtaskSchema = new Schema(
+    {
+        title: { type: String, required: true },
+        done: { type: Boolean, default: false },
+        assignedTo: { type: Schema.Types.ObjectId, ref: 'User' },
+    },
+    { _id: true }
+);
+
 const TaskSchema: Schema = new Schema(
     {
         title: { type: String, required: true },
@@ -117,11 +134,12 @@ const TaskSchema: Schema = new Schema(
         createdBy: { type: Schema.Types.ObjectId, ref: 'User', required: true },
         startDate: { type: Date },
         deadline: { type: Date },
-        priority: { type: String, enum: ['low', 'medium', 'high', 'critical'], default: 'medium' },
+        priority: { type: String, enum: ['low', 'medium', 'high', 'urgent', 'critical'], default: 'medium' },
         status: { type: String, enum: ['todo', 'in_progress', 'review', 'revision', 'done', 'cancelled'], default: 'todo' },
         progress: { type: Number, min: 0, max: 100, default: 0 },
         comments: [TaskCommentSchema],
         checklist: [TaskChecklistSchema],
+        subtasks: [TaskSubtaskSchema],
         attachments: [{ type: String }],
         links: [{ type: String }],
         tags: [{ type: String }],
@@ -131,12 +149,13 @@ const TaskSchema: Schema = new Schema(
         reviewedAt: { type: Date },
         submissions: [TaskSubmissionItemSchema],
         activityLog: [TaskActivitySchema],
+        isDeleted: { type: Boolean, default: false },
     },
     { timestamps: true }
 );
 
 // Cache invalidation
-if (mongoose.models.Task && (!mongoose.models.Task.schema.paths.assignees || !mongoose.models.Task.schema.paths.submissions)) {
+if (mongoose.models.Task && (!mongoose.models.Task.schema.paths.assignees || !mongoose.models.Task.schema.paths.submissions || !mongoose.models.Task.schema.paths.subtasks)) {
     delete (mongoose.models as Record<string, unknown>).Task;
 }
 

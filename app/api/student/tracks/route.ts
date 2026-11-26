@@ -71,6 +71,7 @@ export async function GET(req: NextRequest) {
                       LMSMaterial.find({
                           trackId: { $in: enrolledTrackIds },
                           published: true,
+                          approvalStatus: 'approved',
                       })
                           .sort({ order: 1, createdAt: 1 })
                           .lean(),

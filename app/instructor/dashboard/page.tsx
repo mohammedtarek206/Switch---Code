@@ -44,7 +44,16 @@ export default function InstructorDashboardPage() {
     const [selectedTrackIds, setSelectedTrackIds] = useState<string[]>([]);
     const [students, setStudents] = useState<StudentItem[]>([]);
     const [videos, setVideos] = useState<Array<{ _id: string; title: string; approvalStatus: string; trackId: string }>>([]);
-    const [materials, setMaterials] = useState<Array<{ _id: string; title: string; approvalStatus: string }>>([]);
+    const [materials, setMaterials] = useState<Array<{
+        _id: string;
+        title: string;
+        description?: string;
+        fileUrl?: string;
+        materialType?: string;
+        lectureTitle?: string;
+        approvalStatus: string;
+        reviewFeedback?: string;
+    }>>([]);
     const [lmsAssignments, setLmsAssignments] = useState<Array<{ _id: string; title: string; deadline?: string }>>([]);
     const [submissions, setSubmissions] = useState<SubmissionItem[]>([]);
     const [announcements, setAnnouncements] = useState<Array<{ _id: string; title: string; content: string }>>([]);
@@ -61,10 +70,13 @@ export default function InstructorDashboardPage() {
         duration: '',
         fileUrl: '',
         materialType: 'pdf',
+        lectureTitle: '',
+        notes: '',
         deadline: '',
         maxScore: '100',
         order: '0',
     });
+    const [resubmitId, setResubmitId] = useState<string | null>(null);
 
     // Grading state
     const [gradeDraft, setGradeDraft] = useState<Record<string, { score: string; feedback: string }>>({});
@@ -115,16 +127,18 @@ export default function InstructorDashboardPage() {
         const token = localStorage.getItem('token');
         if (!token) return;
 
+        const isResubmit = Boolean(resubmitId && contentType === 'material');
         const res = await fetch('/api/instructor/content', {
-            method: 'POST',
+            method: isResubmit ? 'PATCH' : 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify({
-                contentType,
-                ...form,
-            }),
+            body: JSON.stringify(
+                isResubmit
+                    ? { materialId: resubmitId, ...form }
+                    : { contentType, ...form }
+            ),
         });
         const data = await res.json();
         if (!res.ok) {
@@ -132,7 +146,8 @@ export default function InstructorDashboardPage() {
             return;
         }
         setMsg(data.message || 'تمت الإضافة بنجاح');
-        setForm((f) => ({ ...f, title: '', description: '', videoUrl: '', fileUrl: '' }));
+        setResubmitId(null);
+        setForm((f) => ({ ...f, title: '', description: '', videoUrl: '', fileUrl: '', lectureTitle: '', notes: '' }));
         await loadDashboard();
     }
 
@@ -406,30 +421,62 @@ export default function InstructorDashboardPage() {
                                 )}
 
                                 {contentType === 'material' && (
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                        <div>
-                                            <label className="block text-xs text-gray-300 mb-1">رابط الملف *</label>
-                                            <input
-                                                type="url"
-                                                required
-                                                value={form.fileUrl}
-                                                onChange={(e) => setForm({ ...form, fileUrl: e.target.value })}
-                                                className="w-full px-3 py-2.5 rounded-xl bg-[#0B1220] border border-white/10 text-white text-sm"
-                                            />
+                                    <div className="space-y-3">
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                            <div>
+                                                <label className="block text-xs text-gray-300 mb-1">رابط الملف / المورد *</label>
+                                                <input
+                                                    type="url"
+                                                    required
+                                                    value={form.fileUrl}
+                                                    onChange={(e) => setForm({ ...form, fileUrl: e.target.value })}
+                                                    className="w-full px-3 py-2.5 rounded-xl bg-[#0B1220] border border-white/10 text-white text-sm"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-xs text-gray-300 mb-1">نوع المادة</label>
+                                                <select
+                                                    value={form.materialType}
+                                                    onChange={(e) => setForm({ ...form, materialType: e.target.value })}
+                                                    className="w-full px-3 py-2.5 rounded-xl bg-[#0B1220] border border-white/10 text-white text-sm"
+                                                >
+                                                    <option value="pdf">PDF File</option>
+                                                    <option value="word">Word Document</option>
+                                                    <option value="powerpoint">PowerPoint Presentation</option>
+                                                    <option value="excel">Excel File</option>
+                                                    <option value="image">Image</option>
+                                                    <option value="video">Educational Video</option>
+                                                    <option value="drive_link">Google Drive Link</option>
+                                                    <option value="youtube">YouTube Link</option>
+                                                    <option value="zip">ZIP / Source Code Project</option>
+                                                    <option value="link">External Resource</option>
+                                                </select>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <label className="block text-xs text-gray-300 mb-1">نوع المادة</label>
-                                            <select
-                                                value={form.materialType}
-                                                onChange={(e) => setForm({ ...form, materialType: e.target.value })}
-                                                className="w-full px-3 py-2.5 rounded-xl bg-[#0B1220] border border-white/10 text-white text-sm"
-                                            >
-                                                <option value="pdf">PDF</option>
-                                                <option value="presentation">Presentation</option>
-                                                <option value="document">Document</option>
-                                                <option value="link">External Link</option>
-                                            </select>
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                            <div>
+                                                <label className="block text-xs text-gray-300 mb-1">اسم المحاضرة (Lecture)</label>
+                                                <input
+                                                    type="text"
+                                                    value={form.lectureTitle}
+                                                    onChange={(e) => setForm({ ...form, lectureTitle: e.target.value })}
+                                                    placeholder="مثال: Lecture 3 - Hooks"
+                                                    className="w-full px-3 py-2.5 rounded-xl bg-[#0B1220] border border-white/10 text-white text-sm"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-xs text-gray-300 mb-1">ملاحظات إضافية (اختياري)</label>
+                                                <input
+                                                    type="text"
+                                                    value={form.notes}
+                                                    onChange={(e) => setForm({ ...form, notes: e.target.value })}
+                                                    className="w-full px-3 py-2.5 rounded-xl bg-[#0B1220] border border-white/10 text-white text-sm"
+                                                />
+                                            </div>
                                         </div>
+                                        <p className="text-[11px] text-amber-300/90">
+                                            * تخضع المواد التعليمية لمراجعة واعتماد الإدارة (Pending Review) قبل إتاحتها للطلاب.
+                                        </p>
                                     </div>
                                 )}
 
@@ -471,9 +518,42 @@ export default function InstructorDashboardPage() {
                                         </div>
                                     ))}
                                     {materials.map((m) => (
-                                        <div key={m._id} className="p-3 rounded-xl bg-[#0B1220] border border-white/10 flex items-center justify-between text-xs">
-                                            <span>📄 {m.title}</span>
-                                            <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300">{m.approvalStatus}</span>
+                                        <div key={m._id} className="p-3 rounded-xl bg-[#0B1220] border border-white/10 space-y-1.5 text-xs">
+                                            <div className="flex items-center justify-between">
+                                                <span className="font-bold text-white">📄 {m.title}</span>
+                                                <span className={`px-2 py-0.5 rounded font-bold ${
+                                                    m.approvalStatus === 'approved'
+                                                        ? 'bg-emerald-500/20 text-emerald-300'
+                                                        : m.approvalStatus === 'rejected'
+                                                            ? 'bg-red-500/20 text-red-400'
+                                                            : 'bg-amber-500/20 text-gold'
+                                                }`}>
+                                                    {m.approvalStatus}
+                                                </span>
+                                            </div>
+                                            {m.reviewFeedback && (
+                                                <p className="text-[11px] text-amber-300">ملاحظات الإدارة: {m.reviewFeedback}</p>
+                                            )}
+                                            {(m.approvalStatus === 'changes_requested' || m.approvalStatus === 'rejected') && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        setContentType('material');
+                                                        setResubmitId(m._id);
+                                                        setForm((f) => ({
+                                                            ...f,
+                                                            title: m.title,
+                                                            description: m.description || '',
+                                                            fileUrl: m.fileUrl || '',
+                                                            materialType: m.materialType || 'pdf',
+                                                            lectureTitle: m.lectureTitle || '',
+                                                        }));
+                                                    }}
+                                                    className="text-[11px] text-blue-400 hover:underline font-bold"
+                                                >
+                                                    تعديل وإعادة إرسال للمراجعة
+                                                </button>
+                                            )}
                                         </div>
                                     ))}
                                     {lmsAssignments.map((a) => (

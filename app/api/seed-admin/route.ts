@@ -31,6 +31,9 @@ async function handleSeed() {
         if (admin) {
             admin.password = hashedPassword;
             admin.role = 'super_admin';
+            admin.roles = ['super_admin'];
+            admin.accountStatus = 'active';
+            admin.emailVerified = true;
             admin.isActive = true;
             admin.profileCompleted = true;
             admin.mustChangePassword = false;
@@ -54,6 +57,9 @@ async function handleSeed() {
             email: adminEmail,
             password: hashedPassword,
             role: 'super_admin',
+            roles: ['super_admin'],
+            accountStatus: 'active',
+            emailVerified: true,
             isActive: true,
             profileCompleted: true,
             mustChangePassword: false,

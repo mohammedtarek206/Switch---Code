@@ -6,6 +6,7 @@ export interface ICommittee extends Document {
     description: string;
     image?: string;
     type: 'technical' | 'non_technical';
+    dashboardType: 'hr' | 'pr_marketing' | 'operations' | 'technical' | 'education' | 'custom';
     icon?: string;
     color?: string;
     leaderId?: Types.ObjectId;
@@ -27,6 +28,11 @@ const CommitteeSchema: Schema = new Schema(
         description: { type: String, required: true },
         image: { type: String },
         type: { type: String, enum: ['technical', 'non_technical'], required: true },
+        dashboardType: {
+            type: String,
+            enum: ['hr', 'pr_marketing', 'operations', 'technical', 'education', 'custom'],
+            default: 'custom',
+        },
         icon: { type: String, default: 'FiGrid' },
         color: { type: String, default: '#0066FF' },
         leaderId: { type: Schema.Types.ObjectId, ref: 'User' },

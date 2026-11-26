@@ -101,6 +101,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         { title: 'Tracks', icon: FiBook, href: '/admin/lms/tracks' },
         { title: 'Videos', icon: FiYoutube, href: '/admin/lms/videos' },
         { title: 'Materials', icon: FiFileText, href: '/admin/lms/materials' },
+        { title: 'Material Approvals', icon: FiCheckSquare, href: '/admin/lms/approvals' },
         { title: 'Quizzes', icon: FiCheckSquare, href: '/admin/lms/quizzes' },
         { title: 'Assignments', icon: FiClipboard, href: '/admin/lms/assignments' },
         { title: 'Student Progress', icon: FiTrendingUp, href: '/admin/lms/progress' },

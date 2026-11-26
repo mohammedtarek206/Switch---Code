@@ -60,8 +60,13 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        const approvalStatus = access.canPublishDirectly ? 'approved' : 'pending_approval';
-        const published = access.canPublishDirectly;
+        const isAdmin = isAdminRole(authUser.role, authUser.roles);
+        const approvalStatus =
+            contentType === 'material'
+                ? (isAdmin ? 'approved' : 'pending_review')
+                : (access.canPublishDirectly ? 'approved' : 'pending_approval');
+        const published =
+            contentType === 'material' ? isAdmin : access.canPublishDirectly;
 
         let created: unknown;
         if (contentType === 'video') {
@@ -89,10 +94,23 @@ export async function POST(req: NextRequest) {
                 description: body.description || '',
                 fileUrl: body.fileUrl,
                 materialType: body.materialType || 'pdf',
+                lectureTitle: body.lectureTitle || '',
+                notes: body.notes || '',
                 trackId,
                 order: Number(body.order) || 0,
                 published,
                 approvalStatus,
+                versions: [
+                    {
+                        version: 1,
+                        title: body.title,
+                        description: body.description || '',
+                        materialType: body.materialType || 'pdf',
+                        fileUrl: body.fileUrl,
+                        notes: body.notes || '',
+                        uploadedAt: new Date(),
+                    },
+                ],
                 allowDownload: body.allowDownload !== false,
                 createdBy: authUser.userId,
             });
@@ -117,12 +135,12 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'Invalid contentType' }, { status: 400 });
         }
 
-        if (!access.canPublishDirectly) {
+        if (!published) {
             await notifyAdmins({
-                title: 'محتوى تعليمي بانتظار الاعتماد',
-                message: `أضاف المحاضر محتوى جديداً (${body.title}) وهو بانتظار المراجعة والنشر.`,
+                title: 'مادة تعليمية جديدة بانتظار المراجعة',
+                message: `رفع المحاضر "${body.title}" وهي بانتظار المراجعة والاعتماد قبل إتاحتها للطلاب.`,
                 type: 'info',
-                link: '/admin/lms',
+                link: '/admin/lms/approvals',
             });
         }
 
@@ -135,14 +153,77 @@ export async function POST(req: NextRequest) {
             {
                 item: created,
                 approvalStatus,
-                message: access.canPublishDirectly
+                message: published
                     ? 'تم نشر المحتوى بنجاح.'
-                    : 'تمت إضافة المحتوى وهو بانتظار اعتماد الإدارة للنشر.',
+                    : 'تم رفع المادة بنجاح وحالتها الآن (Pending Review) بانتظار مراجعة الإدارة.',
             },
             { status: 201 }
         );
     } catch (error) {
         console.error('Instructor content POST error:', error);
         return NextResponse.json({ error: 'Failed to create content' }, { status: 500 });
+    }
+}
+
+export async function PATCH(req: NextRequest) {
+    try {
+        const authUser = await authenticateRequest(req);
+        if (!authUser) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+        const body = await req.json();
+        const { materialId, title, description, fileUrl, materialType, lectureTitle, notes } = body;
+        if (!materialId) {
+            return NextResponse.json({ error: 'materialId is required' }, { status: 400 });
+        }
+
+        await connectDB();
+        const material = await LMSMaterial.findById(materialId);
+        if (!material) return NextResponse.json({ error: 'Material not found' }, { status: 404 });
+
+        const isAdmin = isAdminRole(authUser.role, authUser.roles);
+        if (!isAdmin && material.createdBy?.toString() !== authUser.userId) {
+            return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+        }
+
+        if (title) material.title = title;
+        if (description !== undefined) material.description = description;
+        if (fileUrl) material.fileUrl = fileUrl;
+        if (materialType) material.materialType = materialType;
+        if (lectureTitle !== undefined) material.lectureTitle = lectureTitle;
+        if (notes !== undefined) material.notes = notes;
+
+        const nextVersion = (material.versions?.length || 0) + 1;
+        material.versions.push({
+            version: nextVersion,
+            title: material.title,
+            description: material.description,
+            materialType: material.materialType,
+            fileUrl: material.fileUrl,
+            notes: material.notes,
+            uploadedAt: new Date(),
+        });
+
+        // Resubmitting resets approval to pending_review unless admin edits
+        if (!isAdmin) {
+            material.approvalStatus = 'pending_review';
+            material.published = false;
+            await notifyAdmins({
+                title: 'إعادة إرسال مادة تعليمية للمراجعة',
+                message: `قام المحاضر بتحديث "${material.title}" (الإصدار ${nextVersion}) وإعادة إرسالها للمراجعة.`,
+                type: 'info',
+                link: '/admin/lms/approvals',
+            });
+        }
+
+        await material.save();
+        await logActivity(authUser.userId, 'RESUBMIT_MATERIAL', 'LMSMaterial', materialId, { version: nextVersion });
+
+        return NextResponse.json({
+            material,
+            message: 'تم تحديث المادة وإرسالها للمراجعة بنجاح.',
+        });
+    } catch (error) {
+        console.error('Instructor content PATCH error:', error);
+        return NextResponse.json({ error: 'Failed to update material' }, { status: 500 });
     }
 }

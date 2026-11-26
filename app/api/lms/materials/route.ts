@@ -23,6 +23,7 @@ export async function GET(request: NextRequest) {
         const materials = await LMSMaterial.find({
             trackId: enrollment.trackId,
             published: true,
+            approvalStatus: { $nin: ['pending_review', 'pending_approval', 'rejected', 'changes_requested', 'draft'] },
         }).sort({ order: 1, createdAt: 1 });
 
         const materialIds = materials.map((m) => m._id);
